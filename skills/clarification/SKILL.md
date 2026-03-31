@@ -168,7 +168,15 @@ When ambiguity is sufficiently resolved, present the user with a Context Brief. 
 [Which skill or action to proceed with, given this context]
 ```
 
-**Do not save the Context Brief to a file.** Present it in conversation and move to the next step once the user confirms. Save to a file only if the user requests it.
+**Save the Context Brief to a file:**
+
+```
+docs/engineering-discipline/context/YYYY-MM-DD-<topic>-brief.md
+```
+
+(사용자가 다른 위치를 지정하면 해당 위치를 따른다.)
+
+대화에 먼저 Context Brief를 보여주고, 사용자가 승인하면 파일로 저장한다. 이 파일은 `plan-crafting` 스킬의 입력으로 직접 사용된다.
 
 ## Red Flags
 
@@ -204,8 +212,19 @@ Self-check at the end of each cycle:
 
 Once the Context Brief is approved by the user:
 
-- If detailed implementation planning is needed → `writing-plans` skill
-- If further exploration is needed → `brainstorming` skill
-- If the plan is already clear → `executing-plans` skill
+- If detailed implementation planning is needed → `plan-crafting` skill
+- If further exploration is needed → `clarification` 스킬 자체의 Q&A 루프 계속
+- If the plan is already clear → `run-plan` skill
 
-This skill itself **does not invoke the next skill.** It ends by presenting the Context Brief and suggesting the next step.
+This skill itself **does not invoke the next skill.** It ends by presenting the Context Brief, saving it to a file, and suggesting the next step.
+
+**Context Brief → plan-crafting 매핑:**
+
+| Context Brief 필드 | plan-crafting 입력 |
+|---|---|
+| Goal | 계획 헤더의 "목표" |
+| Scope (In/Out) | 계획 헤더의 "작업 범위" |
+| Technical Context | "아키텍처" + "기술 스택" + 파일 구조 매핑의 기반 |
+| Constraints | 태스크 분해 시 제약사항 반영 |
+| Success Criteria | Self-Review 기준 |
+| Open Questions | 계획에 가정(assumption)으로 반영 후 사용자 확인 |
