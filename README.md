@@ -30,11 +30,26 @@ Includes reference guides:
 
 ### Claude Code
 
+**Step 1:** Register this marketplace in `~/.claude/settings.json`:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "engineering-discipline": {
+      "source": {
+        "source": "github",
+        "repo": "tmdgusya/engineering-disciplines"
+      }
+    }
+  }
+}
+```
+
+**Step 2:** Install the plugin:
+
 ```bash
 /plugin install engineering-discipline
 ```
-
-Or install from this repository directly.
 
 ### Gemini CLI
 
@@ -84,6 +99,8 @@ This plugin is listed in the Claude Code plugin marketplace.
 - **Tags:** optimization, debugging, engineering, discipline, rob-pike, systematic, performance, testing
 
 ### Install from marketplace
+
+Add this repo as a known marketplace in `~/.claude/settings.json` (see [Claude Code installation](#claude-code) above), then:
 
 ```bash
 /plugin install engineering-discipline
