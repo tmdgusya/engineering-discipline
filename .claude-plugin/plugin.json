@@ -1,0 +1,19 @@
+{
+  "name": "engineering-discipline",
+  "description": "Engineering discipline skills: Rob Pike's optimization rules and systematic debugging methodology",
+  "version": "1.0.0",
+  "author": {
+    "name": "tmdgusya",
+    "url": "https://github.com/tmdgusya"
+  },
+  "repository": "https://github.com/tmdgusya/engineering-disciplines",
+  "license": "MIT",
+  "keywords": [
+    "optimization",
+    "debugging",
+    "engineering",
+    "discipline",
+    "rob-pike",
+    "systematic"
+  ]
+}
