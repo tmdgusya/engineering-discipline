@@ -52,9 +52,13 @@ Install from the plugin marketplace, or:
 ### Codex
 
 ```bash
-git clone https://github.com/tmdgusya/engineering-discipline.git ~/.codex/engineering-discipline
-mkdir -p ~/.agents/skills
-ln -s ~/.codex/engineering-discipline/skills ~/.agents/skills/engineering-discipline
+npx skills add tmdgusya/engineering-discipline
+```
+
+Or install globally (available across all projects):
+
+```bash
+npx skills add tmdgusya/engineering-discipline -g
 ```
 
 See [Codex install guide](.codex/INSTALL.md) for details.
