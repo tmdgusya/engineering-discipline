@@ -76,6 +76,23 @@ See [OpenCode install guide](.opencode/INSTALL.md) for details.
 
 Start a new session and mention a performance concern or a bug. The relevant skill should activate automatically.
 
+## Marketplace
+
+This plugin is listed in the Claude Code plugin marketplace.
+
+- **Category:** engineering
+- **Tags:** optimization, debugging, engineering, discipline, rob-pike, systematic, performance, testing
+
+### Install from marketplace
+
+```bash
+/plugin install engineering-discipline
+```
+
+### Publish updates
+
+Update `.claude-plugin/marketplace.json` with a new version and push to the repository. The marketplace entry pulls metadata from that file.
+
 ## License
 
 MIT
