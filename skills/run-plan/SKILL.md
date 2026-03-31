@@ -17,7 +17,9 @@ Do not follow plans blindly. If the plan has issues, flag them before executing.
 2. **Follow steps exactly.** Do not skip or alter steps in the plan arbitrarily.
 3. **Never skip verification.** Test runs, expected output checks, and other verifications stated in the plan must be performed.
 4. **Parallelizable tasks must always run in parallel.** Tasks with no dependencies and no shared file modifications must be dispatched concurrently. Sequential grouping is prohibited.
-5. **Stop when blocked.** Do not guess. Ask the user.
+5. **Worker and Validator must be separate subagents.** The main agent must NOT perform worker or validator roles inline. Each must be dispatched as an independent subagent via the Agent tool.
+6. **Validator must not receive worker output.** The validator subagent receives only the plan's task goal and acceptance criteria. It must never receive the worker's diff, logs, or implementation details. The validator judges by reading the code and running tests independently.
+7. **Stop when blocked.** Do not guess. Ask the user.
 
 ## When To Use
 
@@ -78,24 +80,41 @@ Before starting a task, verify that the current task aligns with the plan:
 
 If issues found: notify the user and resolve before proceeding.
 
-**2-2. Worker Implementation (subagent)**
+**2-2. Worker Implementation (subagent, via Agent tool)**
 
-Dispatch a subagent (worker) to execute the task's steps:
+Dispatch a subagent (worker) via the Agent tool to execute the task's steps:
 
 - The worker follows the steps exactly as written in the plan
 - The worker makes no arbitrary judgments beyond what the plan specifies
 - The worker performs each step's verification (test runs, etc.)
 - The worker reports results back to the main agent
+- The main agent must NOT perform the worker's role inline — always spawn a subagent
 
-**2-3. Validator Review (subagent)**
+**2-3. Validator Review (subagent, via Agent tool — information-isolated)**
 
-Dispatch a separate subagent (validator) to review the worker's output:
+Dispatch a separate subagent (validator) via the Agent tool. The validator operates under an **information barrier** — it knows only the plan's direction, not what the worker did.
 
-- Did the tests pass?
+**What to provide to the validator:**
+- The task's goal and acceptance criteria from the plan
+- The list of files the task is expected to affect
+- Any test commands or verification steps from the plan
+
+**What must NOT be provided to the validator:**
+- The worker's diff, logs, or output
+- The worker's implementation details or approach
+- Any summary of what the worker changed
+
+**The validator independently verifies by:**
+- Reading the affected files directly from disk
+- Running test commands specified in the plan
+- Judging whether the code meets the plan's stated goal
+- Checking for regressions or unintended side effects
+
+**The validator answers these questions from its own inspection:**
+- Do the tests pass?
 - Were the specified files created/modified correctly?
-- Does the code match what the plan's steps specified?
-- Was the commit created correctly?
-- Was the task's goal from the plan achieved?
+- Does the code fulfill the task's goal as stated in the plan?
+- Are there any issues, regressions, or deviations?
 
 **Validation results:**
 - **Pass:** Mark the task as completed and move to the next task
@@ -158,6 +177,8 @@ After each task completion, verify:
 | Guessing when blocked | Spec drift, rework required |
 | Running non-parallelizable tasks in parallel | File conflicts, dependency tangles |
 | Running parallelizable tasks sequentially | Wasted time, unnecessary execution delay |
+| Main agent performing worker/validator roles inline | Defeats independent verification; confirmation bias |
+| Passing worker output to the validator | Validator anchors on worker's framing instead of judging independently |
 | Starting implementation on main/master without explicit user consent | Prohibited without explicit approval |
 
 ## Transition
