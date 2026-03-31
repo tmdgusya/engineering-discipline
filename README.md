@@ -31,14 +31,14 @@ Includes reference guides:
 ### Claude Code
 
 ```
-/plugin marketplace add tmdgusya/engineering-disciplines
+/plugin marketplace add tmdgusya/engineering-discipline
 /plugin install engineering-discipline
 ```
 
 ### Gemini CLI
 
 ```bash
-gemini extensions install https://github.com/tmdgusya/engineering-disciplines
+gemini extensions install https://github.com/tmdgusya/engineering-discipline
 ```
 
 ### Cursor
@@ -52,9 +52,9 @@ Install from the plugin marketplace, or:
 ### Codex
 
 ```bash
-git clone https://github.com/tmdgusya/engineering-disciplines.git ~/.codex/engineering-disciplines
+git clone https://github.com/tmdgusya/engineering-discipline.git ~/.codex/engineering-discipline
 mkdir -p ~/.agents/skills
-ln -s ~/.codex/engineering-disciplines/skills ~/.agents/skills/engineering-disciplines
+ln -s ~/.codex/engineering-discipline/skills ~/.agents/skills/engineering-discipline
 ```
 
 See [Codex install guide](.codex/INSTALL.md) for details.
@@ -65,7 +65,7 @@ Add to your `opencode.json`:
 
 ```json
 {
-  "plugin": ["engineering-disciplines@git+https://github.com/tmdgusya/engineering-disciplines.git"]
+  "plugin": ["engineering-discipline@git+https://github.com/tmdgusya/engineering-discipline.git"]
 }
 ```
 
@@ -85,7 +85,7 @@ This plugin is listed in the Claude Code plugin marketplace.
 ### Install from marketplace
 
 ```
-/plugin marketplace add tmdgusya/engineering-disciplines
+/plugin marketplace add tmdgusya/engineering-discipline
 /plugin install engineering-discipline
 ```
 
