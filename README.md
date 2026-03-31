@@ -30,24 +30,8 @@ Includes reference guides:
 
 ### Claude Code
 
-**Step 1:** Register this marketplace in `~/.claude/settings.json`:
-
-```json
-{
-  "extraKnownMarketplaces": {
-    "engineering-discipline": {
-      "source": {
-        "source": "github",
-        "repo": "tmdgusya/engineering-disciplines"
-      }
-    }
-  }
-}
 ```
-
-**Step 2:** Install the plugin:
-
-```bash
+/plugin marketplace add tmdgusya/engineering-disciplines
 /plugin install engineering-discipline
 ```
 
@@ -100,9 +84,8 @@ This plugin is listed in the Claude Code plugin marketplace.
 
 ### Install from marketplace
 
-Add this repo as a known marketplace in `~/.claude/settings.json` (see [Claude Code installation](#claude-code) above), then:
-
-```bash
+```
+/plugin marketplace add tmdgusya/engineering-disciplines
 /plugin install engineering-discipline
 ```
 
