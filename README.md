@@ -1,5 +1,7 @@
 # Engineering Discipline
 
+[한국어](README.ko.md) | [中文](README.cn.md)
+
 Engineering discipline skills for AI coding agents. Works with Claude Code, Gemini CLI, OpenCode, Codex, and Cursor.
 
 ## How It Works
