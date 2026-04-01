@@ -168,13 +168,13 @@ When ambiguity is sufficiently resolved, present the user with a Context Brief. 
 
 Assess task complexity using these 5 signals. Score each signal, then determine the routing.
 
-| Signal | Simple (1) | Complex (2-3) |
-|--------|-----------|---------------|
-| **Scope breadth** | Single feature or component | Multiple components, cross-cutting concerns |
-| **File impact** | ≤5 files created/modified | >5 files, or files across multiple directories |
-| **Interface boundaries** | Works within existing interfaces | Defines new interfaces or modifies existing contracts |
-| **Dependency depth** | No ordering constraints between steps | Steps have dependency chains requiring sequencing |
-| **Risk surface** | Low integration risk, no data migration | Integration with external systems, schema changes, backward compatibility |
+| Signal | Low (1) | Medium (2) | High (3) |
+|--------|---------|-----------|----------|
+| **Scope breadth** | Single feature or component | 2-3 related components | 4+ components or cross-cutting concerns |
+| **File impact** | ≤3 files | 4-8 files | 9+ files or across 3+ directories |
+| **Interface boundaries** | Works within existing interfaces | Extends existing interfaces | Defines new interfaces or modifies contracts |
+| **Dependency depth** | No ordering constraints | Linear dependency chain | Branching dependencies requiring DAG |
+| **Risk surface** | No integration risk | Internal integration between components | External systems, schema changes, backward compatibility |
 
 **Score:** [sum of signals, range 5-15]
 **Verdict:** [Simple (5-8) | Complex (9-15)]

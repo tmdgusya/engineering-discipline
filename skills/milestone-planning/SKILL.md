@@ -20,6 +20,7 @@ Milestones are the unit of long-running execution. A bad milestone decomposition
 5. **Every milestone must have measurable success criteria.** "Working correctly" is not a criterion. Specific test commands, file existence checks, or behavioral assertions are required.
 6. **Milestone dependencies must form a DAG.** Circular dependencies are a plan failure. Every milestone must have a clear topological ordering.
 7. **Do not generate milestones for trivial tasks.** If the problem can be solved in a single plan-crafting cycle (fewer than ~8 tasks), tell the user to use plan-crafting directly.
+8. **Reviewer outputs must be passed verbatim to the synthesis agent.** Do not summarize, filter, or reframe. Copy each reviewer's full output into the designated placeholder. The main agent must not editorialize the handoff.
 
 ## When To Use
 
@@ -77,6 +78,11 @@ Before dispatching reviewers, frame the problem:
 ### Phase 2: Parallel Reviewer Dispatch
 
 Dispatch all 5 reviewer agents concurrently in a single message via the Agent tool. Each receives the full Problem Brief and its reviewer-specific prompt.
+
+**Agent configuration for reviewers:**
+- Use `run_in_background: true` so reviewers execute concurrently without blocking each other
+- Do NOT set `isolation: "worktree"` — reviewers are read-only analysts, not code writers
+- The claude-code fork agent default is `maxTurns: 200` — reviewers should complete well within this. If a reviewer appears stuck (no response after extended time), this is likely a rate limit or timeout — see Phase 2.5 for failure handling.
 
 #### Reviewer 1: Feasibility Analyst
 
@@ -309,9 +315,26 @@ user motivation throughout multi-day execution.
 **Low-value milestones:** [milestones that could be cut if time is short]
 ```
 
+### Phase 2.5: Reviewer Failure Handling
+
+After dispatching all 5 reviewers, wait for all to complete. If any reviewer fails:
+
+1. **Timeout or error:** Re-dispatch the failed reviewer once with the same prompt. If it fails again, proceed without it.
+2. **Empty or unusable output:** If a reviewer returns fewer than 3 sentences or clearly did not address the Problem Brief, re-dispatch once. If still unusable, proceed without it.
+3. **Proceeding with fewer than 5 reviewers:** Log the missing perspective(s) in the synthesis handoff. The synthesis agent must note the gap in its Conflict Resolution Log: "Missing perspective: [reviewer name] — [reason]. Milestone plan may have blind spot in [area]."
+4. **Minimum viable count:** At least 3 of 5 reviewers must succeed. If fewer than 3 complete successfully, stop and report to user — the problem may be too ambiguous for automated review.
+
 ### Phase 3: Synthesis
 
 After all 5 reviewers complete, dispatch a **Synthesis Agent** that receives all 5 reviewer outputs and produces the final milestone plan.
+
+**Verbatim handoff rule (Hard Gate equivalent):** The main agent must copy each reviewer's full output into the designated `{..._OUTPUT}` placeholder without summarizing, filtering, reframing, or adding commentary. This is the same principle as the run-plan validator's fixed template — the main agent has read all 5 outputs and may unconsciously bias the synthesis by selective framing. Verbatim copy eliminates this channel.
+
+**What must NOT happen during handoff:**
+- Summarizing a reviewer's output ("The feasibility analyst mainly said...")
+- Filtering out findings the main agent considers irrelevant
+- Adding framing language ("Pay special attention to the risk analyst's concerns about...")
+- Reordering findings by perceived importance
 
 The synthesis agent prompt:
 
@@ -408,12 +431,26 @@ Phase 3 (parallel): M4, M5
 | [what was proposed] | [which reviewer] | [why rejected] |
 ```
 
+### Phase 3.5: Independent DAG Validation
+
+After receiving the synthesis output, the **main agent** independently validates the DAG structure before presenting to the user. Do not rely on the synthesis agent's self-reported validation.
+
+1. **Circular dependency check:** For each milestone, trace its dependency chain. If any milestone appears as both an ancestor and a descendant of another, the DAG is invalid. Reject and re-dispatch synthesis with the specific cycle identified.
+2. **File conflict check for parallel milestones:** For milestones with no dependency relationship, verify their "Files Affected" lists do not overlap. If they overlap, they cannot run in parallel — add a dependency or flag for user decision.
+3. **Orphan check:** Every milestone except the first must have at least one dependency, OR be explicitly marked as independently parallelizable with rationale.
+4. **Success criteria check:** Every milestone must have at least 2 measurable success criteria. "Working correctly" or similar vague criteria trigger re-dispatch.
+
+If validation fails: re-dispatch synthesis with the specific error(s) as additional constraint. Do not present an invalid DAG to the user.
+
 ### Phase 4: User Review and Lock
+
+**Milestone count guard:** The recommended milestone count is 3-7 for most projects. If the synthesis produces more than 7, present a warning: "This plan has N milestones. Consider whether the problem should be split into separate projects." If more than 10, require explicit user approval to proceed.
 
 1. Present the synthesized milestone plan to the user
 2. Show the conflict resolution log — the user must see where reviewers disagreed
 3. Show the execution order with parallelization
-4. Ask the user to approve, modify, or reject the milestone plan
+4. Show the total milestone count with the count guard warning if applicable
+5. Ask the user to approve, modify, or reject the milestone plan
 5. If approved: save the milestone plan to the harness state directory
 6. If modifications requested: apply changes and re-present
 7. If rejected: return to Phase 1 with updated constraints
@@ -449,13 +486,14 @@ docs/engineering-discipline/harness/<session-slug>/
 
 ## Milestones
 
-| ID | Name | Status | Dependencies | Plan File | Review File |
-|----|------|--------|-------------|-----------|-------------|
-| M1 | [name] | pending | — | — | — |
-| M2 | [name] | pending | M1 | — | — |
-| M3 | [name] | pending | M1, M2 | — | — |
+| ID | Name | Status | Attempts | Dependencies | Plan File | Review File |
+|----|------|--------|----------|-------------|-----------|-------------|
+| M1 | [name] | pending | 0 | — | — | — |
+| M2 | [name] | pending | 0 | M1 | — | — |
+| M3 | [name] | pending | 0 | M1, M2 | — | — |
 
 Status values: pending | planning | executing | validating | completed | failed | skipped
+Attempts: number of plan-execute-review cycles attempted (incremented at each Step 2-3 start)
 
 ## Execution Log
 
@@ -512,6 +550,7 @@ Status values: pending | planning | executing | validating | completed | failed 
 | Accepting milestones without measurable success criteria | Cannot validate completion; "done" becomes subjective |
 | Creating milestones too large (>12 tasks each) | Exceeds single plan-crafting cycle; risk of context loss |
 | Creating milestones too small (1-2 tasks each) | Overhead of plan-crafting + run-plan + review-work exceeds the work itself |
+| Creating more than 10 milestones without user approval | Compounding risk across milestones; likely needs project split |
 | Ignoring reviewer conflicts | Unresolved conflicts surface during execution when they're expensive to fix |
 | Not saving reviewer outputs | Loses the reasoning behind milestone decisions; cannot audit later |
 | Letting user skip approval | User discovers misalignment mid-execution after days of work |

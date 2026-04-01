@@ -111,7 +111,13 @@ Before starting a milestone:
    - Goal → from milestone file
    - Scope → files affected from milestone file
    - Success Criteria → from milestone file
-   - Constraints → inherited from the parent problem + completed milestone outputs
+   - Constraints → inherited from the parent problem + completed milestone context
+   - **Completed milestone context contract:** From each completed predecessor, include ONLY:
+     - Files created/modified (from checkpoint's "Files Changed" list)
+     - Interface contracts established (function signatures, API shapes, type definitions)
+     - Success criteria that were verified as met
+   - Do NOT include: execution logs, review documents, worker/validator output, or full checkpoint contents
+   - **Note:** Context Briefs composed from milestone definitions omit the Complexity Assessment section, since routing has already been determined by the milestone-planning phase. The brief goes directly to plan-crafting without re-routing.
 2. Invoke the `plan-crafting` skill pattern:
    - Create a plan document at `docs/engineering-discipline/plans/YYYY-MM-DD-<milestone-name>.md`
    - The plan must satisfy all milestone success criteria
@@ -121,7 +127,7 @@ Before starting a milestone:
 
 #### Step 2-3: Run Plan Phase
 
-1. Update state.md: set milestone status to `executing`
+1. Update state.md: set milestone status to `executing`, increment `Attempts` counter by 1
 2. Execute the plan using the `run-plan` skill pattern:
    - Worker-validator loop for each task
    - Parallel execution for independent tasks
@@ -145,10 +151,10 @@ Before starting a milestone:
    - Proceed to next milestone
 4. **If FAIL:**
    - Record review findings in execution log
-   - **Retry decision:**
-     - If this is the 1st failure: return to Step 2-3 with review feedback
-     - If this is the 2nd failure: return to Step 2-2 (re-plan with review feedback)
-     - If this is the 3rd failure: set status to `failed`, stop, report to user
+   - **Retry decision (based on `Attempts` counter in state.md, which persists across crashes):**
+     - If Attempts == 1: return to Step 2-3 with review feedback (re-execute same plan)
+     - If Attempts == 2: return to Step 2-2 (re-plan with review feedback as constraint)
+     - If Attempts >= 3: set status to `failed`, stop, report to user
 
 #### Step 2-5: Checkpoint
 
@@ -184,9 +190,11 @@ Write `checkpoints/M<N>-checkpoint.md`:
 When multiple milestones have all dependencies satisfied and no file conflicts:
 
 1. Identify parallelizable milestone group
-2. Present to user: "Milestones M3 and M4 can run in parallel. Proceed?"
-3. If approved, dispatch each milestone's pipeline concurrently:
-   - Each milestone gets its own plan-crafting → run-plan → review-work cycle
+2. Run plan-crafting for ALL parallel milestones first (sequentially — plans are lightweight)
+3. Present ALL plans together for batch approval: "Milestones M3 and M4 can run in parallel. Here are both plans. Approve each individually."
+4. User approves or rejects each plan independently. Only approved milestones proceed to execution. Rejected milestones return to Step 2-2 while approved ones execute.
+5. If all approved, dispatch each milestone's pipeline concurrently:
+   - Each milestone runs run-plan → review-work (plan already approved in step 3)
    - Each runs in a worktree (`isolation: "worktree"`) to prevent file conflicts
    - After both complete and pass review, merge worktrees back
 4. If either fails: handle independently (the other can continue if no dependency)
@@ -246,19 +254,65 @@ When resuming a paused or interrupted session:
 | `executing` | Check run-plan progress; resume or restart |
 | `validating` | Restart review-work (review may be incomplete) |
 | `completed` | Skip (already checkpointed) |
-| `failed` | Present failure to user; ask whether to retry or skip |
+| `failed` | Present failure to user; ask whether to retry or skip (see Skip Rules below) |
+| `skipped` | Skip (user previously chose to skip this milestone) |
 
 3. For `executing` milestones: check if tasks in the plan have checkboxes marked. Resume from the first unchecked task.
-4. Present recovery plan to user before proceeding.
+4. Read the `Attempts` counter from state.md to determine retry budget remaining. Do not reset the counter on resume — it persists across crashes to prevent infinite retry loops.
+5. Present recovery plan to user before proceeding.
+
+## Mid-Execution Correction
+
+If execution reveals that a completed milestone's output is incorrect or a new milestone is needed:
+
+1. **Pause execution** — do not continue with dependent milestones
+2. **Log the discovery** in state.md execution log: what was found, which milestone triggered the discovery
+3. **User decision required:** present the situation and options:
+   - **Add corrective milestone:** Create a new milestone definition (the user writes the goal and success criteria, or re-run milestone-planning for just the new scope). Insert it into the DAG with appropriate dependencies. Resume execution from the new milestone.
+   - **Re-plan from a checkpoint:** Roll back to a completed milestone's checkpoint, mark subsequent milestones as `pending`, reset their `Attempts` to 0, and restart from that point.
+   - **Abort:** Set overall status to `failed` and stop.
+4. **New milestones follow the same pipeline** — plan-crafting → run-plan → review-work. No shortcuts even for "quick fixes."
+5. **Completed milestones are never modified** (Hard Gate #6 still applies). The corrective milestone produces new files or overwrites with a full plan cycle.
+
+## Skip Rules
+
+When a user chooses to skip a failed milestone:
+
+1. Set milestone status to `skipped` in state.md
+2. Log the skip event with user's reason in execution log
+3. **Dependents of a skipped milestone are also blocked by default** — same as `failed`. The DAG contract is: dependents run only after prerequisites are `completed`.
+4. The user may explicitly unblock a dependent by acknowledging the missing prerequisite: "Proceed with M4 despite M2 being skipped." Log this override in the execution log.
+5. If the user unblocks a dependent, add a note to that milestone's Context Brief during plan-crafting: "Prerequisite M2 was skipped. The following outputs are missing: [list from M2's success criteria]."
+
+**Skipped milestones cannot be un-skipped.** If the user wants to attempt the milestone later, create a new milestone with the same goal.
+
+## Duration Guard
+
+If a single milestone's total active time (from planning start to review completion) becomes excessive:
+
+1. **Soft limit:** If a milestone has been in `planning` or `executing` status for more than what appears to be a proportionally large share of the overall work, pause and report to user: "Milestone M3 has been in progress for an extended period. Continue, re-scope, or abort?"
+2. **Hard limit on attempts:** The 3-attempt limit (F1) bounds retry loops. But if even a single attempt's plan-crafting generates more than 15 tasks, pause and report: "This milestone's plan has N tasks — it may be too large for a single milestone. Consider splitting."
+3. **Purpose:** Prevent a single runaway milestone from consuming the entire execution budget or running indefinitely on flaky tests.
+
+## Context Window Management
+
+Long-running sessions will hit context window limits. Claude Code automatically compresses old messages (context collapse). The harness must be designed to survive this:
+
+1. **Never rely on conversation memory for state.** All state lives in `state.md` and milestone files on disk. If the context is compressed, the harness re-reads state files — no information is lost.
+2. **Each milestone is a fresh context boundary.** When starting a new milestone's plan-crafting, the worker subagent starts with a clean context. It receives only the milestone definition and completed predecessor context (see F8 contract) — not the full conversation history.
+3. **Checkpoint files are the source of truth.** If context is lost mid-milestone, recovery reads the checkpoint files, not compressed conversation summaries.
+4. **Avoid accumulating large inline state.** Do not build up a running summary of all milestones in the conversation. Instead, reference state.md and checkpoint files by path.
 
 ## Rate Limit Handling
 
-Long-running sessions will encounter rate limits. When a rate limit is hit:
+Long-running sessions will encounter rate limits. Claude Code has built-in retry with exponential backoff (up to 10 retries, 5-minute max backoff). The harness should work with this, not against it:
 
-1. Record current state to disk immediately
-2. Log the rate limit event in execution log
-3. Report to user: "Rate limit hit. State saved. Resume with `long-run` when ready."
-4. Do NOT retry automatically — the user may want to wait or adjust
+1. **Let claude-code handle transient rate limits.** Short 429/529 errors are retried automatically with backoff. Do not preemptively save state on every API error.
+2. **Save state on persistent rate limits.** If a rate limit persists beyond the automatic retry window (you'll see repeated "rate limit" messages), record current state to disk immediately.
+3. Log the rate limit event in execution log with timestamp.
+4. Report to user: "Rate limit hit. State saved. Resume with `long-run` when ready."
+5. Do NOT add manual retry loops on top of claude-code's built-in retry — this causes retry amplification.
+6. **Background agent bail:** Claude Code's background agents (like reviewer subagents) bail immediately on 529 overload errors instead of retrying. This is why Phase 2.5 reviewer failure handling exists — reviewer failures are often transient rate limits, not permanent errors.
 
 ## Anti-Patterns
 
