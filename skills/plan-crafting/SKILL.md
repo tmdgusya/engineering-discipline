@@ -84,6 +84,51 @@ Before defining tasks, map out which files will be created or modified. Decompos
 - Follow existing codebase patterns. If the codebase uses large files, don't unilaterally restructure — but if a file you're modifying has grown unwieldy, including a split in the plan is reasonable.
 - File structure informs task decomposition. Each task should produce a self-contained change that makes sense independently.
 
+### Verification Discovery
+
+Before decomposing tasks, discover the project's highest-level verification capability. This determines the **Final Verification Task** that closes every plan.
+
+**Discovery order (use the first match):**
+
+1. **Existing e2e tests** — search for `e2e/`, `tests/e2e/`, `cypress/`, `playwright/`, `test:e2e` in package.json, `e2e` targets in Makefile/Taskfile
+2. **Integration tests** — search for `tests/integration/`, `integration_test`, `test:integration` scripts
+3. **Verification skill or agent** — check `.claude/skills/`, `.claude/agents/`, and installed plugins for anything named `verify`, `validate`, `e2e`, or `test`
+4. **Project test suite** — any test runner (`pytest`, `jest`, `go test`, `cargo test`, etc.) with broad coverage
+5. **Build + lint** — if no tests exist, the highest available verification is a successful build + lint pass
+
+**If no meaningful verification exists (level 5 only):** Add a **Task 0: Create Verification Infrastructure** that sets up the minimal verification needed for this plan:
+- Identify the project's tech stack and appropriate test framework
+- Create an e2e or integration test that exercises the plan's core success criteria
+- This test should fail before implementation and pass after all tasks complete
+
+**Record the discovery result** in the plan header:
+
+```markdown
+**Verification Strategy:**
+- **Level:** [e2e | integration | skill/agent | test-suite | build-only]
+- **Command:** [exact command to run the verification]
+- **What it validates:** [what passing this verification proves]
+```
+
+### Project Capability Discovery
+
+Before decomposing tasks, also discover project-level agents and skills that workers can leverage:
+
+1. **Project agents** — check `.claude/agents/` for agents relevant to the task domain (e.g., a `test-runner` agent, a `db-migration` agent)
+2. **Plugin agents** — check installed plugins for specialized agents (e.g., `build-validator`, `lint-fixer`)
+3. **Project skills** — check `.claude/skills/` for skills that match task operations
+
+If useful agents/skills are found, reference them in task steps where applicable:
+
+```markdown
+- [ ] **Step N: Run migration**
+
+Use the project's `db-migration` agent for this step if available.
+Run: `<migration command>`
+```
+
+Workers are not required to use discovered agents — they are hints for efficiency. The worker may execute steps directly if the agent is unavailable or unsuitable.
+
 ### Task Decomposition
 
 When decomposing tasks, consider the following:
@@ -182,6 +227,36 @@ git commit -m "feat: add specific feature"
 ```
 ````
 
+### Final Verification Task
+
+Every plan must end with a **Final Verification Task** that runs the discovered highest-level verification. This is always the last task, depends on all other tasks, and cannot be parallelized.
+
+````markdown
+### Task N (Final): End-to-End Verification
+
+**Dependencies:** All preceding tasks
+**Files:** None (read-only verification)
+
+- [ ] **Step 1: Run highest-level verification**
+
+Run: `[verification command from Verification Strategy]`
+Expected: ALL PASS
+
+- [ ] **Step 2: Verify plan success criteria**
+
+Manually check each success criterion from the plan header:
+- [ ] [criterion 1]
+- [ ] [criterion 2]
+- ...
+
+- [ ] **Step 3: Run full test suite for regressions**
+
+Run: `[full test suite command]`
+Expected: No regressions — all pre-existing tests still pass
+````
+
+**If the final verification fails**, the plan is not complete. The worker-validator loop in `run-plan` will handle failure response (see run-plan's E2E Failure Response Protocol).
+
 ## No Placeholders
 
 Every step must contain the actual content a worker needs. These are **plan failures** — never write them:
@@ -211,6 +286,8 @@ After writing the complete plan, look at the spec with fresh eyes and check the 
 **3. Type consistency:** Do the types, method signatures, and property names you used in later tasks match what you defined in earlier tasks? A function called `clearLayers()` in Task 3 but `clearFullLayers()` in Task 7 is a bug.
 
 **4. Dependency verification:** Verify that parallel tasks don't modify the same file. Verify that no dependency chain is missing.
+
+**5. Verification coverage:** Does the plan include a Final Verification Task? Does it reference the discovered verification command? If no verification was discovered, is there a Task 0 creating verification infrastructure?
 
 If you find issues, fix them inline. No need to re-review — just fix and move on. If a spec requirement has no corresponding task, add the task.
 
@@ -246,6 +323,8 @@ Self-check when plan writing is complete:
 - [ ] Are dependency chains accurately stated?
 - [ ] Does the plan cover all spec requirements?
 - [ ] Are there no placeholders?
+- [ ] Is there a Verification Strategy in the plan header?
+- [ ] Is the Final Verification Task the last task in the plan?
 
 ## Transition
 

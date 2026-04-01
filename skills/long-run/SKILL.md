@@ -156,7 +156,37 @@ Before starting a milestone:
      - If Attempts == 2: return to Step 2-2 (re-plan with review feedback as constraint)
      - If Attempts >= 3: set status to `failed`, stop, report to user
 
-#### Step 2-5: Checkpoint
+#### Step 2-5: Cross-Milestone Integration Check
+
+After a milestone passes review-work but **before** writing the checkpoint, verify that the milestone's output integrates correctly with all previously completed milestones:
+
+1. **Run the project's highest-level verification** (from state.md's Verification Strategy or rediscover using plan-crafting's Verification Discovery order)
+2. **Check cross-milestone interfaces:** If the completed milestone defines or consumes interfaces from predecessor milestones, verify they are compatible (function signatures match, API contracts hold, types align)
+
+**If integration check passes:** Proceed to checkpoint.
+
+**If integration check fails — Cross-Milestone Failure Response:**
+
+The milestone passed its own review-work (internal correctness) but breaks integration with other milestones. This is a boundary problem.
+
+1. **Diagnose (attempt 1):**
+   - Read the failure output
+   - Identify which interface boundary or interaction is broken
+   - Determine if the fix belongs to the current milestone or requires a corrective milestone
+   - If fixable within current milestone scope: dispatch a targeted fix worker → re-run review-work → re-run integration check
+   - If the fix is outside current milestone scope: proceed to escalation
+
+2. **Diagnose (attempt 2):**
+   - If the first fix didn't resolve it, re-analyze
+   - Apply a second targeted fix
+   - Re-run integration check
+
+3. **Escalate to user (after 2 failed attempts):**
+   - Report: which milestones are involved, what integration boundary failed, what fixes were tried
+   - Options: add corrective milestone, rollback to checkpoint, accept and continue (user acknowledges the integration gap)
+   - Log the user's decision in state.md execution log
+
+#### Step 2-6: Checkpoint
 
 After a milestone passes review:
 
@@ -209,11 +239,19 @@ When multiple milestones have all dependencies satisfied and no file conflicts:
 
 ### Phase 4: Completion
 
-After all milestones are completed:
+After all milestones are completed (including the Integration Verification Milestone from milestone-planning):
 
-1. Update state.md: set overall status to `completed`
-2. Run full test suite one final time
-3. Generate completion summary:
+1. Update state.md: set overall status to `completing`
+2. **Final E2E Gate:** Run the project's highest-level verification one final time on the fully integrated codebase
+3. **Run full test suite** for regression check
+4. **If Final E2E Gate fails:**
+   - Diagnose: identify which milestone's output is the likely cause
+   - Create a corrective milestone via Mid-Execution Correction procedure
+   - Execute corrective milestone through the full pipeline (plan-crafting → run-plan → review-work)
+   - Re-run E2E Gate after correction
+   - If 2 corrective attempts fail: escalate to user with full diagnosis
+5. **If Final E2E Gate passes:** Update state.md: set overall status to `completed`
+6. Generate completion summary:
 
 ```markdown
 # Long Run Complete: [Session Name]
@@ -327,6 +365,8 @@ Long-running sessions will encounter rate limits. Claude Code has built-in retry
 | Auto-retrying on rate limit | Wastes quota; user may prefer to wait |
 | Skipping user gates between milestones | User loses control of multi-day execution |
 | Merging worktrees without conflict check | Silent data loss if files overlap |
+| Skipping cross-milestone integration check | Milestones pass independently but break each other at boundaries |
+| Retrying E2E failures indefinitely without user escalation | 2-attempt limit exists to avoid budget waste on misdiagnosed problems |
 
 ## Minimal Checklist
 
@@ -339,6 +379,8 @@ Long-running sessions will encounter rate limits. Claude Code has built-in retry
 - [ ] Checkpoint written after every successful milestone
 - [ ] Failed milestones block dependents
 - [ ] Parallel milestones use worktree isolation
+- [ ] Cross-milestone integration check passes after each milestone
+- [ ] Final E2E Gate passes at completion
 - [ ] Full test suite passes at completion
 
 ## Transition

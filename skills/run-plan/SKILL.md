@@ -35,6 +35,18 @@ Do not follow plans blindly. If the plan has issues, flag them before executing.
 
 ## Process
 
+### Step 0: Project Capability Discovery
+
+Before reviewing the plan, discover what the project offers for verification and execution:
+
+1. **Verification infrastructure** — read the plan's `Verification Strategy` header. If present, use it. If absent, run the same discovery as plan-crafting:
+   - e2e tests → integration tests → verification skills/agents → test suite → build+lint
+   - Record the discovered command for use in the E2E Gate (Step 3)
+
+2. **Available agents and skills** — scan for project-level agents (`.claude/agents/`), plugin agents, and project skills (`.claude/skills/`) that workers can leverage. If the plan references specific agents in task steps, verify they exist before execution begins.
+
+3. **If an agent/skill is referenced but missing:** Notify the user. Do not block execution — workers can execute steps directly without the agent.
+
 ### Step 1: Load and Review Plan
 
 1. Read the plan file
@@ -87,6 +99,7 @@ Dispatch a subagent (worker) via the Agent tool to execute the task's steps:
 - The worker follows the steps exactly as written in the plan
 - The worker makes no arbitrary judgments beyond what the plan specifies
 - The worker performs each step's verification (test runs, etc.)
+- **If the plan references a project agent or skill for a step**, the worker should use it via the Agent tool or Skill tool. If the agent/skill is unavailable, execute the step directly.
 - The worker reports results back to the main agent
 - The main agent must NOT perform the worker's role inline — always spawn a subagent
 
@@ -177,13 +190,36 @@ Sequential execution required for:
 - Tasks with explicit dependencies (run after predecessor completes)
 - Tasks modifying the same file (must run sequentially)
 
-### Step 3: Full Verification
+### Step 3: E2E Verification Gate
 
-After all tasks are complete:
+After all tasks are complete (including the Final Verification Task if present), run the highest-level verification as an independent gate:
 
-1. Run the full test suite
-2. Confirm the plan's goals have been met
-3. Report a summary of results to the user
+1. **Run the discovered verification command** from Step 0 (or the plan's Verification Strategy)
+2. **Run the full test suite** for regression check
+3. **Verify all plan success criteria** are met
+
+**If all pass:** Report success summary to the user.
+
+**If E2E verification fails — Failure Response Protocol:**
+
+The E2E gate failure means individual tasks passed their validators but the system as a whole doesn't work. This is an integration problem, not a task-level problem.
+
+1. **Diagnose (attempt 1):**
+   - Read the failure output carefully
+   - Identify which tasks' interactions likely caused the failure
+   - Dispatch a worker subagent to apply a targeted fix (scoped to the diagnosed interaction)
+   - Re-run the E2E verification command
+
+2. **Re-diagnose (attempt 2):**
+   - If the targeted fix didn't resolve it, re-read the failure output
+   - Check for a different root cause (the first diagnosis may have been wrong)
+   - Apply a second targeted fix
+   - Re-run the E2E verification command
+
+3. **Escalate to user (after 2 failed attempts):**
+   - Report: what the E2E verification tests, what failed, what fixes were attempted, and the current hypothesis
+   - Let the user decide: continue debugging, re-plan specific tasks, or accept partial completion
+   - Do NOT keep retrying silently — 2 attempts is the limit before escalation
 
 ## When To Stop
 
@@ -219,6 +255,8 @@ After each task completion, verify:
 | Composing the validator prompt freely instead of using the fixed template | Main agent unconsciously leaks worker context through word choice and framing |
 | Paraphrasing the plan instead of copying verbatim into the template | Paraphrasing filters through the main agent's post-worker understanding, introducing bias |
 | Starting implementation on main/master without explicit user consent | Prohibited without explicit approval |
+| Skipping the E2E gate because individual tasks all passed | Task-level pass ≠ system-level pass; integration bugs hide between tasks |
+| Retrying E2E failures more than twice without user escalation | Wastes budget; user may have context about the root cause |
 
 ## Transition
 
