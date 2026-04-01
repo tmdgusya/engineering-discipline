@@ -92,33 +92,70 @@ Dispatch a subagent (worker) via the Agent tool to execute the task's steps:
 
 **2-3. Validator Review (subagent, via Agent tool — information-isolated)**
 
-Dispatch a separate subagent (validator) via the Agent tool. The validator operates under an **information barrier** — it knows only the plan's direction, not what the worker did.
+Dispatch a separate subagent (validator) via the Agent tool. The validator operates under an **information barrier** — it knows only what the task was supposed to accomplish, not what the worker did or how.
 
-**What to provide to the validator:**
-- The task's goal and acceptance criteria from the plan
-- The list of files the task is expected to affect
-- Any test commands or verification steps from the plan
+**Constructing the validator prompt:**
 
-**What must NOT be provided to the validator:**
-- The worker's diff, logs, or output
-- The worker's implementation details or approach
-- Any summary of what the worker changed
+The main agent must NOT compose the validator prompt freely. Use the fixed template below, filling only the four designated fields by copying verbatim from the plan document. Do not paraphrase, summarize, or add context beyond what the template specifies.
 
-**The validator independently verifies by:**
-- Reading the affected files directly from disk
-- Running test commands specified in the plan
-- Judging whether the code meets the plan's stated goal
-- Checking for regressions or unintended side effects
+```
+You are an independent validator. You have no knowledge of how this task
+was implemented. Your job is to judge whether the codebase currently meets
+the goal described below, by reading files and running tests yourself.
 
-**The validator answers these questions from its own inspection:**
-- Do the tests pass?
-- Were the specified files created/modified correctly?
-- Does the code fulfill the task's goal as stated in the plan?
-- Are there any issues, regressions, or deviations?
+## Task Goal
+
+{TASK_GOAL}
+— Copy the task's goal statement verbatim from the plan.
+
+## Acceptance Criteria
+
+{ACCEPTANCE_CRITERIA}
+— Copy the task's acceptance criteria verbatim from the plan.
+  Each criterion is a concrete, verifiable condition.
+
+## Files To Inspect
+
+{FILE_LIST}
+— Copy the list of files this task is expected to create or modify,
+  as listed in the plan.
+
+## Test Commands
+
+{TEST_COMMANDS}
+— Copy any test execution commands or verification steps
+  specified in the plan for this task.
+
+## Your Review Process
+
+1. Read each file in the file list directly from disk.
+2. For each acceptance criterion, determine whether it is met
+   based on what you see in the code. Record PASS or FAIL per criterion.
+3. Run every test command listed above. Record results.
+4. Run the full test suite to check for regressions.
+5. Check for residual issues: placeholder code (TODO, FIXME, stubs),
+   debug code (console.log, print statements), commented-out blocks.
+
+## Your Output
+
+Report your verdict as PASS or FAIL.
+
+- If PASS: confirm which criteria were verified and which tests passed.
+- If FAIL: list exactly which criteria failed and why, with file paths
+  and line numbers. Do not suggest fixes — only describe what is wrong.
+```
+
+**What must NOT appear in the validator prompt:**
+- The worker's diff, logs, output, or return message
+- The worker's implementation approach or strategy
+- Any paraphrasing or summarization by the main agent — only verbatim plan content fills the template
+- Framing language that hints at the worker's approach (e.g., "check if the refactoring was done correctly" leaks that a refactoring was performed)
+
+**Why a fixed template:** The main agent has seen the worker's output and may unconsciously frame the validator's task in terms of what the worker did. A fixed template eliminates this channel — the validator sees only the plan's original specification, not the main agent's post-worker understanding.
 
 **Validation results:**
 - **Pass:** Mark the task as completed and move to the next task
-- **Fail:** Deliver the validator's feedback to the worker and return to step 2-2 for re-implementation
+- **Fail:** Deliver the validator's feedback to the worker and return to step 2-2 for re-implementation. The feedback is the validator's own assessment — do not augment it with the main agent's interpretation.
 
 **Retry limit:** If the same task fails 3 consecutive times, report the situation to the user and request intervention.
 
@@ -179,6 +216,8 @@ After each task completion, verify:
 | Running parallelizable tasks sequentially | Wasted time, unnecessary execution delay |
 | Main agent performing worker/validator roles inline | Defeats independent verification; confirmation bias |
 | Passing worker output to the validator | Validator anchors on worker's framing instead of judging independently |
+| Composing the validator prompt freely instead of using the fixed template | Main agent unconsciously leaks worker context through word choice and framing |
+| Paraphrasing the plan instead of copying verbatim into the template | Paraphrasing filters through the main agent's post-worker understanding, introducing bias |
 | Starting implementation on main/master without explicit user consent | Prohibited without explicit approval |
 
 ## Transition
