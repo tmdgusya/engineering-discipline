@@ -186,6 +186,7 @@ After each task completion, verify:
 After plan execution is complete:
 
 - To wrap up the work branch → report results to the user and suggest next steps
+- 독립 검증이 필요하면 → `review-work` 스킬로 전환을 제안한다
 - If ambiguity is discovered during execution → return to the `clarification` skill to resolve
 - If the plan itself needs modification → return to the `plan-crafting` skill to revise
 
