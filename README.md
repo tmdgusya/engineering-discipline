@@ -32,6 +32,8 @@ clarification ─── resolve ambiguity, explore codebase
     |               |── M2: plan-crafting → run-plan → review-work → checkpoint
     |               |── ...
     |
+    |── karpathy ─── implementation guardrails (before/during coding)
+    |── clean-ai-slop ─── post-generation AI code cleanup
     |── simplify ─── post-implementation code quality pass
     |── systematic-debugging ─── reproduce-first bug fixing
     |── rob-pike ─── measurement-driven optimization
@@ -106,6 +108,18 @@ Orchestrates multi-day execution. Each milestone passes through plan-crafting, r
 
 ### Standalone Skills
 
+#### Karpathy Guidelines
+
+Preventive guardrails for code implementation — enforces surgical changes, assumption verification, and scope discipline before and during coding.
+
+**Triggers on:** Before implementing features, modifying code, or when generating code without reading existing context first.
+
+#### Clean AI Slop
+
+Corrective cleanup of AI-generated code. Removes LLM-specific patterns (over-commenting, unnecessary abstractions, defensive paranoia, verbose naming, filler) while preserving behavior. Regression-tests-first, single-smell-pass discipline.
+
+**Triggers on:** "clean up", "deslop", "slop", "clean AI code", or after any significant generation session.
+
 #### Rob Pike's 5 Rules
 
 A decision framework that prevents premature optimization and enforces measurement-driven development.
@@ -132,6 +146,7 @@ After installation, just describe what you want to do:
 - **"run the plan"** — executes the plan with worker-validator verification
 - **"this test is flaky"** — triggers systematic-debugging
 - **"the API is slow"** — triggers rob-pike measurement-first workflow
+- **"clean up the AI code"** — triggers clean-ai-slop corrective cleanup
 - **"simplify"** — reviews recent changes for reuse, quality, and efficiency
 - **"long run"** — starts multi-day milestone execution with checkpoints
 

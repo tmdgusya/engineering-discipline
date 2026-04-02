@@ -32,6 +32,8 @@ clarification ─── 모호성 해소, 코드베이스 탐색
     |               |── M2: plan-crafting → run-plan → review-work → 체크포인트
     |               |── ...
     |
+    |── karpathy ─── 구현 가드레일 (코딩 전/중)
+    |── clean-ai-slop ─── AI 생성 코드 정리
     |── simplify ─── 구현 후 코드 품질 검토
     |── systematic-debugging ─── 재현 우선 버그 수정
     |── rob-pike ─── 측정 기반 최적화
@@ -106,6 +108,18 @@ worker-validator 쌍을 사용하여 계획을 실행합니다. Worker가 구현
 
 ### 독립 스킬
 
+#### Karpathy Guidelines (카파시 가이드라인)
+
+코드 구현을 위한 예방적 가드레일 — 수술적 변경, 가정 검증, 범위 규율을 코딩 전과 코딩 중에 강제합니다.
+
+**트리거:** 기능 구현 전, 코드 수정 시, 또는 기존 컨텍스트를 읽지 않고 코드를 생성하려 할 때.
+
+#### Clean AI Slop (AI 슬롭 정리)
+
+AI 생성 코드의 교정적 정리. 동작을 보존하면서 LLM 특유의 패턴(과도한 주석, 불필요한 추상화, 방어적 편집증, 장황한 네이밍, 필러)을 제거합니다. 회귀 테스트 우선, 단일 스멜 패스 규율.
+
+**트리거:** "정리해줘", "deslop", "slop", "AI 코드 정리", 또는 대규모 생성 세션 후.
+
 #### Rob Pike's 5 Rules (Rob Pike의 5가지 규칙)
 
 조기 최적화를 방지하고 측정 기반 개발을 강제하는 의사결정 프레임워크입니다.
@@ -132,6 +146,7 @@ worker-validator 쌍을 사용하여 계획을 실행합니다. Worker가 구현
 - **"계획 실행해"** — worker-validator 검증으로 계획을 실행
 - **"이 테스트가 불안정해"** — systematic-debugging 트리거
 - **"API가 느려"** — rob-pike 측정 우선 워크플로 트리거
+- **"AI 코드 정리해줘"** — clean-ai-slop 교정적 정리 트리거
 - **"simplify"** — 최근 변경사항의 재사용, 품질, 효율성 검토
 - **"long run"** — 체크포인트가 포함된 다일 마일스톤 실행 시작
 

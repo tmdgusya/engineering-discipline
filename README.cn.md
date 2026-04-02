@@ -32,6 +32,8 @@ clarification ─── 解决歧义，探索代码库
     |               |── M2: plan-crafting → run-plan → review-work → 检查点
     |               |── ...
     |
+    |── karpathy ─── 实现护栏（编码前/中）
+    |── clean-ai-slop ─── AI 生成代码清理
     |── simplify ─── 实现后代码质量检查
     |── systematic-debugging ─── 复现优先的 bug 修复
     |── rob-pike ─── 基于度量的优化
@@ -106,6 +108,18 @@ clarification ─── 解决歧义，探索代码库
 
 ### 独立技能
 
+#### Karpathy Guidelines（Karpathy 准则）
+
+代码实现的预防性护栏——在编码前和编码中强制执行外科手术式变更、假设验证和范围纪律。
+
+**触发条件：** 实现功能前、修改代码时，或在未阅读现有上下文的情况下生成代码时。
+
+#### Clean AI Slop（AI 冗余清理）
+
+AI 生成代码的纠正性清理。在保持行为不变的前提下，移除 LLM 特有的模式（过度注释、不必要的抽象、防御性偏执、冗长命名、填充语）。回归测试优先，单一 smell 通道纪律。
+
+**触发条件：** "清理"、"deslop"、"slop"、"清理 AI 代码"，或任何大规模生成会话后。
+
 #### Rob Pike's 5 Rules（Rob Pike 的 5 条规则）
 
 防止过早优化并强制基于度量的开发的决策框架。
@@ -132,6 +146,7 @@ clarification ─── 解决歧义，探索代码库
 - **"执行计划"** — 使用 worker-validator 验证执行计划
 - **"这个测试不稳定"** — 触发 systematic-debugging
 - **"API 很慢"** — 触发 rob-pike 度量优先工作流
+- **"清理 AI 代码"** — 触发 clean-ai-slop 纠正性清理
 - **"simplify"** — 审查最近更改的复用性、质量和效率
 - **"long run"** — 启动带检查点的多日里程碑执行
 
