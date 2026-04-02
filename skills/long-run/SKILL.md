@@ -223,9 +223,8 @@ When multiple milestones have all dependencies satisfied and no file conflicts:
 2. Run plan-crafting for ALL parallel milestones first (sequentially — plans are lightweight)
 3. Present ALL plans together for batch approval: "Milestones M3 and M4 can run in parallel. Here are both plans. Approve each individually."
 4. User approves or rejects each plan independently. Only approved milestones proceed to execution. Rejected milestones return to Step 2-2 while approved ones execute.
-5. If all approved, dispatch concurrently using **Team Agent Mode** (Claude Code only; on other platforms, fall back to individual Agent dispatches per milestone), capped at **2 teammates max**:
-   - If 2 or fewer milestones: one teammate per milestone
-   - If 3+ milestones: group into 2 batches by dependency proximity, run in waves of 2
+5. If all approved, dispatch each milestone's pipeline concurrently using **Team Agent Mode** (Claude Code only; on other platforms, fall back to individual Agent dispatches per milestone):
+   - Create a team with one teammate per approved milestone
    - Each teammate independently runs the full pipeline: run-plan → review-work
    - Each teammate operates in a worktree (`isolation: "worktree"`) to prevent file conflicts
    - Teammates run fully independently — no inter-agent communication needed
@@ -235,7 +234,7 @@ When multiple milestones have all dependencies satisfied and no file conflicts:
 **Team Agent dispatch pattern:**
 
 ```
-Create a team for parallel milestone execution (max 2 teammates):
+Create a team for parallel milestone execution:
 - Teammate "M3-payments": Execute milestone M3 plan at docs/.../M3-plan.md
   using run-plan skill, then review-work. Run in worktree.
 - Teammate "M4-notifications": Execute milestone M4 plan at docs/.../M4-plan.md
@@ -243,7 +242,11 @@ Create a team for parallel milestone execution (max 2 teammates):
 Each teammate works independently. Report results when done.
 ```
 
-**Why max 2:** More teammates increase file conflict risk and merge complexity. 2 teammates gives meaningful speedup while keeping conflicts manageable.
+**Why Team Agent Mode over individual Agent dispatches:**
+- Each teammate gets its own full context window (no context pollution between milestones)
+- Teammates run as independent Claude Code sessions (true concurrency)
+- Team lead can monitor progress across all milestones without blocking
+- If one teammate finishes early, the lead can assign follow-up work without waiting for others
 
 **Worktree merge protocol:**
 1. All milestone teammates pass review in their respective worktrees

@@ -181,24 +181,24 @@ Parallel execution conditions (all must be met):
 - No modifications to the same file
 - No changes to shared state (DB schema, config files, etc.)
 
-**Execution method — Team Agent Mode (Claude Code only, max 2 teammates):**
+**Execution method — Team Agent Mode (preferred for 3+ parallel tasks):**
 
-When independent tasks can run in parallel, use Team Agent Mode capped at **2 teammates max** to avoid file conflicts:
-- Group parallel tasks into at most 2 batches by file proximity
-- Create a team with one teammate per batch
-- Each teammate runs its batch's worker implementations independently
+When 3 or more independent tasks can run in parallel, use Team Agent Mode for true concurrency:
+- Create a team with one teammate per independent task
+- Each teammate runs its task's worker implementation independently
+- Each teammate operates in its own context window (no cross-task context pollution)
 - After all teammates complete, dispatch independent validator subagents for each task's review
-- If more than 2 batches of parallel tasks exist, run them in waves of 2
 - Aggregate results before proceeding to dependent tasks
 
 ```
 Create a team for parallel task execution:
-- Teammate "batch-1": Implement task 3 (auth middleware) and task 5 (test fixtures). [full task specs here]
-- Teammate "batch-2": Implement task 4 (API routes). [full task spec here]
+- Teammate "task-3-auth": Implement task 3 (auth middleware). [full task spec here]
+- Teammate "task-4-routes": Implement task 4 (API routes). [full task spec here]
+- Teammate "task-5-tests": Implement task 5 (test fixtures). [full task spec here]
 Each teammate works independently. Report results when done.
 ```
 
-**Fallback — individual Agent dispatches (on platforms without Team Agent Mode such as Codex):**
+**Fallback — individual Agent dispatches (for 2 parallel tasks, or on platforms without Team Agent Mode such as Codex):**
 - Dispatch an independent "worker subagent" for each task
 - After each worker completes, dispatch an independent "validator subagent" for review
 - After all parallel tasks complete, aggregate results before proceeding to the next dependent task
