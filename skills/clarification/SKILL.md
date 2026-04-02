@@ -164,8 +164,24 @@ When ambiguity is sufficiently resolved, present the user with a Context Brief. 
 ### Open Questions (if any)
 [Questions still open — unresolved but not blocking]
 
+### Complexity Assessment
+
+Assess task complexity using these 5 signals. Score each signal, then determine the routing.
+
+| Signal | Low (1) | Medium (2) | High (3) |
+|--------|---------|-----------|----------|
+| **Scope breadth** | Single feature or component | 2-3 related components | 4+ components or cross-cutting concerns |
+| **File impact** | ≤3 files | 4-8 files | 9+ files or across 3+ directories |
+| **Interface boundaries** | Works within existing interfaces | Extends existing interfaces | Defines new interfaces or modifies contracts |
+| **Dependency depth** | No ordering constraints | Linear dependency chain | Branching dependencies requiring DAG |
+| **Risk surface** | No integration risk | Internal integration between components | External systems, schema changes, backward compatibility |
+
+**Score:** [sum of signals, range 5-15]
+**Verdict:** [Simple (5-8) | Complex (9-15)]
+**Rationale:** [1-2 sentences explaining the dominant complexity factor]
+
 ### Suggested Next Step
-[Which skill or action to proceed with, given this context]
+[Auto-determined by Complexity Assessment verdict — see Routing Rules below]
 ```
 
 **Save the Context Brief to a file:**
@@ -208,15 +224,36 @@ Self-check at the end of each cycle:
 - [ ] Is the next question based on previous answers?
 - [ ] Has progress been clearly communicated to the user?
 
+## Routing Rules
+
+After the Context Brief is approved, the **Complexity Assessment verdict** determines the next skill:
+
+| Verdict | Route | Rationale |
+|---------|-------|-----------|
+| **Simple** (score 5-8) | `plan-crafting` | Task fits in a single plan cycle. Direct planning is sufficient. |
+| **Complex** (score 9-15) | `milestone-planning` | Task requires multiple plan cycles. Milestone decomposition needed before planning. |
+
+**Override:** The user can always override the routing. If the user says "just plan it" for a complex task, route to `plan-crafting`. If the user says "break it into milestones" for a simple task, route to `milestone-planning`.
+
+**Edge case (score 8-9):** Present both options to the user with a recommendation. Example: "This scores 9 — borderline complex. I recommend milestone-planning because [dominant factor], but plan-crafting could work if [condition]. Which do you prefer?"
+
+The "Suggested Next Step" field in the Context Brief must reflect this routing:
+
+- Simple: "Proceed to `plan-crafting` — task fits in a single plan cycle."
+- Complex: "Proceed to `milestone-planning` — task requires milestone decomposition for multi-phase execution."
+- Borderline: "Recommend `milestone-planning` (score 9), but `plan-crafting` is viable if [condition]. User choice needed."
+
 ## Transition
 
-Once the Context Brief is approved by the user:
+Once the Context Brief is approved by the user, route based on the Complexity Assessment:
 
-- If detailed implementation planning is needed → `plan-crafting` skill
+- **Simple** (score 5-8) → `plan-crafting` skill — single-cycle implementation planning
+- **Complex** (score 9-15) → `milestone-planning` skill — multi-phase milestone decomposition, then `long-run` for execution
+- **Borderline** (score 8-9) → present both options with recommendation, user decides
 - If further exploration is needed → `clarification` 스킬 자체의 Q&A 루프 계속
-- If the plan is already clear → `run-plan` skill
+- If the scope is already trivial and planning is unnecessary → direct implementation
 
-This skill itself **does not invoke the next skill.** It ends by presenting the Context Brief, saving it to a file, and suggesting the next step.
+This skill itself **does not invoke the next skill.** It ends by presenting the Context Brief, saving it to a file, and suggesting the routed next step.
 
 **Context Brief → plan-crafting 매핑:**
 

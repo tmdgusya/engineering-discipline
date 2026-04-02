@@ -1,0 +1,20 @@
+{
+  "name": "engineering-discipline",
+  "owner": {
+    "name": "tmdgusya",
+    "url": "https://github.com/tmdgusya"
+  },
+  "metadata": {
+    "description": "Engineering discipline skills: Rob Pike's optimization rules and systematic debugging methodology",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "engineering-discipline",
+      "source": "./",
+      "description": "Enforce measurement-driven optimization and reproduce-first debugging. Activates automatically on performance and bug-related queries.",
+      "category": "engineering",
+      "tags": ["optimization", "debugging", "engineering", "discipline", "rob-pike", "systematic", "performance", "testing"]
+    }
+  ]
+}
