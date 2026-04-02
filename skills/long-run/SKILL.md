@@ -223,14 +223,33 @@ When multiple milestones have all dependencies satisfied and no file conflicts:
 2. Run plan-crafting for ALL parallel milestones first (sequentially — plans are lightweight)
 3. Present ALL plans together for batch approval: "Milestones M3 and M4 can run in parallel. Here are both plans. Approve each individually."
 4. User approves or rejects each plan independently. Only approved milestones proceed to execution. Rejected milestones return to Step 2-2 while approved ones execute.
-5. If all approved, dispatch each milestone's pipeline concurrently:
-   - Each milestone runs run-plan → review-work (plan already approved in step 3)
-   - Each runs in a worktree (`isolation: "worktree"`) to prevent file conflicts
-   - After both complete and pass review, merge worktrees back
-4. If either fails: handle independently (the other can continue if no dependency)
+5. If all approved, dispatch each milestone's pipeline concurrently using **Team Agent Mode** (Claude Code only; on other platforms, fall back to individual Agent dispatches per milestone):
+   - Create a team with one teammate per approved milestone
+   - Each teammate independently runs the full pipeline: run-plan → review-work
+   - Each teammate operates in a worktree (`isolation: "worktree"`) to prevent file conflicts
+   - Teammates run fully independently — no inter-agent communication needed
+   - After all teammates complete and pass review, merge worktrees back
+6. If any milestone fails: handle independently (others continue if no dependency)
+
+**Team Agent dispatch pattern:**
+
+```
+Create a team for parallel milestone execution:
+- Teammate "M3-payments": Execute milestone M3 plan at docs/.../M3-plan.md
+  using run-plan skill, then review-work. Run in worktree.
+- Teammate "M4-notifications": Execute milestone M4 plan at docs/.../M4-plan.md
+  using run-plan skill, then review-work. Run in worktree.
+Each teammate works independently. Report results when done.
+```
+
+**Why Team Agent Mode over individual Agent dispatches:**
+- Each teammate gets its own full context window (no context pollution between milestones)
+- Teammates run as independent Claude Code sessions (true concurrency)
+- Team lead can monitor progress across all milestones without blocking
+- If one teammate finishes early, the lead can assign follow-up work without waiting for others
 
 **Worktree merge protocol:**
-1. Both milestones pass review in their respective worktrees
+1. All milestone teammates pass review in their respective worktrees
 2. Check for file conflicts between worktree changes
 3. If no conflicts: merge sequentially (M_lower first, then M_higher)
 4. If conflicts detected: stop, report to user, request manual resolution
