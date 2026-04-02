@@ -1,6 +1,6 @@
 {
   "name": "engineering-discipline",
-  "description": "Engineering discipline skills: Rob Pike's optimization rules and systematic debugging methodology",
+  "description": "Engineering discipline skills: optimization rules, systematic debugging, AI slop cleanup, and implementation guardrails",
   "version": "1.0.0",
   "author": {
     "name": "tmdgusya",
@@ -14,6 +14,9 @@
     "engineering",
     "discipline",
     "rob-pike",
-    "systematic"
+    "systematic",
+    "ai-slop",
+    "karpathy",
+    "code-quality"
   ]
 }
