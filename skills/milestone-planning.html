@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <base href="/engineering-discipline/">
   <title>Milestone Planning — Engineering Discipline</title>
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
@@ -14,147 +14,130 @@
 <body>
 
 <nav class="nav">
-  <a href="../index.html" class="nav-brand">▣ Engineering Discipline</a>
+  <a href="index.html" class="nav-brand">▣ Engineering Discipline</a>
   <ul class="nav-links">
-    <li><a href="../index.html">홈</a></li>
-    <li><a href="clarification.html">Clarification</a></li>
-    <li><a href="milestone-planning.html" class="active">Milestones</a></li>
-    <li><a href="long-run.html">Long Run</a></li>
+    <li><a href="index.html">홈</a></li>
+    <li><a href="skills/clarification.html">Clarification</a></li>
+    <li><a href="skills/plan-crafting.html">Plan Crafting</a></li>
+    <li><a href="skills/run-plan.html">Run Plan</a></li>
+    <li><a href="skills/review-work.html">Review Work</a></li>
+    <li><a href="skills/milestone-planning.html" class="active">Milestones</a></li>
+    <li><a href="skills/long-run.html">Long Run</a></li>
   </ul>
 </nav>
 
 <div class="skill-header">
   <div class="container">
     <div>
-      <span class="skill-badge">장기 실행</span>
-      <span class="skill-badge blue">5개 병렬 리뷰어</span>
+      <span class="skill-badge">09</span>
+      <span class="skill-badge blue">분해</span>
     </div>
     <h1>Milestone Planning</h1>
-    <p style="font-size:1.1rem; margin-top: 0.5rem;">5개 독립 리뷰어가 병렬로 리뷰하고, 결과를 합성해 최적화된 마일스톤 DAG를 만듭니다.</p>
+    <p>5개 독립 리뷰어가 병렬로 문제를 분석하고, 최적화된 마일스톤 의존성 그래프(DAG)를 설계합니다.</p>
   </div>
 </div>
 
 <div class="container">
 
-  <!-- Workflow Position -->
+  <!-- Section 01 ▸ 워크플로우 위치 -->
   <section>
-    <h2>▸ 워크플로우 위치</h2>
-    <div class="skill-chain">
-      <span class="chain-node">Clarification(9-15)</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node active">Milestone Planning</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node">Long Run</span>
+    <h2>01 ▸ 워크플로우 위치</h2>
+    <div class="workflow">
+사용자 요청 (복잡)
+    │
+    ▼
+┌─────────────────────────────┐
+│  Clarification (9-15점)     │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│  Milestone Planning (ACTIVE)│
+│  5개 병렬 리뷰 + DAG 합성     │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│  Long Run                   │
+│  마일스톤별 반복 실행         │
+└─────────────────────────────┘
     </div>
   </section>
 
-  <!-- Meta Info -->
-  <div class="meta-card">
-    <div class="meta-item">
-      <div class="meta-label">트리거</div>
-      <div class="meta-value">
-        <code>마일스톤 나눠줘</code>
-        <code>ultraplan</code>
-      </div>
-    </div>
-    <div class="meta-item">
-      <div class="meta-label">입력</div>
-      <div class="meta-value">Context Brief (복잡도 9-15)</div>
-    </div>
-    <div class="meta-item">
-      <div class="meta-label">출력</div>
-      <div class="meta-value">마일스톤 DAG + Conflict Resolution Log</div>
-    </div>
-  </div>
-
-  <!-- Stats -->
-  <div class="stat-grid">
-    <div class="stat-item"><span class="stat-number">5</span><span class="stat-label">병렬 리뷰어</span></div>
-    <div class="stat-item"><span class="stat-number">7</span><span class="stat-label">최적 마일스톤 수</span></div>
-    <div class="stat-item"><span class="stat-number">∅</span><span class="stat-label">교차 오염 없음</span></div>
-    <div class="stat-item"><span class="stat-number">1</span><span class="stat-label">통합 검증</span></div>
-  </div>
-
-  <!-- When to use -->
+  <!-- Section 02 ▸ 언제 사용하나요? -->
   <section>
-    <h2>▸ 언제 사용하나요?</h2>
+    <h2>02 ▸ 언제 사용하나요?</h2>
     <div class="callout">
-      Clarification이 <strong>복잡(Complex, 9-15점)</strong> 판정을 내린 직후. 며칠에 걸친 작업이 필요할 때.
+      Clarification에서 <strong>복잡(Complex, 9-15점)</strong> 판정을 내렸거나, 며칠이 걸리는 대규모 작업이 필요할 때 사용합니다.
+    </div>
+    <div class="card">
+      <div class="card-title">주요 트리거</div>
+      <ul>
+        <li><code>마일스톤 나눠줘</code>, <code>ultraplan</code> 명령 시</li>
+        <li>Long Run 하니스가 마일스톤 분해를 요청할 때</li>
+        <li>작업이 1회성 계획(plan-crafting) 범위를 초과할 때</li>
+      </ul>
     </div>
   </section>
 
-  <!-- How it works -->
+  <!-- Section 03 ▸ 어떻게 동작하나요? -->
   <section>
-    <h2>▸ 어떻게 동작하나요?</h2>
-
+    <h2>03 ▸ 어떻게 동작하나요?</h2>
     <div class="callout blue">
-      <strong>핵심 원리:</strong> 5개 리뷰어는 서로 <em>정보 격리</em>되어 교차 오염 없이 각자의 관점에서 비판합니다.
+      <strong>핵심 원리:</strong> 5개 리뷰어는 서로 정보가 격리된 상태에서 각자의 전문 관점(Feasibility, Architecture, Risk, Dependency, User Value)으로 문제를 비판합니다.
     </div>
-
-    <div class="rule-list">
-      <div class="rule-item">
-        <span class="rule-number">1</span>
-        <div class="rule-content">
-          <strong>Problem Brief</strong>
-          <p>문제를 프레임화 — 목표, 범위, 제약사항.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">2</span>
-        <div class="rule-content">
-          <strong>5개 병렬 리뷰어</strong>
-          <p><strong>Feasibility</strong> · <strong>Architecture</strong> · <strong>Risk</strong> · <strong>Dependency</strong> · <strong>User Value</strong></p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">3</span>
-        <div class="rule-content">
-          <strong>합성 — 마일스톤 DAG</strong>
-          <p>5개 결과를 Conflict Resolution Log와 종합. 통합 검증 마일스톤 추가.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">4</span>
-        <div class="rule-content">
-          <strong>독립 DAG 검증</strong>
-          <p>순환 의존, 파일 충돌, 성공 기준 품질 검증.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">5</span>
-        <div class="rule-content">
-          <strong>사용자 승인 → Harness 잠금</strong>
-          <p>승인된 마일스톤이 상태 디렉토리에 잠금. <a href="long-run.html">Long Run</a>으로 진입.</p>
-        </div>
-      </div>
+    <div class="card">
+      <div class="card-title">실행 단계</div>
+      <ol>
+        <li><strong>Problem Framing:</strong> 목표, 범위, 제약사항을 포함한 Problem Brief 작성</li>
+        <li><strong>Parallel Dispatch:</strong> 5개 리뷰어 에이전트를 동시 가동 (교차 오염 방지)</li>
+        <li><strong>Synthesis:</strong> 리뷰 결과를 대조하여 갈등 해소 및 마일스톤 DAG 합성</li>
+        <li><strong>DAG Validation:</strong> 순환 의존성 및 파일 충돌 검증</li>
+        <li><strong>Integration Milestone:</strong> 최종 통합 검증 마일스톤 자동 추가</li>
+      </ol>
     </div>
   </section>
 
-  <!-- Gate -->
-  <div class="gate-box">
-    마일스톤 수 7개 초과: 경고 / 10개 초과: 사용자 추가 승인 필요. 과도한 분할은 관리 오버헤드를 만듭니다.
-  </div>
-
-  <!-- Related Skills -->
+  <!-- Section 04 ▸ 마일스톤 수 가드 -->
   <section>
-    <h2>▸ 연결된 스킬</h2>
-    <div class="skill-chain">
-      <span class="chain-node"><a href="clarification.html" style="color:inherit; text-decoration:none;">Clarification</a></span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node active">Milestone Planning</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node blue"><a href="long-run.html" style="color:inherit; text-decoration:none;">Long Run</a></span>
+    <h2>04 ▸ 마일스톤 수 가드</h2>
+    <div class="callout">
+      마일스톤 수는 <strong>3~7개</strong>가 권장됩니다. 7개 초과 시 경고가 표시되며, 10개 초과 시 관리를 위해 프로젝트 분할을 고려해야 합니다.
     </div>
-    <p>
-      <a href="../index.html" class="btn btn-primary">← 홈으로 돌아가기</a>
-    </p>
   </section>
+
+  <!-- Section 05 ▸ 하드 게이트 -->
+  <section>
+    <h2>05 ▸ 하드 게이트</h2>
+    <div class="card">
+      <ul>
+        <li>모든 리뷰어는 <strong>병렬로 실행</strong>되어야 함 (순차 실행 금지)</li>
+        <li>리뷰어 간 <strong>정보 격리</strong> 유지 (다른 리뷰어의 결과를 볼 수 없음)</li>
+        <li>모든 마일스톤은 <strong>측정 가능한 성공 기준</strong>을 가져야 함</li>
+        <li>의존성 구조는 반드시 <strong>DAG(순환 없음)</strong> 형태여야 함</li>
+        <li>리뷰어 출력물은 합성 에이전트에게 <strong>원문 그대로(verbatim)</strong> 전달되어야 함</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Section 06 ▸ 연결된 스킬 -->
+  <section>
+    <h2>06 ▸ 연결된 스킬</h2>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 2rem;">
+      <a href="skills/clarification.html" class="btn">Clarification</a>
+      <a href="skills/long-run.html" class="btn btn-primary">Long Run</a>
+      <a href="index.html" class="btn">← 홈으로</a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>
+      <a href="https://github.com/tmdgusya/engineering-discipline">tmdgusya/engineering-discipline</a>
+      · MIT License
+    </p>
+  </footer>
 
 </div>
-
-<footer class="footer">
-  <p><a href="https://github.com/tmdgusya/engineering-discipline">tmdgusya/engineering-discipline</a> · MIT License</p>
-</footer>
 
 </body>
 </html>

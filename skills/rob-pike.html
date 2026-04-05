@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <base href="/engineering-discipline/">
   <title>Rob Pike's 5 Rules — Engineering Discipline</title>
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
@@ -14,11 +14,15 @@
 <body>
 
 <nav class="nav">
-  <a href="../index.html" class="nav-brand">▣ Engineering Discipline</a>
+  <a href="index.html" class="nav-brand">▣ Engineering Discipline</a>
   <ul class="nav-links">
-    <li><a href="../index.html">홈</a></li>
-    <li><a href="systematic-debugging.html">Debugging</a></li>
-    <li><a href="rob-pike.html" class="active">Rob Pike</a></li>
+    <li><a href="index.html">홈</a></li>
+    <li><a href="skills/clarification.html">Clarification</a></li>
+    <li><a href="skills/plan-crafting.html">Plan Crafting</a></li>
+    <li><a href="skills/run-plan.html">Run Plan</a></li>
+    <li><a href="skills/review-work.html">Review Work</a></li>
+    <li><a href="skills/milestone-planning.html">Milestones</a></li>
+    <li><a href="skills/long-run.html">Long Run</a></li>
   </ul>
 </nav>
 
@@ -29,132 +33,79 @@
       <span class="skill-badge blue">측정 우선</span>
     </div>
     <h1>Rob Pike's 5 Rules</h1>
-    <p style="font-size:1.1rem;">조기 최적화를 방지하고 측정 기반 개발을 강제합니다. "느려 보여도 측정 전에는 만지지 않는다."</p>
+    <p>조기 최적화를 방지하고 측정 기반 개발을 강제합니다. "느려 보여도 측정 전에는 만지지 않는다."</p>
   </div>
 </div>
 
 <div class="container">
 
-  <!-- Workflow Position -->
+  <!-- Section 01 -->
   <section>
-    <h2>▸ 워크플로우 위치</h2>
-    <div class="skill-chain">
-      <span class="chain-node">계획</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node">실행</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node active">Rob Pike (성능 최적화)</span>
-    </div>
+    <h2>01 ▸ 워크플로우 위치</h2>
+    <div class="workflow">[성능 저하]
+    │
+    ▼
+┌─────────────────────────────┐
+│  Rob Pike (ACTIVE)          │
+│  5가지 규칙 기반 측정/검증     │
+└──────────────┬──────────────┘
+               │
+               ▼
+            [최적화]</div>
   </section>
 
-  <!-- Meta Info -->
-  <div class="meta-card">
-    <div class="meta-item">
-      <div class="meta-label">트리거</div>
-      <div class="meta-value">
-        <code>최적화</code> <code>느려</code> <code>병목</code> <code>빠르게</code>
-      </div>
-    </div>
-    <div class="meta-item">
-      <div class="meta-label">메커니즘</div>
-      <div class="meta-value">5가지 하드 루ール</div>
-    </div>
-    <div class="meta-item">
-      <div class="meta-label">규칙</div>
-      <div class="meta-value">측정 전 수정 금지</div>
-    </div>
-  </div>
-
-  <!-- Stats -->
-  <div class="stat-grid">
-    <div class="stat-item"><span class="stat-number">5</span><span class="stat-label">하드 룰</span></div>
-    <div class="stat-item"><span class="stat-number">0</span><span class="stat-label">예측 허용</span></div>
-    <div class="stat-item"><span class="stat-number">1</span><span class="stat-label">측정 도구</span></div>
-    <div class="stat-item"><span class="stat-number">∞</span><span class="stat-label">단순함 페널티</span></div>
-  </div>
-
-  <!-- When to use -->
+  <!-- Section 02 -->
   <section>
-    <h2>▸ 언제 사용하나요?</h2>
+    <h2>02 ▸ 언제 사용하나요?</h2>
     <div class="callout">
       성능 개선이 필요할 때 — 최적화를 <strong>시작하기 직전</strong>에 작동합니다.
     </div>
-    <ul>
-      <li>이 루프가 느려 보인다는 느낌이 들 때</li>
-      <li>"병목在哪里?"이라고 자문할 때</li>
-    </ul>
+    <div class="card">
+      <div class="card-title">주요 트리거</div>
+      <div class="trigger">최적화</div>
+      <div class="trigger">느려</div>
+      <div class="trigger">병목</div>
+      <div class="trigger">빠르게</div>
+      <ul style="margin-top: 1rem;">
+        <li>이 루프가 느려 보인다는 느낌이 들 때</li>
+        <li>"병목은 어디인가?"라고 자문할 때</li>
+      </ul>
+    </div>
   </section>
 
-  <!-- 5 Rules -->
+  <!-- Section 03 -->
   <section>
-    <h2>▸ 5가지 하드 룰</h2>
+    <h2>03 ▸ 5가지 하드 룰</h2>
 
     <div class="callout blue">
       <strong>핵심 원리:</strong> "이 루프가 느려 보인다" → <em>"프로파일링 해보셨나요?"</em>. 측정이 병목을 확인하고, 가장 단순한 변경이 최적화가 됩니다.
     </div>
 
-    <div class="rule-list">
-      <div class="rule-item">
-        <span class="rule-number">1</span>
-        <div class="rule-content">
-          <strong>병목을 예측할 수 없다</strong>
-          <p>누가 어디가 느린지 맞추지 않습니다. 프로파일러가 알려줍니다.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">2</span>
-        <div class="rule-content">
-          <strong>튜닝 전 측정</strong>
-          <p>기존 계측(log, profiling, timing, APM)을 스캔하고, 없으면 계측부터.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">3</span>
-        <div class="rule-content">
-          <strong>n이 작으면 복잡한 알고리즘도 느리다</strong>
-          <p>그리고 n은 보통 작습니다. 단순한 코드가 이깁니다.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">4</span>
-        <div class="rule-content">
-          <strong>복잡한 알고리즘은 버그도 많다</strong>
-          <p>단순한 알고리즘이 유지보수도 쉽고 디버깅도 쉽습니다.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">5</span>
-        <div class="rule-content">
-          <strong>데이터 구조가 핵심이다</strong>
-          <p>올바른 데이터 구조를 선택하면 알고리즘은 자명해집니다.</p>
-        </div>
-      </div>
+    <div class="card">
+      <ol>
+        <li><strong>병목을 예측할 수 없다:</strong> 누가 어디가 느린지 맞추지 않습니다. 프로파일러가 알려줍니다.</li>
+        <li><strong>튜닝 전 측정:</strong> 기존 계측(log, profiling, timing, APM)을 스캔하고, 없으면 계측부터 추가합니다.</li>
+        <li><strong>n이 작으면 복잡한 알고리즘도 느리다:</strong> 그리고 n은 보통 작습니다. 단순한 코드가 이깁니다.</li>
+        <li><strong>복잡한 알고리즘은 버그도 많다:</strong> 단순한 알고리즘이 유지보수도 쉽고 디버깅도 쉽습니다.</li>
+        <li><strong>데이터 구조가 핵심이다:</strong> 올바른 데이터 구조를 선택하면 알고리즘은 자명해집니다.</li>
+      </ol>
     </div>
   </section>
 
-  <!-- Gate -->
-  <div class="gate-box">
-    ⛔ HARD GATE: <strong>측정 전에는 절대 최적화하지 않습니다.</strong> "느려 보인다"는 충분한 이유가 아닙니다.
-  </div>
-
-  <!-- Apply Sequence -->
+  <!-- Section 04 -->
   <section>
-    <h2>▸ 적용 순서</h2>
+    <h2>04 ▸ 하드 게이트</h2>
     <div class="callout">
-      1. 기존 계측 확인 → 2. 측정 질문 → 3. 병목 확인 시 가장 단순한 수정 제안 → 4. 변경 후 재측정으로 검증
+      <strong>측정 전에는 절대 최적화하지 않습니다.</strong> "느려 보인다"는 충분한 이유가 아닙니다.
     </div>
   </section>
 
-  <!-- Related Skills -->
+  <!-- Section 05 -->
   <section>
-    <h2>▸ 연결된 스킬</h2>
-    <div class="skill-chain">
-      <span class="chain-node"><a href="systematic-debugging.html" style="color:inherit; text-decoration:none;">Debugging</a></span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node active">Rob Pike</span>
-    </div>
+    <h2>05 ▸ 연결된 스킬</h2>
     <p>
-      <a href="../index.html" class="btn btn-primary">← 홈으로 돌아가기</a>
+      <a href="skills/systematic-debugging.html" class="btn">Systematic Debugging</a>
+      <a href="index.html" class="btn btn-primary">홈으로 돌아가기</a>
     </p>
   </section>
 

@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <base href="/engineering-discipline/">
   <title>Plan Crafting — Engineering Discipline</title>
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
@@ -14,152 +14,127 @@
 <body>
 
 <nav class="nav">
-  <a href="../index.html" class="nav-brand">▣ Engineering Discipline</a>
+  <a href="index.html" class="nav-brand">▣ Engineering Discipline</a>
   <ul class="nav-links">
-    <li><a href="../index.html">홈</a></li>
-    <li><a href="clarification.html">Clarification</a></li>
-    <li><a href="plan-crafting.html" class="active">Plan Crafting</a></li>
-    <li><a href="run-plan.html">Run Plan</a></li>
-    <li><a href="review-work.html">Review Work</a></li>
-    <li><a href="milestone-planning.html">Milestones</a></li>
-    <li><a href="long-run.html">Long Run</a></li>
+    <li><a href="index.html">홈</a></li>
+    <li><a href="skills/clarification.html">Clarification</a></li>
+    <li><a href="skills/plan-crafting.html" class="active">Plan Crafting</a></li>
+    <li><a href="skills/run-plan.html">Run Plan</a></li>
+    <li><a href="skills/review-work.html">Review Work</a></li>
+    <li><a href="skills/milestone-planning.html">Milestones</a></li>
+    <li><a href="skills/long-run.html">Long Run</a></li>
   </ul>
 </nav>
 
 <div class="skill-header">
   <div class="container">
     <div>
-      <span class="skill-badge">워크플로</span>
+      <span class="skill-badge">02</span>
       <span class="skill-badge blue">계획</span>
     </div>
     <h1>Plan Crafting</h1>
-    <p style="font-size:1.1rem; margin-top: 0.5rem;">명확한 범위로부터 실행 가능한 다단계 구현 계획을 생성합니다. 모든 단계에 실제 코드가 포함됩니다.</p>
+    <p>명확한 범위로부터 실행 가능한 다단계 구현 계획을 생성합니다. 모든 단계에 실제 코드가 포함됩니다.</p>
   </div>
 </div>
 
 <div class="container">
 
-  <!-- Workflow Position -->
+  <!-- Section 01 ▸ 워크플로우 위치 -->
   <section>
-    <h2>▸ 워크플로우 위치</h2>
-    <div class="skill-chain">
-      <span class="chain-node">Clarification</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node active">Plan Crafting</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node">Run Plan</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node">Review Work</span>
+    <h2>01 ▸ 워크플로우 위치</h2>
+    <div class="workflow">사용자 요청 (모호)
+    │
+    ▼
+Clarification
+    │
+    ▼
+┌─────────────────────────────┐
+│  plan-crafting (ACTIVE)     │
+│  계획 작성 + 코드 포함        │
+└──────────────┬──────────────┘
+               │
+               ▼
+           run-plan
+               │
+               ▼
+          review-work
     </div>
   </section>
 
-  <!-- Meta Info -->
-  <div class="meta-card">
-    <div class="meta-item">
-      <div class="meta-label">트리거</div>
-      <div class="meta-value">
-        <code>계획 세워줘</code>
-        <code>플랜 만들어줘</code>
-      </div>
-    </div>
-    <div class="meta-item">
-      <div class="meta-label">입력</div>
-      <div class="meta-value">Context Brief 파일 (clarification 출)</div>
-    </div>
-    <div class="meta-item">
-      <div class="meta-label">출력</div>
-      <div class="meta-value">실행 가능한 계획 문서 (파일 매핑 + 작업 분해)</div>
-    </div>
-  </div>
-
-  <!-- Stats -->
-  <div class="stat-grid">
-    <div class="stat-item"><span class="stat-number">0</span><span class="stat-label">플레이스홀더</span></div>
-    <div class="stat-item"><span class="stat-number">5</span><span class="stat-label">검증 체크</span></div>
-    <div class="stat-item"><span class="stat-number">∞</span><span class="stat-label">구체성</span></div>
-  </div>
-
-  <!-- When to use -->
+  <!-- Section 02 ▸ 언제 사용하나요? -->
   <section>
-    <h2>▸ 언제 사용하나요?</h2>
+    <h2>02 ▸ 언제 사용하나요?</h2>
     <div class="callout">
       Clarification이 <strong>단순(Simple, 5-8점)</strong> 판정으로 완료된 직후. 또는 이미 범위가 명료할 때 직접 호출합니다.
     </div>
-    <ul>
-      <li>Context Brief 파일이 준비되었을 때</li>
-      <li>명확한 목표 + 범위가 있고 단계별 계획이 필요할 때</li>
-    </ul>
+    <div class="card">
+      <div class="card-title">주요 트리거</div>
+      <ul>
+        <li><code>계획 세워줘</code>, <code>플랜 만들어줘</code> 커맨드 입력 시</li>
+        <li>Context Brief 파일이 준비되었을 때</li>
+        <li>명확한 목표 + 범위가 있고 단계별 계획이 필요할 때</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">입출력</div>
+      <p><strong>입력:</strong> Context Brief 파일 (clarification 출력)</p>
+      <p><strong>출력:</strong> 실행 가능한 계획 문서 (파일 매핑 + 작업 분해)</p>
+    </div>
   </section>
 
-  <!-- How it works -->
+  <!-- Section 03 ▸ 어떻게 동작하나요? -->
   <section>
-    <h2>▸ 어떻게 동작하나요?</h2>
+    <h2>03 ▸ 어떻게 동작하나요?</h2>
 
     <div class="callout blue">
       <strong>핵심 원리:</strong> 계획은 <em>실행 문서</em>입니다. 코드가 없는 단계는 계획 결함입니다.
     </div>
 
-    <div class="rule-list">
-      <div class="rule-item">
-        <span class="rule-number">1</span>
-        <div class="rule-content">
-          <strong>검증 인프라 탐색</strong>
-          <p>e2e, 통합, 테스트 스위트, 빌드 — 가장 높은 수준 검증을 찾아 Final Verification Task를 결정합니다.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">2</span>
-        <div class="rule-content">
-          <strong>파일 구조 매핑</strong>
-          <p>함께 변경되는 파일은 같은 작업, 다른 책임은 분리.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">3</span>
-        <div class="rule-content">
-          <strong>작업 분해 — Worker-Validator 구조</strong>
-          <p>같은 파일 수정은 직렬, 독립 작업은 병렬.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">4</span>
-        <div class="rule-content">
-          <strong>모든 단계에 실제 코드</strong>
-          <p>TBD, TODO, "적절한 에러 처리 추가" — 모두 금지.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">5</span>
-        <div class="rule-content">
-          <strong>Self-Review</strong>
-          <p>사양 커버리지, 타입 일관성, 의존성 검증, 검증 커버리지 자체 점검.</p>
-        </div>
-      </div>
+    <div class="card">
+      <div class="card-title">실행 단계</div>
+      <ol>
+        <li><strong>검증 인프라 탐색:</strong> e2e, 통합, 테스트 스위트, 빌드 — 가장 높은 수준 검증을 찾아 Final Verification Task를 결정합니다.</li>
+        <li><strong>파일 구조 매핑:</strong> 함께 변경되는 파일은 같은 작업, 다른 책임은 분리.</li>
+        <li><strong>작업 분해 — Worker-Validator 구조:</strong> 같은 파일 수정은 직렬, 독립 작업은 병렬.</li>
+        <li><strong>모든 단계에 실제 코드:</strong> TBD, TODO, "적절한 에러 처리 추가" — 모두 금지.</li>
+        <li><strong>Self-Review:</strong> 사양 커버리지, 타입 일관성, 의존성 검증, 검증 커버리지 자체 점검.</li>
+      </ol>
     </div>
   </section>
 
-  <!-- Hard Gates -->
-  <div class="gate-box">
-    <ul>
-      <li><code>TBD</code>, <code>TODO</code>, <code>implement later</code> — 계획 결함</li>
-      <li>"적절한 에러 처리 추가" — 구체적 코드 없으면 결함</li>
-      <li>"Task N과 유사" — 실제 코드를 반복해야 함</li>
-    </ul>
-  </div>
-
-  <!-- Related Skills -->
+  <!-- Section 04 ▸ 플레이스홀더 금지 목록 -->
   <section>
-    <h2>▸ 연결된 스킬</h2>
-    <div class="skill-chain">
-      <span class="chain-node"><a href="clarification.html" style="color:inherit; text-decoration:none;">Clarification</a></span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node active">Plan Crafting</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node blue"><a href="run-plan.html" style="color:inherit; text-decoration:none;">Run Plan</a></span>
+    <h2>04 ▸ 플레이스홀더 금지 목록</h2>
+    <div class="card">
+      <ul>
+        <li><code>TBD</code>, <code>TODO</code>, <code>implement later</code> — 계획 결함</li>
+        <li>"적절한 에러 처리 추가" — 구체적 코드 없으면 결함</li>
+        <li>"Task N과 유사" — 실제 코드를 반복해야 함</li>
+      </ul>
     </div>
-    <p>
-      <a href="../index.html" class="btn btn-primary">← 홈으로 돌아가기</a>
+  </section>
+
+  <!-- Section 05 ▸ 하드 게이트 -->
+  <section>
+    <h2>05 ▸ 하드 게이트</h2>
+    <div class="card">
+      <ul>
+        <li><strong>모든 단계는 실행 가능해야 함:</strong> 플레이스홀더는 절대 허용되지 않습니다.</li>
+        <li><strong>작업 충돌 방지:</strong> 동일한 파일을 수정하는 작업은 병렬로 실행될 수 없습니다.</li>
+        <li><strong>Self-Review 필수:</strong> 계획 작성 후 스스로 완결성을 검증해야 합니다.</li>
+        <li><strong>최소 기능 단위 분해:</strong> 하나의 작업은 하나의 명확한 결과물을 생성합니다.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Section 06 ▸ 연결된 스킬 -->
+  <section>
+    <h2>06 ▸ 연결된 스킬</h2>
+    <p style="margin-bottom: 1.5rem;">
+      <a href="skills/clarification.html" class="btn">← Clarification</a>
+      <a href="skills/run-plan.html" class="btn btn-primary">Run Plan →</a>
     </p>
+    <a href="index.html" class="btn">홈으로 돌아가기</a>
   </section>
 
 </div>

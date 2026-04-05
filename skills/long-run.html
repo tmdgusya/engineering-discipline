@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <base href="/engineering-discipline/">
   <title>Long Run — Engineering Discipline</title>
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
@@ -14,154 +14,131 @@
 <body>
 
 <nav class="nav">
-  <a href="../index.html" class="nav-brand">▣ Engineering Discipline</a>
+  <a href="index.html" class="nav-brand">▣ Engineering Discipline</a>
   <ul class="nav-links">
-    <li><a href="../index.html">홈</a></li>
-    <li><a href="milestone-planning.html">Milestones</a></li>
-    <li><a href="long-run.html" class="active">Long Run</a></li>
-    <li><a href="simplify.html">Simplify</a></li>
+    <li><a href="index.html">홈</a></li>
+    <li><a href="skills/clarification.html">Clarification</a></li>
+    <li><a href="skills/plan-crafting.html">Plan Crafting</a></li>
+    <li><a href="skills/run-plan.html">Run Plan</a></li>
+    <li><a href="skills/review-work.html">Review Work</a></li>
+    <li><a href="skills/milestone-planning.html">Milestones</a></li>
+    <li><a href="skills/long-run.html" class="active">Long Run</a></li>
   </ul>
 </nav>
 
 <div class="skill-header">
   <div class="container">
     <div>
-      <span class="skill-badge">장기 실행</span>
-      <span class="skill-badge blue">체크포인트</span>
+      <span class="skill-badge">10</span>
+      <span class="skill-badge blue">오케스트레이션</span>
     </div>
     <h1>Long Run</h1>
-    <p style="font-size:1.1rem; margin-top: 0.5rem;">며칠에 걸친 실행을 오케스트레이션합니다. 디스크 체크포인트로 크래시에서 생존합니다.</p>
+    <p>며칠에 걸친 실행을 오케스트레이션합니다. 디스크 체크포인트로 크래시에서 생존합니다.</p>
   </div>
 </div>
 
 <div class="container">
 
-  <!-- Workflow Position -->
+  <!-- Section 01 ▸ 워크플로우 위치 -->
   <section>
-    <h2>▸ 워크플로우 위치</h2>
-    <div class="skill-chain">
-      <span class="chain-node">Milestone Planning</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node active">Long Run</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node">Simplify</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node">[완료]</span>
+    <h2>01 ▸ 워크플로우 위치</h2>
+    <div class="workflow">
+      Milestone Planning
+              │
+              ▼
+┌─────────────────────────────┐
+│       Long Run (ACTIVE)     │
+│    마일스톤별 반복 실행       │
+└──────────────┬──────────────┘
+               │
+               ▼
+          Review Work
     </div>
   </section>
 
-  <!-- Meta Info -->
-  <div class="meta-card">
-    <div class="meta-item">
-      <div class="meta-label">트리거</div>
-      <div class="meta-value">
-        <code>long run</code>
-        <code>마일스톤 실행해줘</code>
-      </div>
-    </div>
-    <div class="meta-item">
-      <div class="meta-label">입력</div>
-      <div class="meta-value">잠긴 마일스톤 DAG</div>
-    </div>
-    <div class="meta-item">
-      <div class="meta-label">내구성</div>
-      <div class="meta-value">체크포인트 + worktree 격리 + 복구 프로토콜</div>
-    </div>
-  </div>
-
-  <!-- Stats -->
-  <div class="stat-grid">
-    <div class="stat-item"><span class="stat-number">3</span><span class="stat-label">재시도 시도</span></div>
-    <div class="stat-item"><span class="stat-number">∞</span><span class="stat-label">마일스톤 확장</span></div>
-    <div class="stat-item"><span class="stat-number">1</span><span class="stat-label">E2E Final Gate</span></div>
-  </div>
-
-  <!-- When to use -->
+  <!-- Section 02 ▸ 언제 사용하나요? -->
   <section>
-    <h2>▸ 언제 사용하나요?</h2>
+    <h2>02 ▸ 언제 사용하나요?</h2>
     <div class="callout">
-      Milestone Planning이 완료된 직후. 또는 며칠에 걸친 대규모 리팩토링/기능 개발이 필요할 때.
+      Milestone Planning이 완료된 직후. 또는 며칠에 걸친 대규모 리팩토링/기능 개발이 필요할 때 사용합니다.
+    </div>
+    <div class="card">
+      <div class="card-title">주요 트리거</div>
+      <ul>
+        <li><code>long run</code></li>
+        <li><code>마일스톤 실행해줘</code></li>
+        <li>입력: 잠긴 마일스톤 DAG</li>
+      </ul>
     </div>
   </section>
 
-  <!-- How it works -->
+  <!-- Section 03 ▸ 어떻게 동작하나요? -->
   <section>
-    <h2>▸ 어떻게 동작하나요?</h2>
-
+    <h2>03 ▸ 어떻게 동작하나요?</h2>
     <div class="callout blue">
       <strong>핵심 원리:</strong> 모든 마일스톤이 독립 plan→run→review 사이클을 거칩니다. 실패된 마일스톤은 후속을 차단합니다.
     </div>
-
-    <div class="rule-list">
-      <div class="rule-item">
-        <span class="rule-number">1</span>
-        <div class="rule-content">
-          <strong>마일스톤 순차 실행</strong>
-          <p>각 마일스톤: plan → run → review → 체크포인트 저장.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">2</span>
-        <div class="rule-content">
-          <strong>재시도 에스컬레이션</strong>
-          <p>재실행 → 재계획 → 중단 (3회, 영구 카운터).</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">3</span>
-        <div class="rule-content">
-          <strong>병렬 마일스톤 (worktree)</strong>
-          <p>의존성 없는 마일스톤은 별도 worktree에서 동시 실행.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">4</span>
-        <div class="rule-content">
-          <strong>크로스-마일스톤 통합 검사</strong>
-          <p>각 완료 후 통합 검사 — 마일스톤 간 간섭 탐지.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">5</span>
-        <div class="rule-content">
-          <strong>Final E2E 게이트</strong>
-          <p>전체 완료 후 최종 검증. Simplify로 정리, Debugging으로 이슈 해결.</p>
-        </div>
-      </div>
+    <div class="card">
+      <div class="card-title">실행 단계</div>
+      <ol>
+        <li><strong>마일스톤 순차 실행:</strong> 각 마일스톤별로 계획, 실행, 검증을 수행하고 체크포인트를 저장합니다.</li>
+        <li><strong>재시도 에스컬레이션:</strong> 재실행 → 재계획 → 중단 순으로 최대 3회까지 시도합니다. (영구 카운터)</li>
+        <li><strong>병렬 마일스톤 (worktree):</strong> 의존성이 없는 마일스톤은 별도 git worktree에서 동시에 실행합니다.</li>
+        <li><strong>크로스-마일스톤 통합 검사:</strong> 각 마일스톤 완료 후 다른 마일스톤과의 간섭 여부를 탐지합니다.</li>
+        <li><strong>Final E2E 게이트:</strong> 전체 완료 후 최종 검증을 수행하고 Simplify로 코드를 정리합니다.</li>
+      </ol>
     </div>
   </section>
 
-  <!-- Durability -->
+  <!-- Section 04 ▸ 내구성 설계 -->
   <section>
-    <h2>▸ 내구성 설계</h2>
-    <table>
-      <tr><th>기능</th><th>설명</th></tr>
-      <tr><td>디스크 체크포인트</td><td><code>state.md</code>에 모든 상태 기록 — 크래시 생존</td></tr>
-      <tr><td>복구 프로토콜</td><td>중단 세션에서 마지막 체크포인트부터 재개</td></tr>
-      <tr><td>Rate limit</td><td>Claude Code 내장 재시도와 정렬</td></tr>
-      <tr><td>컨텍스트 윈도우</td><td>장기 대화용 자동 압축 및 상태 분리</td></tr>
-    </table>
+    <h2>04 ▸ 내구성 설계</h2>
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th>기능</th><th>설명</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>디스크 체크포인트</td><td><code>state.md</code>에 모든 상태 기록 — 크래시 생존</td></tr>
+          <tr><td>복구 프로토콜</td><td>중단 세션에서 마지막 체크포인트부터 재개</td></tr>
+          <tr><td>Rate limit</td><td>Claude Code 내장 재시도와 정렬</td></tr>
+          <tr><td>컨텍스트 윈도우</td><td>장기 대화용 자동 압축 및 상태 분리</td></tr>
+        </tbody>
+      </table>
+    </div>
   </section>
 
-  <!-- Related Skills -->
+  <!-- Section 05 ▸ 하드 게이트 -->
   <section>
-    <h2>▸ 연결된 스킬</h2>
-    <div class="skill-chain">
-      <span class="chain-node"><a href="milestone-planning.html" style="color:inherit; text-decoration:none;">Milestone</a></span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node active">Long Run</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node blue"><a href="simplify.html" style="color:inherit; text-decoration:none;">Simplify</a></span>
+    <h2>05 ▸ 하드 게이트</h2>
+    <div class="card">
+      <div class="card-title">반드시 지켜야 할 원칙</div>
+      <ul>
+        <li>실패한 마일스톤은 후속 마일스톤의 실행을 즉시 차단해야 합니다.</li>
+        <li>재시도 카운터는 세션이 중단되어도 유지되는 영구 카운터여야 합니다.</li>
+        <li>병렬 실행 시 각 worktree 간의 파일 충돌이 없음을 사전에 검증해야 합니다.</li>
+        <li>모든 상태 변화는 즉시 디스크의 <code>state.md</code>에 반영되어야 합니다.</li>
+      </ul>
     </div>
-    <p>
-      <a href="../index.html" class="btn btn-primary">← 홈으로 돌아가기</a>
-    </p>
+  </section>
+
+  <!-- Section 06 ▸ 연결된 스킬 -->
+  <section>
+    <h2>06 ▸ 연결된 스킬</h2>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+      <a href="skills/milestone-planning.html" class="btn btn-primary">Milestone Planning →</a>
+      <a href="skills/review-work.html" class="btn btn-primary">Review Work →</a>
+      <a href="index.html" class="btn">← 홈으로 돌아가기</a>
+    </div>
   </section>
 
 </div>
 
 <footer class="footer">
-  <p><a href="https://github.com/tmdgusya/engineering-discipline">tmdgusya/engineering-discipline</a> · MIT License</p>
+  <p>
+    <a href="https://github.com/tmdgusya/engineering-discipline">tmdgusya/engineering-discipline</a>
+    · MIT License
+  </p>
 </footer>
 
 </body>

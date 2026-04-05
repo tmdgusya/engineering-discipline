@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <base href="/engineering-discipline/">
   <title>Clarification — Engineering Discipline</title>
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
@@ -14,180 +14,134 @@
 <body>
 
 <nav class="nav">
-  <a href="../index.html" class="nav-brand">▣ Engineering Discipline</a>
+  <a href="index.html" class="nav-brand">▣ Engineering Discipline</a>
   <ul class="nav-links">
-    <li><a href="../index.html">홈</a></li>
-    <li><a href="clarification.html" class="active">Clarification</a></li>
-    <li><a href="plan-crafting.html">Plan Crafting</a></li>
-    <li><a href="run-plan.html">Run Plan</a></li>
-    <li><a href="review-work.html">Review Work</a></li>
-    <li><a href="milestone-planning.html">Milestones</a></li>
-    <li><a href="long-run.html">Long Run</a></li>
+    <li><a href="index.html">홈</a></li>
+    <li><a href="skills/clarification.html" class="active">Clarification</a></li>
+    <li><a href="skills/plan-crafting.html">Plan Crafting</a></li>
+    <li><a href="skills/run-plan.html">Run Plan</a></li>
+    <li><a href="skills/review-work.html">Review Work</a></li>
+    <li><a href="skills/milestone-planning.html">Milestones</a></li>
+    <li><a href="skills/long-run.html">Long Run</a></li>
   </ul>
 </nav>
 
 <div class="skill-header">
   <div class="container">
     <div>
-      <span class="skill-badge">워크플로</span>
+      <span class="skill-badge">01</span>
       <span class="skill-badge blue">출발점</span>
     </div>
     <h1>Clarification</h1>
-    <p style="font-size:1.1rem; margin-top: 0.5rem;">반복적인 Q&A + 병렬 코드베이스 탐색을 통해 모호한 요청을 명확한 작업 범위로 좁힙니다.</p>
+    <p>반복적인 Q&A + 병렬 코드베이스 탐색으로 모호한 요청을 명확한 작업 범위로 좁힙니다.</p>
   </div>
 </div>
 
 <div class="container">
 
-  <!-- Workflow Position -->
+  <!-- 01 Workflow Position -->
   <section>
-    <h2>▸ 워크플로우 위치</h2>
-    <div class="skill-chain">
-      <span class="chain-node">요청</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node active">Clarification</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node">Plan / Milestone</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node">Run</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node">Review</span>
+    <h2>01 ▸ 워크플로우 위치</h2>
+    <div class="workflow">
+사용자 요청 (모호)
+    │
+    ▼
+┌─────────────────────────────┐
+│  clarification (ACTIVE)     │
+│  모호성 해소 + 코드베이스 탐색 │
+└──────────────┬──────────────┘
+               │
+      ┌────────┴────────┐
+      ▼                 ▼
+  단순 (5-8)       복잡 (9-15)
+      │                 │
+      ▼                 ▼
+ Plan Crafting    Milestone Planning
     </div>
   </section>
 
-  <!-- Meta Info -->
-  <div class="meta-card">
-    <div class="meta-item">
-      <div class="meta-label">트리거</div>
-      <div class="meta-value">
-        <code>~하고 싶어</code>
-        <code>~이 필요해</code>
-        <code>~을 만들자</code>
-      </div>
-    </div>
-    <div class="meta-item">
-      <div class="meta-label">출력</div>
-      <div class="meta-value">Context Brief 파일 (목표, 범위, 복잡도 점수, 라우팅)</div>
-    </div>
-    <div class="meta-item">
-      <div class="meta-label">연결 스킬</div>
-      <div class="meta-value meta-links">
-        <a href="plan-crafting.html">Plan Crafting</a>
-        <a href="milestone-planning.html">Milestone Planning</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Stats -->
-  <div class="stat-grid">
-    <div class="stat-item"><span class="stat-number">2</span><span class="stat-label">병렬 트랙</span></div>
-    <div class="stat-item"><span class="stat-number">1</span><span class="stat-label">질문/메시지</span></div>
-    <div class="stat-item"><span class="stat-number">5-15</span><span class="stat-label">복잡도 점수</span></div>
-    <div class="stat-item"><span class="stat-number">2</span><span class="stat-label">라우팅 경로</span></div>
-  </div>
-
-  <!-- When to use -->
+  <!-- 02 When to use -->
   <section>
-    <h2>▸ 언제 사용하나요?</h2>
+    <h2>02 ▸ 언제 사용하나요?</h2>
     <div class="callout">
       <em>~하고 싶어</em>, <em>~이 필요해</em>, <em>~을 만들자</em> — 범위가 즉시 명확하지 않은 <strong>모든 요청의 출발점</strong>입니다.
     </div>
-    <ul>
-      <li>요청이 모호해서 구현 방향이 여러 갈래일 때</li>
-      <li>기존 코드베이스와 충돌할 가능성이 있을 때</li>
-      <li>사용자 자신이 정확히 무엇을 원하는지 아직 정리하지 못했을 때</li>
-    </ul>
+    <div class="card">
+      <div class="card-title">주요 트리거</div>
+      <ul>
+        <li>요청이 모호해서 구현 방향이 여러 갈래일 때</li>
+        <li>기존 코드베이스와 충돌할 가능성이 있을 때</li>
+        <li>사용자 자신이 무엇을 원하는지 아직 정의하지 못했을 때</li>
+      </ul>
+    </div>
   </section>
 
-  <!-- How it works -->
+  <!-- 03 How it works -->
   <section>
-    <h2>▸ 어떻게 동작하나요?</h2>
-
+    <h2>03 ▸ 어떻게 동작하나요?</h2>
     <div class="callout blue">
-      <strong>핵심 원리:</strong> 사용자 질문 트랙 1, 코드 탐색 트랙 2 — 두 트랙이 동시에 진행되며 서로를 보완합니다.
+      <strong>핵심 원리:</strong> 사용자 질문 트랙과 코드 탐색 트랙이 동시에 진행되며 서로를 보완합니다.
     </div>
-
-    <div class="rule-list">
-      <div class="rule-item">
-        <span class="rule-number">1</span>
-        <div class="rule-content">
-          <strong>모호성 파악</strong>
-          <p>요청에서 무엇이 불명확한지 식별합니다.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">2</span>
-        <div class="rule-content">
-          <strong>질문 1개 + 코드 탐색 병렬 dispatched</strong>
-          <p>메시지당 오직 하나의 질문만 합니다. 동시에 서브에이전트가 코드베이스를 탐색합니다.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">3</span>
-        <div class="rule-content">
-          <strong>답변 + 탐색 결과 합성</strong>
-          <p>사용자의 답변과 코드 탐색 결과를 교차 검증합니다. 여전히 모호하면 다음 질문.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">4</span>
-        <div class="rule-content">
-          <strong>Context Brief 생성</strong>
-          <p>목표, 범위, 기술 컨텍스트, 제약사항, 성공 기준, 복잡도 평가를 문서화합니다.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">5</span>
-        <div class="rule-content">
-          <strong>복잡도 기반 자동 라우팅</strong>
-          <p>점수 5-8 → <a href="plan-crafting.html">Plan Crafting</a> / 점수 9-15 → <a href="milestone-planning.html">Milestone Planning</a></p>
-        </div>
-      </div>
+    <div class="card">
+      <div class="card-title">단계별 실행</div>
+      <ol>
+        <li><strong>모호성 파악:</strong> 요청에서 불명확한 지점을 식별합니다.</li>
+        <li><strong>질문 1개 + 코드 탐색 병렬:</strong> 메시지당 오직 하나의 질문만 하며, 서브에이전트가 코드베이스를 탐색합니다.</li>
+        <li><strong>답변 + 탐색 결과 합성:</strong> 답변과 탐색 결과를 교차 검증합니다. 여전히 모호하면 다음 질문을 던집니다.</li>
+        <li><strong>Context Brief 생성:</strong> 목표, 범위, 제약사항, 성공 기준, 복잡도 평가를 문서화합니다.</li>
+        <li><strong>복잡도 기반 자동 라우팅:</strong> 점수(5-15)에 따라 다음 워크플로우를 결정합니다.</li>
+      </ol>
     </div>
   </section>
 
-  <!-- Complexity Score -->
+  <!-- 04 Complexity Score -->
   <section>
-    <h2>▸ 복잡도 평가</h2>
-    <table>
-      <tr><th>신호</th><th>단순 (1)</th><th>중간 (2)</th><th>복잡 (3)</th></tr>
-      <tr><td>범위</td><td>단일 기능</td><td>2-3 컴포넌트</td><td>4+ 컴포넌트</td></tr>
-      <tr><td>파일 영향</td><td>≤3개</td><td>4-8개</td><td>9+개</td></tr>
-      <tr><td>인터페이스</td><td>기존 내부 작업</td><td>인터페이스 확장</td><td>새 인터페이스 정의</td></tr>
-      <tr><td>의존성</td><td>순서 없음</td><td>선형 체인</td><td>분기 DAG</td></tr>
-      <tr><td>위험 표면</td><td>통합 위험 없음</td><td>내부 통합</td><td>외부 시스템</td></tr>
-    </table>
+    <h2>04 ▸ 복잡도 평가</h2>
+    <div class="card">
+      <table>
+        <tr><th>신호</th><th>단순 (1)</th><th>중간 (2)</th><th>복잡 (3)</th></tr>
+        <tr><td>범위</td><td>단일 기능</td><td>2-3 컴포넌트</td><td>4+ 컴포넌트</td></tr>
+        <tr><td>파일 영향</td><td>≤3개</td><td>4-8개</td><td>9+개</td></tr>
+        <tr><td>인터페이스</td><td>기존 내부 작업</td><td>인터페이스 확장</td><td>새 인터페이스 정의</td></tr>
+        <tr><td>의존성</td><td>순서 없음</td><td>선형 체인</td><td>분기 DAG</td></tr>
+        <tr><td>위험 표면</td><td>통합 위험 없음</td><td>내부 통합</td><td>외부 시스템</td></tr>
+      </table>
+    </div>
   </section>
 
-  <!-- Hard Gates -->
-  <div class="gate-box">
-    <ul>
-      <li>메시지당 질문 <strong>단 1개</strong> — 복합 질문 금지</li>
-      <li>항상 서브에이전트로 코드베이스 탐색 — 독단에 의존하지 않음</li>
-      <li>명확해질 때까지 구현 시작 금지 — "이제 충분하다"는 자체 판단 금지</li>
-      <li>질문은 항상 범위를 좁혀야 함 — 같은 수준의 추상화 반복 금지</li>
-    </ul>
-  </div>
-
-  <!-- Related Skills -->
+  <!-- 05 Hard Gates -->
   <section>
-    <h2>▸ 연결된 스킬</h2>
-    <div class="skill-chain">
-      <span class="chain-node">Clarification</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node blue"><a href="plan-crafting.html" style="color:inherit; text-decoration:none;">Plan Crafting</a></span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node blue"><a href="milestone-planning.html" style="color:inherit; text-decoration:none;">Milestone Planning</a></span>
+    <h2>05 ▸ 하드 게이트</h2>
+    <div class="card">
+      <div class="card-title">반드시 지켜야 할 원칙</div>
+      <ul>
+        <li>메시지당 질문 <strong>단 1개</strong> — 복합 질문 절대 금지</li>
+        <li>항상 서브에이전트로 코드베이스 탐색 — 독단적인 추측 배제</li>
+        <li>명확해질 때까지 구현 시작 금지 — "충분하다"는 주관적 판단 금지</li>
+        <li>질문은 항상 범위를 좁혀야 함 — 추상적인 질문 반복 금지</li>
+      </ul>
     </div>
+  </section>
+
+  <!-- 06 Related Skills -->
+  <section>
+    <h2>06 ▸ 연결된 스킬</h2>
     <p>
-      <a href="../index.html" class="btn btn-primary">← 홈으로 돌아가기</a>
+      <a href="skills/plan-crafting.html" class="btn btn-primary">Plan Crafting →</a>
+      <a href="skills/milestone-planning.html" class="btn btn-primary">Milestone Planning →</a>
+    </p>
+    <p style="margin-top: 2rem;">
+      <a href="index.html" class="btn">← 홈으로 돌아가기</a>
     </p>
   </section>
 
 </div>
 
 <footer class="footer">
-  <p><a href="https://github.com/tmdgusya/engineering-discipline">tmdgusya/engineering-discipline</a> · MIT License</p>
+  <p>
+    <a href="https://github.com/tmdgusya/engineering-discipline">tmdgusya/engineering-discipline</a>
+    · MIT License
+  </p>
 </footer>
 
 </body>

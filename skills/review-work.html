@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <base href="/engineering-discipline/">
   <title>Review Work — Engineering Discipline</title>
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
@@ -14,140 +14,113 @@
 <body>
 
 <nav class="nav">
-  <a href="../index.html" class="nav-brand">▣ Engineering Discipline</a>
+  <a href="index.html" class="nav-brand">▣ Engineering Discipline</a>
   <ul class="nav-links">
-    <li><a href="../index.html">홈</a></li>
-    <li><a href="run-plan.html">Run Plan</a></li>
-    <li><a href="review-work.html" class="active">Review Work</a></li>
-    <li><a href="long-run.html">Long Run</a></li>
+    <li><a href="index.html">홈</a></li>
+    <li><a href="skills/clarification.html">Clarification</a></li>
+    <li><a href="skills/plan-crafting.html">Plan Crafting</a></li>
+    <li><a href="skills/run-plan.html">Run Plan</a></li>
+    <li><a href="skills/review-work.html" class="active">Review Work</a></li>
+    <li><a href="skills/milestone-planning.html">Milestones</a></li>
+    <li><a href="skills/long-run.html">Long Run</a></li>
   </ul>
 </nav>
 
 <div class="skill-header">
   <div class="container">
     <div>
-      <span class="skill-badge">워크플로</span>
-      <span class="skill-badge blue">정보 격리 검증</span>
+      <span class="skill-badge">04</span>
+      <span class="skill-badge blue">검증</span>
     </div>
     <h1>Review Work</h1>
-    <p style="font-size:1.1rem; margin-top: 0.5rem;">정보가 격리된 실행 후 검증. 계획 문서와 코드베이스만 읽습니다 — 실행 로그나 worker 출력은 받지 않습니다.</p>
+    <p>정보가 격리된 실행 후 검증. 계획 문서와 코드베이스만 읽습니다 — 실행 로그나 worker 출력은 받지 않습니다.</p>
   </div>
 </div>
 
 <div class="container">
 
-  <!-- Workflow Position -->
+  <!-- Section 01 -->
   <section>
-    <h2>▸ 워크플로우 위치</h2>
-    <div class="skill-chain">
-      <span class="chain-node">Run Plan</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node active">Review Work</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node">[완료]</span>
+    <h2>01 ▸ 워크플로우 위치</h2>
+    <div class="workflow">
+    Run Plan
+        │
+        ▼
+┌─────────────┐
+│ review-work │ (ACTIVE)
+│  독립 검증   │
+└──────┬──────┘
+       │
+       ▼
+     [완료]
     </div>
   </section>
 
-  <!-- Meta Info -->
-  <div class="meta-card">
-    <div class="meta-item">
-      <div class="meta-label">트리거</div>
-      <div class="meta-value">
-        <code>작업 검토해줘</code>
-        <code>구현 확인해줘</code>
-      </div>
-    </div>
-    <div class="meta-item">
-      <div class="meta-label">입력</div>
-      <div class="meta-value">계획 문서만 — 실행 로그 <strong>미포함</strong></div>
-    </div>
-    <div class="meta-item">
-      <div class="meta-label">출력</div>
-      <div class="meta-value">PASS / FAIL 이진 판정 + 검토 문서</div>
-    </div>
-  </div>
-
-  <!-- Stats -->
-  <div class="stat-grid">
-    <div class="stat-item"><span class="stat-number">5</span><span class="stat-label">검증 단계</span></div>
-    <div class="stat-item"><span class="stat-number">0</span><span class="stat-label">코드 수정</span></div>
-    <div class="stat-item"><span class="stat-number">2</span><span class="stat-label">판정 (PASS/FAIL)</span></div>
-  </div>
-
-  <!-- When to use -->
+  <!-- Section 02 -->
   <section>
-    <h2>▸ 언제 사용하나요?</h2>
+    <h2>02 ▸ 언제 사용하나요?</h2>
     <div class="callout">
-      Run Plan 또는 Long Run 완료 직후. "<em>구현이 계획을 제대로 따랐는가?</em>"를 독립적으로 검증해야 할 때.
+      Run Plan 또는 Long Run 완료 직후. "<em>구현이 계획을 제대로 따랐는가?</em>"를 독립적으로 검증해야 할 때 사용합니다.
+    </div>
+    <div class="card">
+      <div class="card-title">주요 트리거</div>
+      <ul>
+        <li><code>작업 검토해줘</code></li>
+        <li><code>구현 확인해줘</code></li>
+        <li><code>계획대로 됐는지 봐줘</code></li>
+      </ul>
     </div>
   </section>
 
-  <!-- How it works -->
+  <!-- Section 03 -->
   <section>
-    <h2>▸ 어떻게 동작하나요?</h2>
-
+    <h2>03 ▸ 어떻게 동작하나요?</h2>
     <div class="callout blue">
       <strong>핵심 원리:</strong> Reviewer는 <strong>정보 격리</strong>됩니다. 구현자의 의도가 아니라 오직 결과만 평가합니다.
     </div>
-
-    <div class="rule-list">
-      <div class="rule-item">
-        <span class="rule-number">1</span>
-        <div class="rule-content">
-          <strong>계획 로드 및 파싱</strong>
-          <p>계획 파일만 읽습니다. 목표, 범위, 수락 기준 추출.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">2</span>
-        <div class="rule-content">
-          <strong>코드베이스 검사</strong>
-          <p>계획된 파일 vs 실제 파일 대조. 잔여 아티팩트(TODO, 빈 함수) 탐지.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">3</span>
-        <div class="rule-content">
-          <strong>테스트 독립 실행</strong>
-          <p>계획에 명시된 테스트를 직접 실행 — worker 결과를 신뢰하지 않음.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">4</span>
-        <div class="rule-content">
-          <strong>Git 히스토리 검증</strong>
-          <p>계획된 커밋이 실제로 있는지 대조.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">5</span>
-        <div class="rule-content">
-          <strong>이진 판정 (PASS/FAIL)</strong>
-          <p>검토 문서를 <code>docs/engineering-discipline/reviews/</code>에 저장.</p>
-        </div>
-      </div>
+    <div class="card">
+      <div class="card-title">검증 프로세스</div>
+      <ol>
+        <li><strong>계획 로드 및 파싱:</strong> 계획 파일을 직접 읽어 목표와 수락 기준을 추출합니다.</li>
+        <li><strong>코드베이스 검사:</strong> 계획된 파일 vs 실제 파일을 대조하고 잔여 아티팩트(TODO 등)를 탐지합니다.</li>
+        <li><strong>테스트 독립 실행:</strong> worker 결과를 신뢰하지 않고 모든 테스트를 직접 실행합니다.</li>
+        <li><strong>Git 히스토리 검증:</strong> 계획된 커밋 구조가 실제 로그와 일치하는지 확인합니다.</li>
+        <li><strong>이진 판정:</strong> PASS 또는 FAIL로만 판정하며 검토 문서를 생성합니다.</li>
+      </ol>
     </div>
   </section>
 
-  <!-- Why isolation -->
+  <!-- Section 04 -->
   <section>
-    <h2>▸ 왜 정보를 격리하나요?</h2>
+    <h2>04 ▸ 왜 정보를 격리하나요?</h2>
     <div class="callout">
-      Worker의 출력을 본 Reviewer는 "의도는 좋았으니 통과"하는 편향을 가집니다. 정보 격리는 <strong>결과만</strong>으로 검증의 공정성을 보장합니다.
+      Worker의 출력을 본 Reviewer는 "의도는 좋았으니 통과"하는 편향을 가지기 쉽습니다. 정보 격리는 <strong>결과만</strong>으로 검증의 공정성을 보장하기 위한 필수 장치입니다.
     </div>
   </section>
 
-  <!-- Related Skills -->
+  <!-- Section 05 -->
   <section>
-    <h2>▸ 연결된 스킬</h2>
-    <div class="skill-chain">
-      <span class="chain-node"><a href="run-plan.html" style="color:inherit; text-decoration:none;">Run Plan</a></span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node active">Review Work</span>
+    <h2>05 ▸ 하드 게이트</h2>
+    <div class="card">
+      <div class="card-title">반드시 지켜야 할 규칙</div>
+      <ul>
+        <li>실행 컨텍스트(로그, 출력)를 절대 받지 않습니다.</li>
+        <li>계획 문서를 요약본이 아닌 원본 파일로 직접 읽습니다.</li>
+        <li>모든 테스트와 검증 명령을 직접 실행합니다.</li>
+        <li>판정은 오직 <strong>PASS</strong> 또는 <strong>FAIL</strong> 이진법으로만 내립니다.</li>
+        <li>검토 결과를 반드시 지정된 경로에 파일로 저장합니다.</li>
+        <li>이 스킬은 Read-only입니다. 발견된 문제를 직접 수정하지 않습니다.</li>
+      </ul>
     </div>
-    <p>
-      <a href="../index.html" class="btn btn-primary">← 홈으로 돌아가기</a>
-    </p>
+  </section>
+
+  <!-- Section 06 -->
+  <section>
+    <h2>06 ▸ 연결된 스킬</h2>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+      <a href="skills/run-plan.html" class="btn">← Run Plan으로 가기</a>
+      <a href="index.html" class="btn btn-primary">홈으로 돌아가기</a>
+    </div>
   </section>
 
 </div>

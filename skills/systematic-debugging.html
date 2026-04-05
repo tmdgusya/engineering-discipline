@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <base href="/engineering-discipline/">
   <title>Systematic Debugging — Engineering Discipline</title>
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
@@ -14,11 +14,15 @@
 <body>
 
 <nav class="nav">
-  <a href="../index.html" class="nav-brand">▣ Engineering Discipline</a>
+  <a href="index.html" class="nav-brand">▣ Engineering Discipline</a>
   <ul class="nav-links">
-    <li><a href="../index.html">홈</a></li>
-    <li><a href="simplify.html">Simplify</a></li>
-    <li><a href="systematic-debugging.html" class="active">Debugging</a></li>
+    <li><a href="index.html">홈</a></li>
+    <li><a href="skills/clarification.html">Clarification</a></li>
+    <li><a href="skills/plan-crafting.html">Plan Crafting</a></li>
+    <li><a href="skills/run-plan.html">Run Plan</a></li>
+    <li><a href="skills/review-work.html">Review Work</a></li>
+    <li><a href="skills/milestone-planning.html">Milestones</a></li>
+    <li><a href="skills/long-run.html">Long Run</a></li>
   </ul>
 </nav>
 
@@ -29,162 +33,86 @@
       <span class="skill-badge blue">7단계</span>
     </div>
     <h1>Systematic Debugging</h1>
-    <p style="font-size:1.1rem;">재현 우선, 근본 원인 우선, 실패 테스트 우선. "하면서 다른 것도 고치는" 행위를 차단하는 엄격한 디버깅 워크플로입니다.</p>
+    <p>재현 우선, 근본 원인 우선, 실패 테스트 우선. "하면서 다른 것도 고치는" 행위를 차단하는 엄격한 디버깅 워크플로입니다.</p>
   </div>
 </div>
 
 <div class="container">
 
-  <!-- Workflow Position -->
+  <!-- Section 01: Workflow Position -->
   <section>
-    <h2>▸ 워크플로우 위치</h2>
-    <div class="skill-chain">
-      <span class="chain-node">Run Plan</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node active">Systematic Debugging</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node">Rob Pike</span>
-    </div>
+    <h2>01 ▸ 워크플로우 위치</h2>
+    <div class="workflow">      [버그 발생]
+          │
+          ▼
+┌─────────────────────────────┐
+│  Systematic Debugging (ACTIVE)│
+│  재현 ▸ 가설 ▸ 테스트 ▸ 수정  │
+└──────────────┬──────────────┘
+               │
+               ▼
+            [해결됨]</div>
   </section>
 
-  <!-- Meta Info -->
-  <div class="meta-card">
-    <div class="meta-item">
-      <div class="meta-label">트리거</div>
-      <div class="meta-value">버그 · 테스트 실패 · 예상치 못한 동작</div>
-    </div>
-    <div class="meta-item">
-      <div class="meta-label">메커니즘</div>
-      <div class="meta-value">7단계 순차 디버깅</div>
-    </div>
-    <div class="meta-item">
-      <div class="meta-label">하드 게이트</div>
-      <div class="meta-value">재현 금지 · 가설 금지</div>
-    </div>
-  </div>
-
-  <!-- Stats -->
-  <div class="stat-grid">
-    <div class="stat-item"><span class="stat-number">7</span><span class="stat-label">단계</span></div>
-    <div class="stat-item"><span class="stat-number">4</span><span class="stat-label">하드 게이트</span></div>
-    <div class="stat-item"><span class="stat-number">1</span><span class="stat-label">동시 가설</span></div>
-    <div class="stat-item"><span class="stat-number">3</span><span class="stat-label">실패 시 구조 분석</span></div>
-  </div>
-
-  <!-- When to use -->
+  <!-- Section 02: When to use -->
   <section>
-    <h2>▸ 언제 사용하나요?</h2>
+    <h2>02 ▸ 언제 사용하나요?</h2>
     <div class="callout">
-      버그, 테스트 실패, 예상치 못한 동작 — <strong>무엇이든</strong> 고쳐야 할 때.
+      버그, 테스트 실패, 예상치 못한 동작 — <strong>무엇이든</strong> 고쳐야 할 때 사용합니다.
     </div>
-    <ul>
-      <li>런타임 에러, 테스트 실패, 예기치 않은 동작</li>
-      <li>Run Plan 또는 Long Run 실패 시 자동 전환</li>
-      <li>"이 테스트가 불안정해", "버그 있어"</li>
-    </ul>
+    <div class="card">
+      <div class="card-title">주요 트리거</div>
+      <ul>
+        <li>런타임 에러, 테스트 실패, 예기치 않은 동작</li>
+        <li>Run Plan 또는 Long Run 실패 시 자동 전환</li>
+        <li>"이 테스트가 불안정해", "버그 있어" 등의 보고</li>
+      </ul>
+    </div>
   </section>
 
-  <!-- 7 Steps -->
+  <!-- Section 03: How it works -->
   <section>
-    <h2>▸ 7단계 디버깅 워크플로</h2>
-
+    <h2>03 ▸ 어떻게 동작하나요?</h2>
     <div class="callout blue">
-      <strong>핵심 원리:</strong> 재현 없으면 수정 없습니다. 가설 없으면 수정 없습니다. 한 번에 하나의 가설만.
+      <strong>핵심 원리:</strong> 재현 없으면 수정 없습니다. 가설 없으면 수정 없습니다. 한 번에 하나의 가설만 검증합니다.
     </div>
-
-    <div class="rule-list">
-      <div class="rule-item">
-        <span class="rule-number">1</span>
-        <div class="rule-content">
-          <strong>문제 정의 (한 문장)</strong>
-          <p>"무엇이 기대와 다른가"를 한 문장으로 명확히 합니다.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">2</span>
-        <div class="rule-content">
-          <strong>재현 또는 계측</strong>
-          <p>최소 재현 경로를 확보합니다. 재현 불가면 계측부터.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">3</span>
-        <div class="rule-content">
-          <strong>컴포넌트 경계에서 증거 수집</strong>
-          <p>입력/출력을 추적하여 실패 지점을 좁힙니다.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">4</span>
-        <div class="rule-content">
-          <strong>단일 근본 원인 가설 분리</strong>
-          <p>"A가 B 때문에 실패한다" — 하나의 구체적 가설.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">5</span>
-        <div class="rule-content">
-          <strong>실패 테스트로 고정</strong>
-          <p>가설을 증명하는 실패 테스트를 작성합니다.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">6</span>
-        <div class="rule-content">
-          <strong>가설당 하나의 수정</strong>
-          <p>한 가설, 한 수정. 리팩토링 금지.</p>
-        </div>
-      </div>
-      <div class="rule-item">
-        <span class="rule-number">7</span>
-        <div class="rule-content">
-          <strong>검증 및 종료</strong>
-          <p>테스트 통과 → 종료. 3회 실패 시 구조적 문제 분석.</p>
-        </div>
-      </div>
+    <div class="card">
+      <div class="card-title">7단계 디버깅 워크플로</div>
+      <ol style="margin-left: 1.5rem;">
+        <li><strong>문제 정의 (한 문장):</strong> "무엇이 기대와 다른가"를 명확히 기술합니다.</li>
+        <li><strong>재현 또는 계측:</strong> 최소 재현 경로를 확보하거나 계측 로그를 추가합니다.</li>
+        <li><strong>증거 수집:</strong> 컴포넌트 경계에서 입력/출력을 추적하여 실패 지점을 좁힙니다.</li>
+        <li><strong>단일 가설 수립:</strong> "A가 B 때문에 실패한다"는 구체적인 가설을 세웁니다.</li>
+        <li><strong>실패 테스트 작성:</strong> 가설을 증명하는 (수정 전에는 실패하는) 테스트를 작성합니다.</li>
+        <li><strong>단일 수정 적용:</strong> 해당 가설을 해결하는 최소한의 코드만 수정합니다.</li>
+        <li><strong>검증 및 종료:</strong> 테스트 통과를 확인합니다. 3회 실패 시 구조적 문제를 의심합니다.</li>
+      </ol>
     </div>
   </section>
 
-  <!-- Gate -->
-  <div class="gate-box">
-    ⛔ HARD GATE: <strong>재현 없이 수정 금지.</strong> 가설 없이 수정 금지. 동시에 여러 가설 금지.
-  </div>
-
-  <!-- Hard Gates Table -->
+  <!-- Section 04: Hard Gates -->
   <section>
-    <h2>▸ 하드 게이트 규칙</h2>
-    <table>
-      <tr><th>규칙</th><th>설명</th></tr>
-      <tr><td>재현 금지</td><td>재현 없이는 수정하지 않음</td></tr>
-      <tr><td>가설 금지</td><td>가설 없이는 수정하지 않음</td></tr>
-      <tr><td>한 번에 하나</td><td>동시 다중 가설/수정 금지</td></tr>
-      <tr><td>"하면서" 금지</td><td>"while I'm here" 리팩토링 금지</td></tr>
-    </table>
-  </section>
-
-  <!-- Reference Guides -->
-  <section>
-    <h2>▸ 참고 가이드</h2>
-    <ul>
-      <li><strong>조건 기반 대기</strong> — 불안정한 타임아웃을 안정적인 조건 폴링으로 교체</li>
-      <li><strong>심층 방어 검증</strong> — 데이터가 통과하는 모든 레이어에서 검증</li>
-      <li><strong>근본 원인 추적</strong> — 호출 체인을 역추적하여 원래 트리거 찾기</li>
-      <li><strong>오염자 찾기 스크립트</strong> — 원치 않는 파일/상태를 생성하는 테스트를 찾는 이분법 스크립트</li>
-    </ul>
-  </section>
-
-  <!-- Related Skills -->
-  <section>
-    <h2>▸ 연결된 스킬</h2>
-    <div class="skill-chain">
-      <span class="chain-node active">Systematic Debugging</span>
-      <span class="chain-arrow">→</span>
-      <span class="chain-node blue"><a href="rob-pike.html" style="color:inherit; text-decoration:none;">Rob Pike</a></span>
+    <h2>04 ▸ 하드 게이트</h2>
+    <div class="callout">
+      <strong>강력 규율:</strong> 아래 규칙을 위반하는 디버깅은 금지됩니다.
     </div>
-    <p>
-      <a href="run-plan.html" class="btn">← Run Plan</a>
-      <a href="../index.html" class="btn btn-primary">← 홈</a>
-    </p>
+    <div class="card">
+      <ul>
+        <li><strong>재현 금지:</strong> 재현(또는 명확한 관측) 없이는 수정을 시작하지 않습니다.</li>
+        <li><strong>가설 금지:</strong> 명확한 근본 원인 가설 없이는 코드를 고치지 않습니다.</li>
+        <li><strong>동시 수정 금지:</strong> 한 번에 여러 가설을 테스트하거나 여러 곳을 고치지 않습니다.</li>
+        <li><strong>"하면서" 금지:</strong> 버그를 고치면서 리팩토링이나 코드 정리를 병행하지 않습니다.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Section 05: Related Skills -->
+  <section>
+    <h2>05 ▸ 연결된 스킬</h2>
+    <p style="margin-bottom: 1.5rem;">디버깅 후 성능 최적화가 필요하다면 Rob Pike 스킬로 이동하세요.</p>
+    <a href="skills/rob-pike.html" class="btn btn-blue">Rob Pike 5 Rules</a>
+    <a href="skills/run-plan.html" class="btn">← Run Plan</a>
+    <a href="index.html" class="btn btn-primary">홈으로 돌아가기</a>
   </section>
 
 </div>
