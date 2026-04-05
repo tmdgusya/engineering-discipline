@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="/engineering-discipline/">
+  <title>Engineering Discipline — Architectural Rigor for AI Coding</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="en">
+
+<nav class="nav">
+  <a href="index-en.html" class="nav-brand">▣ Engineering Discipline</a>
+  <ul class="nav-links">
+    <li><a href="index-en.html" class="active">Home</a></li>
+    <li><a href="index-en.html#skills">Skills</a></li>
+    <li><a href="index-en.html#workflow">Workflow</a></li>
+    <li><a href="index-en.html#install">Install</a></li>
+    <li class="lang-switcher">
+      <a href="index.html">KO</a>
+      <span class="divider">|</span>
+      <a href="index-en.html" class="active">EN</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="container">
+
+  <!-- Hero -->
+  <section>
+    <h1>Engineering Discipline for<br>AI Coding Agents</h1>
+    <p style="font-size:1.15rem;margin-bottom:1.5rem;">
+      From vague requests → clear plans → verified implementation.<br>
+      Works directly with Claude Code, Gemini CLI, Cursor, and Codex.
+    </p>
+    <a href="index-en.html#workflow" class="btn btn-primary">View Workflow ↓</a>
+    <a href="https://github.com/tmdgusya/engineering-discipline" class="btn" target="_blank">GitHub ↗</a>
+  </section>
+
+  <!-- Workflow Diagram -->
+  <section id="workflow">
+    <h2>01 ▸ Workflow</h2>
+
+    <div class="callout">
+      <strong>How it works?</strong> Skills are chained to route tasks automatically.
+      All you need to do is say <em>what you want</em>.
+    </div>
+
+    <div class="workflow">User Request (Vague)
+    │
+    ▼
+┌─────────────────────────────┐
+│  clarification              │
+│  De-risk + Codebase Search  │
+│  ─────────────────────────  │
+│  Complexity Check (Routing) │
+└──────────────┬──────────────┘
+               │
+      ┌────────┴────────┐
+      │                 │
+      ▼                 ▼
+  Simple (5-8)     Complex (9-15)
+      │                 │
+      ▼                 ▼
+┌─────────────┐   ┌──────────────────┐
+│plan-crafting│   │milestone-planning│
+│Plan Creation│   │  5 Parallel Rev. │
+└──────┬──────┘   └────────┬─────────┘
+       │                   │
+       ▼                   ▼
+┌─────────────┐   ┌──────────────────┐
+│  run-plan   │   │    long-run       │
+│  Worker-    │   │ Orchestration    │
+│  Validator  │   │                  │
+└──────┬──────┘   └────────┬─────────┘
+       │                   │
+       ▼                   │
+┌─────────────┐            │
+│ review-work │◄───────────┘
+│ Independent │  Each Milestone:
+└─────────────┘  plan → run → review
+      │
+      ▼
+  [DONE]
+
+  ─── Independent Skills (On-demand) ───
+
+  karpathy          → Pre-coding Guardrails
+  clean-ai-slop     → Deslop AI output
+  simplify          → Quality Review
+  systematic-debug  → Root-cause Debugging
+  rob-pike          → Measurement-driven Perf
+</div>
+
+    <div class="callout blue">
+      <strong>Core Principle:</strong> <em>Information Isolation</em> is applied at every transition.
+      Validators never know the worker's intent — only the plan and the result.
+    </div>
+  </section>
+
+  <!-- Skills Map -->
+  <section id="skills">
+    <h2>02 ▸ Skill Map</h2>
+
+    <h3>Workflow Skills</h3>
+
+    <div class="card">
+      <a href="skills/en/clarification.html" class="card-link">
+        <div class="card-title">Clarification</div>
+      </a>
+      <div>
+        <span class="card-tag">Start</span>
+        <span class="card-tag blue">Auto-routing</span>
+      </div>
+      <p style="margin-top:0.5rem;">Narrow down vague requests via iterative Q&A + codebase search. Automatically routes to the next skill based on complexity.</p>
+    </div>
+
+    <div class="card">
+      <a href="skills/en/plan-crafting.html" class="card-link">
+        <div class="card-title">Plan Crafting</div>
+      </a>
+      <div>
+        <span class="card-tag">Plan</span>
+        <span class="card-tag">Executable</span>
+      </div>
+      <p style="margin-top:0.5rem;">Create multi-step implementation plans. Every step must include actual code — no placeholders allowed.</p>
+    </div>
+
+    <div class="card">
+      <a href="skills/en/run-plan.html" class="card-link">
+        <div class="card-title">Run Plan</div>
+      </a>
+      <div>
+        <span class="card-tag">Execute</span>
+        <span class="card-tag blue">Worker-Validator</span>
+      </div>
+      <p style="margin-top:0.5rem;">Worker implements, Validator independently verifies. Auto-retry on failure, escalation after 3 failures.</p>
+    </div>
+
+    <div class="card">
+      <a href="skills/en/review-work.html" class="card-link">
+        <div class="card-title">Review Work</div>
+      </a>
+      <div>
+        <span class="card-tag">Verify</span>
+        <span class="card-tag blue">Isolation</span>
+      </div>
+      <p style="margin-top:0.5rem;">Verify plan vs implementation with zero context overlap. Delivers a binary PASS/FAIL verdict.</p>
+    </div>
+
+    <h3>Long Running</h3>
+
+    <div class="card">
+      <a href="skills/en/milestone-planning.html" class="card-link">
+        <div class="card-title">Milestone Planning</div>
+      </a>
+      <div>
+        <span class="card-tag">Decompose</span>
+        <span class="card-tag blue">5 Parallel Rev.</span>
+      </div>
+      <p style="margin-top:0.5rem;">Synthesize an optimized milestone DAG after concurrent reviews across feasibility, architecture, risk, dependency, and value.</p>
+    </div>
+
+    <div class="card">
+      <a href="skills/en/long-run.html" class="card-link">
+        <div class="card-title">Long Run</div>
+      </a>
+      <div>
+        <span class="card-tag">Orchestration</span>
+        <span class="card-tag blue">Checkpoints</span>
+      </div>
+      <p style="margin-top:0.5rem;">Orchestrate executions spanning multiple days. Survives crashes with checkpoints and runs parallel milestones via worktree isolation.</p>
+    </div>
+
+    <h3>Independent Skills</h3>
+
+    <div class="card">
+      <a href="skills/en/karpathy.html" class="card-link">
+        <div class="card-title">Karpathy</div>
+      </a>
+      <div>
+        <span class="card-tag">Prevent</span>
+        <span class="card-tag">Guardrails</span>
+      </div>
+      <p style="margin-top:0.5rem;">Surgical changes, assumption verification, scope discipline — prevent common LLM mistakes before and during coding.</p>
+    </div>
+
+    <div class="card">
+      <a href="skills/en/clean-ai-slop.html" class="card-link">
+        <div class="card-title">Clean AI Slop</div>
+      </a>
+      <div>
+        <span class="card-tag">Cleanup</span>
+        <span class="card-tag blue">6-Pass</span>
+      </div>
+      <p style="margin-top:0.5rem;">Remove excessive comments, redundant abstractions, and defensive paranoia while preserving behavior. Test-first, single-smell passes.</p>
+    </div>
+
+    <div class="card">
+      <a href="skills/en/simplify.html" class="card-link">
+        <div class="card-title">Simplify</div>
+      </a>
+      <div>
+        <span class="card-tag">Review</span>
+        <span class="card-tag blue">3 Parallel Agents</span>
+      </div>
+      <p style="margin-top:0.5rem;">Reuse, quality, efficiency — 3 parallel reviewers audit changes and automatically fix discovered issues.</p>
+    </div>
+
+    <div class="card">
+      <a href="skills/en/systematic-debugging.html" class="card-link">
+        <div class="card-title">Systematic Debugging</div>
+      </a>
+      <div>
+        <span class="card-tag">Debug</span>
+        <span class="card-tag">7-Step</span>
+      </div>
+      <p style="margin-top:0.5rem;">Reproduce first → Trace root cause → Failing test → Single fix → Verify. Blocks "fixing other things while I'm here."</p>
+    </div>
+
+    <div class="card">
+      <a href="skills/en/rob-pike.html" class="card-link">
+        <div class="card-title">Rob Pike's 5 Rules</div>
+      </a>
+      <div>
+        <span class="card-tag">Perf</span>
+        <span class="card-tag blue">Measure First</span>
+      </div>
+      <p style="margin-top:0.5rem;">"Don't touch it if you haven't measured it." Prevents premature optimization and enforces data-driven tuning.</p>
+    </div>
+  </section>
+
+  <!-- Install -->
+  <section id="install">
+    <h2>03 ▸ Install</h2>
+
+    <div class="card">
+      <div class="card-title">Claude Code</div>
+      <pre>/plugin marketplace add tmdgusya/engineering-discipline
+/plugin install engineering-discipline</pre>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Gemini CLI</div>
+      <pre>gemini extensions install https://github.com/tmdgusya/engineering-discipline</pre>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Cursor</div>
+      <pre>/add-plugin engineering-discipline</pre>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Codex</div>
+      <pre>npx skills add tmdgusya/engineering-discipline</pre>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>
+      <a href="https://github.com/tmdgusya/engineering-discipline">tmdgusya/engineering-discipline</a>
+      · MIT License
+    </p>
+  </footer>
+
+</div>
+
+</body>
+</html>

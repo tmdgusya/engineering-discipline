@@ -121,6 +121,26 @@ pre code {
   color: var(--bg);
 }
 
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: 0.5rem;
+  border-left: 2px solid #eee;
+  padding-left: 1rem;
+}
+
+.lang-switcher .divider {
+  color: var(--black);
+  opacity: 0.3;
+  font-size: 0.8rem;
+}
+
+.lang-switcher a {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.35rem;
+}
+
 /* === Typography === */
 h1 {
   font-size: 2.5rem;
