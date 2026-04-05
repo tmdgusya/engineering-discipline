@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="/engineering-discipline/">
+  <title>Review Work — Engineering Discipline</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../index.html" class="nav-brand">&#x25A3; Engineering Discipline</a>
+  <ul class="nav-links">
+    <li><a href="../index.html">홈</a></li>
+    <li><a href="run-plan.html">Run Plan</a></li>
+    <li><a href="review-work.html" class="active">Review Work</a></li>
+  </ul>
+</nav>
+
+<div class="skill-header">
+  <div class="container">
+    <div>
+      <span class="skill-badge">워크플로</span>
+      <span class="skill-badge blue">정보 격리 검증</span>
+    </div>
+    <h1>Review Work</h1>
+    <p style="font-size:1.1rem;">정보가 격리된 실행 후 검증. 계획 문서와 코드베이스만 읽습니다 — 실행 로그나 worker 출력은 받지 않습니다.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <section>
+    <h2>언제 사용하나요?</h2>
+    <div class="callout">
+      Run Plan 또는 Long Run 완료 직후. "<em>구현이 계획을 제대로 따랐는가?</em>"를 독립적으로 검증해야 할 때.
+    </div>
+    <ul>
+      <li><code>"작업 검토해줘"</code>, <code>"구현 확인해줘"</code></li>
+      <li>run-plan 완료 후 자동 전환</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>어떻게 동작하나요?</h2>
+
+    <div class="callout blue">
+      <strong>핵심 원리:</strong> Reviewer는 <strong>정보 격리</strong>됩니다. 계획 문서만 받고, 실행 로그나 worker 출력은 받지 않습니다. 구현자의 의도가 아니라 오직 결과만 평가합니다.
+    </div>
+
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-number">1</div>
+        <div>
+          <strong>계획 로드 및 파싱</strong>
+          <p>계획 파일만 읽습니다. 목표, 범위, 수락 기준을 추출.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">2</div>
+        <div>
+          <strong>코드베이스 검사</strong>
+          <p>계획된 파일 vs 실제 파일을 대조. 잔여 아티팩트(TODO, 비어있는 함수 등) 탐지.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">3</div>
+        <div>
+          <strong>테스트 독립 실행</strong>
+          <p>계획에 명시된 테스트를 직접 실행합니다 — worker의 테스트 결과를 신뢰하지 않음.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">4</div>
+        <div>
+          <strong>Git 히스토리 검증</strong>
+          <p>계획된 커밋이 실제로 있는지 히스토리와 대조합니다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">5</div>
+        <div>
+          <strong>이진 판정 (PASS/FAIL)</strong>
+          <p>구조화된 검토 문서를 <code>docs/engineering-discipline/reviews/</code>에 저장합니다. 코드를 수정하지 않습니다 — 보고만 합니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>왜 정보를 격리하나요?</h2>
+    <div class="callout">
+      Worker의 출력을 본 Reviewer는 "의도는 좋았으니 통과"하는 편향을 가집니다. 정보 격리는 <strong>결과만</strong>으로 검증의 공정성을 보장합니다.
+    </div>
+  </section>
+
+  <section>
+    <h2>연결된 스킬</h2>
+    <p>
+      <a href="run-plan.html" class="btn">← Run Plan</a>
+      <a href="systematic-debugging.html" class="btn">버그 발견 시 →</a>
+      <a href="../index.html" class="btn btn-primary">← 홈</a>
+    </p>
+  </section>
+
+</div>
+
+<footer class="footer">
+  <p><a href="https://github.com/tmdgusya/engineering-discipline">tmdgusya/engineering-discipline</a> · MIT License</p>
+</footer>
+
+</body>
+</html>

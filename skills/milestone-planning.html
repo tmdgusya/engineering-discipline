@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="/engineering-discipline/">
+  <title>Milestone Planning — Engineering Discipline</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../index.html" class="nav-brand">&#x25A3; Engineering Discipline</a>
+  <ul class="nav-links">
+    <li><a href="../index.html">홈</a></li>
+    <li><a href="clarification.html">Clarification</a></li>
+    <li><a href="long-run.html">Long Run</a></li>
+    <li><a href="milestone-planning.html" class="active">Milestones</a></li>
+  </ul>
+</nav>
+
+<div class="skill-header">
+  <div class="container">
+    <div>
+      <span class="skill-badge">장기 실행</span>
+      <span class="skill-badge blue">5개 병렬 리뷰어</span>
+    </div>
+    <h1>Milestone Planning</h1>
+    <p style="font-size:1.1rem;">5개의 독립적인 리뷰어 에이전트가 병렬로 리뷰하고, 결과를 합성해 최적화된 마일스톤 의존성 DAG를 만듭니다.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <section>
+    <h2>언제 사용하나요?</h2>
+    <div class="callout">
+      Clarification이 <strong>복잡(Complex)</strong> 판정(점수 9-15)을 내린 직후. 며칠에 걸친 작업이 필요할 때.
+    </div>
+    <ul>
+      <li><code>"마일스톤 계획해줘"</code>, <code>"마일스톤으로 나눠줘"</code>, <code>"ultraplan"</code></li>
+      <li>작업이 2-3개 이상의 독립적 하위 태스크로 분해될 때</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>어떻게 동작하나요?</h2>
+
+    <div class="callout blue">
+      <strong>핵심 원리:</strong> 5개 리뷰어는 서로 <em>정보 격리</em>되어 있습니다. 교차 오염 없이 각자의 관점에서 계획을 비판합니다.
+    </div>
+
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-number">1</div>
+        <div>
+          <strong>Problem Brief</strong>
+          <p>문제를 프레임화합니다 — 목표, 범위, 제약사항.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">2</div>
+        <div>
+          <strong>5개 병렬 리뷰어 동시 생성</strong>
+          <p><strong>Feasibility</strong> — 실현 가능한가? / <strong>Architecture</strong> — 구조가 올바른가? / <strong>Risk</strong> — 위험 요소는? / <strong>Dependency</strong> — 의존성 순서가 맞는가? / <strong>User Value</strong> — 사용자에게 필요한가?</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">3</div>
+        <div>
+          <strong>합성 — 마일스톤 DAG</strong>
+          <p>5개 리뷰어 결과를 Conflict Resolution Log와 함께 종합. 자동 통합 검증 마일스톤이 마지막으로 추가됩니다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">4</div>
+        <div>
+          <strong>독립 DAG 검증</strong>
+          <p>메인 에이전트가 순환 의존, 파일 충돌, 성공 기준 품질을 독립적으로 검증합니다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">5</div>
+        <div>
+          <strong>사용자 승인 → Harness 잠금</strong>
+          <p>승인된 마일스톤이 harness 상태 디렉토리에 잠깁니다. <a href="long-run.html">Long Run</a>으로 실행 진입.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>마일스톤 수 가드</h2>
+    <div class="callout">
+      7개 초과: 경고 / 10개 초과: 사용자 추가 승인 필요. 과도한 분할은 관리 오버헤드를 만듭니다.
+    </div>
+  </section>
+
+  <section>
+    <h2>연결된 스킬</h2>
+    <p>
+      <a href="clarification.html" class="btn">← Clarification</a>
+      <a href="long-run.html" class="btn">Long Run →</a>
+      <a href="../index.html" class="btn btn-primary">← 홈</a>
+    </p>
+  </section>
+
+</div>
+
+<footer class="footer">
+  <p><a href="https://github.com/tmdgusya/engineering-discipline">tmdgusya/engineering-discipline</a> · MIT License</p>
+</footer>
+
+</body>
+</html>

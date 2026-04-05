@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="/engineering-discipline/">
+  <title>Engineering Discipline — AI 코딩을 위한 엔지니어링 규율</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-brand">▣ Engineering Discipline</a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">홈</a></li>
+    <li><a href="#skills">스킬</a></li>
+    <li><a href="#workflow">워크플로우</a></li>
+    <li><a href="#install">설치</a></li>
+  </ul>
+</nav>
+
+<div class="container">
+
+  <!-- Hero -->
+  <section>
+    <h1>AI 코딩 에이전트를 위한<br>엔지니어링 규율</h1>
+    <p style="font-size:1.15rem;margin-bottom:1.5rem;">
+      모호한 요청 → 명확한 계획 → 검증된 구현까지.<br>
+      Claude Code, Gemini CLI, Cursor, Codex에서 바로 작동합니다.
+    </p>
+    <a href="#workflow" class="btn btn-primary">워크플로우 보기 ↓</a>
+    <a href="https://github.com/tmdgusya/engineering-discipline" class="btn" target="_blank">GitHub ↗</a>
+  </section>
+
+  <!-- Workflow Diagram -->
+  <section id="workflow">
+    <h2>01 ▸ 워크플로우</h2>
+
+    <div class="callout">
+      <strong>어떻게 동작하나요?</strong> 스킬이 체인으로 연결되어 작업을 자동으로 라우팅합니다.
+      당신이 해야 할 일은 <em>무엇을 원하는지</em> 말하는 것뿐입니다.
+    </div>
+
+    <div class="workflow">사용자 요청 (모호)
+    │
+    ▼
+┌─────────────────────────────┐
+│  clarification              │
+│  모호성 해소 + 코드베이스 탐색 │
+│  ─────────────────────────  │
+│  복잡도 평가 (자동 라우팅)    │
+└──────────────┬──────────────┘
+               │
+      ┌────────┴────────┐
+      │                 │
+      ▼                 ▼
+  단순 (5-8)       복잡 (9-15)
+      │                 │
+      ▼                 ▼
+┌─────────────┐   ┌──────────────────┐
+│plan-crafting│   │milestone-planning│
+│  계획 작성   │   │  5개 병렬 리뷰어   │
+└──────┬──────┘   └────────┬─────────┘
+       │                   │
+       ▼                   ▼
+┌─────────────┐   ┌──────────────────┐
+│  run-plan   │   │    long-run       │
+│  worker-   │   │  다일 오케스트레이  │
+│  validator  │   │                  │
+└──────┬──────┘   └────────┬─────────┘
+       │                   │
+       ▼                   │
+┌─────────────┐            │
+│ review-work │◄───────────┘
+│  독립 검증   │  각 마일스톤:
+└─────────────┘  plan → run → review
+      │
+      ▼
+  [완료]
+
+  ─── 독립 스킬 (언제든 호출) ───
+
+  karpathy          → 코딩 전/중 가드레일
+  clean-ai-slop     → AI 생성 코드 정리
+  simplify          → 변경사항 품질 검토
+  systematic-debug  → 버그/테스트 실패
+  rob-pike          → 성능 최적화
+</div>
+
+    <div class="callout blue">
+      <strong>핵심 원리:</strong> 모든 전환점에서 <em>정보 격리</em>가 적용됩니다.
+      검증자는 구현자의 의도를 모릅니다 — 오직 계획과 결과만 봅니다.
+    </div>
+  </section>
+
+  <!-- Skills Map -->
+  <section id="skills">
+    <h2>02 ▸ 스킬 맵</h2>
+
+    <h3>워크플로 스킬</h3>
+
+    <div class="card">
+      <a href="skills/clarification.html" class="card-link">
+        <div class="card-title">Clarification</div>
+      </a>
+      <div>
+        <span class="card-tag">출발점</span>
+        <span class="card-tag blue">자동 라우팅</span>
+      </div>
+      <p style="margin-top:0.5rem;">모호한 요청을 반복 질문 + 코드 탐색으로 명확한 범위로 좁힙니다. 단순/복잡을 자동 판별해 다음 스킬로 라우팅합니다.</p>
+    </div>
+
+    <div class="card">
+      <a href="skills/plan-crafting.html" class="card-link">
+        <div class="card-title">Plan Crafting</div>
+      </a>
+      <div>
+        <span class="card-tag">계획</span>
+        <span class="card-tag">실행 가능</span>
+      </div>
+      <p style="margin-top:0.5rem;">명확한 범위로 실행 가능한 다단계 구현 계획을 생성합니다. 모든 단계에 실제 코드가 포함됩니다 — 플레이스홀더 금지.</p>
+    </div>
+
+    <div class="card">
+      <a href="skills/run-plan.html" class="card-link">
+        <div class="card-title">Run Plan</div>
+      </a>
+      <div>
+        <span class="card-tag">실행</span>
+        <span class="card-tag blue">Worker-Validator</span>
+      </div>
+      <p style="margin-top:0.5rem;">Worker가 구현하고 Validator가 독립 검증합니다. 실패 시 자동 재시도, 3회 실패 시 사용자에게 에스컬레이션.</p>
+    </div>
+
+    <div class="card">
+      <a href="skills/review-work.html" class="card-link">
+        <div class="card-title">Review Work</div>
+      </a>
+      <div>
+        <span class="card-tag">검증</span>
+        <span class="card-tag blue">정보 격리</span>
+      </div>
+      <p style="margin-top:0.5rem;">정보가 격리된 상태에서 계획 vs 구현을 대조 검증합니다. PASS/FAIL 이진 판정을 내립니다.</p>
+    </div>
+
+    <h3>장기 실행</h3>
+
+    <div class="card">
+      <a href="skills/milestone-planning.html" class="card-link">
+        <div class="card-title">Milestone Planning</div>
+      </a>
+      <div>
+        <span class="card-tag">분해</span>
+        <span class="card-tag blue">5개 병렬 리뷰어</span>
+      </div>
+      <p style="margin-top:0.5rem;">실현가능성, 아키텍처, 리스크, 의존성, 사용자 가치 — 5개 관점에서 동시 리뷰 후 최적화된 마일스톤 DAG를 합성합니다.</p>
+    </div>
+
+    <div class="card">
+      <a href="skills/long-run.html" class="card-link">
+        <div class="card-title">Long Run</div>
+      </a>
+      <div>
+        <span class="card-tag">오케스트레이션</span>
+        <span class="card-tag blue">체크포인트</span>
+      </div>
+      <p style="margin-top:0.5rem;">며칠에 걸친 실행을 오케스트레이션합니다. 디스크 체크포인트로 크래시에서 생존하고, 병렬 마일스톤을 worktree 격리로 실행합니다.</p>
+    </div>
+
+    <h3>독립 스킬</h3>
+
+    <div class="card">
+      <a href="skills/karpathy.html" class="card-link">
+        <div class="card-title">Karpathy Guidelines</div>
+      </a>
+      <div>
+        <span class="card-tag">예방</span>
+        <span class="card-tag">가드레일</span>
+      </div>
+      <p style="margin-top:0.5rem;">수술적 변경, 가정 검증, 범위 규율 — 코딩 전과 중에 LLM의 흔한 실수를 방지합니다.</p>
+    </div>
+
+    <div class="card">
+      <a href="skills/clean-ai-slop.html" class="card-link">
+        <div class="card-title">Clean AI Slop</div>
+      </a>
+      <div>
+        <span class="card-tag">정리</span>
+        <span class="card-tag blue">6단계 패스</span>
+      </div>
+      <p style="margin-top:0.5rem;">AI 코드의 과잉 주석, 불필요 추상화, 방어적 편집증 등을 동작 보존하면서 제거합니다. 테스트 우선, 단일 스멜 패스.</p>
+    </div>
+
+    <div class="card">
+      <a href="skills/simplify.html" class="card-link">
+        <div class="card-title">Simplify</div>
+      </a>
+      <div>
+        <span class="card-tag">검토</span>
+        <span class="card-tag blue">3개 병렬 에이전트</span>
+      </div>
+      <p style="margin-top:0.5rem;">재사용, 품질, 효율성 — 3개 병렬 리뷰어가 변경된 코드를 검토하고 발견된 문제를 자동 수정합니다.</p>
+    </div>
+
+    <div class="card">
+      <a href="skills/systematic-debugging.html" class="card-link">
+        <div class="card-title">Systematic Debugging</div>
+      </a>
+      <div>
+        <span class="card-tag">디버깅</span>
+        <span class="card-tag">7단계</span>
+      </div>
+      <p style="margin-top:0.5rem;">재현 우선 → 근본 원인 추적 → 실패 테스트 작성 → 단일 수정 → 검증. "하면서 다른 것도 고치는" 행위를 차단합니다.</p>
+    </div>
+
+    <div class="card">
+      <a href="skills/rob-pike.html" class="card-link">
+        <div class="card-title">Rob Pike's 5 Rules</div>
+      </a>
+      <div>
+        <span class="card-tag">성능</span>
+        <span class="card-tag blue">측정 우선</span>
+      </div>
+      <p style="margin-top:0.5rem;">"느려 보여도 측정 전에는 만지지 않는다." 조기 최적화를 방지하고 데이터 기반 최적화를 강제합니다.</p>
+    </div>
+  </section>
+
+  <!-- Install -->
+  <section id="install">
+    <h2>03 ▸ 설치</h2>
+
+    <div class="card">
+      <div class="card-title">Claude Code</div>
+      <pre>/plugin marketplace add tmdgusya/engineering-discipline
+/plugin install engineering-discipline</pre>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Gemini CLI</div>
+      <pre>gemini extensions install https://github.com/tmdgusya/engineering-discipline</pre>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Cursor</div>
+      <pre>/add-plugin engineering-discipline</pre>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Codex</div>
+      <pre>npx skills add tmdgusya/engineering-discipline</pre>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>
+      <a href="https://github.com/tmdgusya/engineering-discipline">tmdgusya/engineering-discipline</a>
+      · MIT License
+    </p>
+  </footer>
+
+</div>
+
+</body>
+</html>

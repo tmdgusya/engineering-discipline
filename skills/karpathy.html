@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="/engineering-discipline/">
+  <title>Karpathy Guidelines — Engineering Discipline</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../index.html" class="nav-brand">▣ Engineering Discipline</a>
+  <ul class="nav-links">
+    <li><a href="../index.html">홈</a></li>
+    <li><a href="karpathy.html" class="active">Karpathy</a></li>
+    <li><a href="clean-ai-slop.html">Clean AI Slop</a></li>
+  </ul>
+</nav>
+
+<div class="skill-header">
+  <div class="container">
+    <div>
+      <span class="skill-badge">독립</span>
+      <span class="skill-badge blue">예방 가드레일</span>
+    </div>
+    <h1>Karpathy Guidelines</h1>
+    <p style="font-size:1.1rem;">코드 구현을 위한 예방적 가드레일 — 수술적 변경, 가정 검증, 범위 규율을 코딩 전과 코딩 중에 강제합니다.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <section>
+    <h2>언제 사용하나요?</h2>
+    <div class="callout">
+      기능 구현 <strong>전</strong>과 코딩 <strong>중</strong>에 작동합니다. LLM의 흔한 실수를 사전에 차단합니다.
+    </div>
+    <ul>
+      <li>기능 구현을 시작하기 전</li>
+      <li>기존 컨텍스트를 읽지 않고 코드를 생성하려 할 때</li>
+      <li>코드 수정 시</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>어떻게 동작하나요?</h2>
+
+    <div class="callout blue">
+      <strong>핵심 원리:</strong> 예외 없는 5가지 하드 규칙. 각 규칙 위반 시 변경을 멈추고 규칙을 따르도록 수정합니다.
+    </div>
+
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-number">1</div>
+        <div>
+          <strong>수술적 변경 — Minimum Edit Needed</strong>
+          <p>목표를 충족하는 최소 변경만 합니다. 리팩토링은 별도 작업입니다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">2</div>
+        <div>
+          <strong>기존 코드 읽기 전까지 수정 금지</strong>
+          <p>수정할 파일의 현재 컨벤션을 먼저 파악합니다. 읽지 않고 추측하지 않습니다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">3</div>
+        <div>
+          <strong>모든 가정 검증</strong>
+          <p>API, 함수 시그니처, 동작 — 읽거나 grep으로 확인합니다. 추측으로 코딩하지 않습니다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">4</div>
+        <div>
+          <strong>구체적 성공 기준 정의</strong>
+          <p>코딩 전 "이렇게 되면 완료"를 명확히 합니다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">5</div>
+        <div>
+          <strong>가상의 미래 문제 해결 금지</strong>
+          <p>"나중에 필요할 것 같아서" 추가하는 추상화, 설정, 검증은 하지 않습니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>연결된 스킬</h2>
+    <p>
+      <a href="clean-ai-slop.html" class="btn">Clean AI Slop →</a>
+      <a href="systematic-debugging.html" class="btn">버그 발생 시 →</a>
+      <a href="rob-pike.html" class="btn">성능 우려 시 →</a>
+      <a href="../index.html" class="btn btn-primary">← 홈</a>
+    </p>
+  </section>
+
+</div>
+
+<footer class="footer">
+  <p><a href="https://github.com/tmdgusya/engineering-discipline">tmdgusya/engineering-discipline</a> · MIT License</p>
+</footer>
+
+</body>
+</html>

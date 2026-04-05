@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="/engineering-discipline/">
+  <title>Plan Crafting — Engineering Discipline</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../index.html" class="nav-brand">▣ Engineering Discipline</a>
+  <ul class="nav-links">
+    <li><a href="../index.html">홈</a></li>
+    <li><a href="clarification.html">Clarification</a></li>
+    <li><a href="plan-crafting.html" class="active">Plan Crafting</a></li>
+    <li><a href="run-plan.html">Run Plan</a></li>
+    <li><a href="review-work.html">Review Work</a></li>
+    <li><a href="milestone-planning.html">Milestones</a></li>
+    <li><a href="long-run.html">Long Run</a></li>
+  </ul>
+</nav>
+
+<div class="skill-header">
+  <div class="container">
+    <div>
+      <span class="skill-badge">워크플로</span>
+      <span class="skill-badge blue">계획</span>
+    </div>
+    <h1>Plan Crafting</h1>
+    <p style="font-size:1.1rem;">명확한 범위로부터 실행 가능한 다단계 구현 계획을 생성합니다. 모든 단계에 실제 코드가 포함됩니다 — 플레이스홀더는 허용되지 않습니다.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <section>
+    <h2>언제 사용하나요?</h2>
+    <div class="callout">
+      Clarification이 <strong>단순(Simple)</strong> 판정으로 완료된 직후. 또는 이미 범위가 명료할 때 직접 호출합니다.
+    </div>
+    <ul>
+      <li>Context Brief 파일이 준비되었을 때</li>
+      <li>명확한 목표 + 범위가 있고 단계별 계획이 필요할 때</li>
+      <li>"계획 세워줘", "플랜 만들어줘"</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>어떻게 동작하나요?</h2>
+
+    <div class="callout blue">
+      <strong>핵심 원리:</strong> 계획은 <em>실행 문서</em>입니다. 코드가 없는 단계, "나중에 구현" 같은 플레이스홀더는 계획 결함으로 간주됩니다.
+    </div>
+
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-number">1</div>
+        <div>
+          <strong>검증 인프라 탐색</strong>
+          <p>프로젝트에서 가장 높은 수준의 검증(e2e, 통합, 테스트 스위트, 빌드)을 찾아 Final Verification Task를 결정합니다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">2</div>
+        <div>
+          <strong>파일 구조 매핑</strong>
+          <p>어떤 파일을 생성/수정할지 미리 매핑합니다. 함께 변경되는 파일은 같은 작업에 묶고, 다른 책임은 분리합니다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">3</div>
+        <div>
+          <strong>작업 분해 — Worker-Validator 구조</strong>
+          <p>각 작업은 실행자와 검증자가 쌍으로 작동하도록 설계됩니다. 같은 파일을 수정하는 작업은 직렬로, 독립적인 작업은 병렬로 배치합니다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">4</div>
+        <div>
+          <strong>모든 단계에 실제 코드 포함</strong>
+          <p>TBD, TODO, "적절한 에러 처리 추가" 금지. 모든 코드 변경 사항이 계획에 명시됩니다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">5</div>
+        <div>
+          <strong>Self-Review</strong>
+          <p>사양 커버리지, 플레이스홀더 스캔, 타입 일관성, 의존성 검증, 검증 커버리지를 자체 점검합니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>플레이스홀더 금지 목록</h2>
+    <div class="callout">
+      다음 패턴은 계획 <strong>결함</strong>입니다:
+    </div>
+    <ul>
+      <li><code>"TBD"</code>, <code>"TODO"</code>, <code>"implement later"</code></li>
+      <li><code>"적절한 에러 처리 추가"</code></li>
+      <li><code>"테스트 작성"</code> (실제 테스트 코드 없이)</li>
+      <li><code>"Task N과 유사"</code> (실제 코드 반복 필요 — 워커는 순서대로 읽지 않을 수 있음)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>연결된 스킬</h2>
+    <p>
+      <a href="clarification.html" class="btn">← Clarification</a>
+      <a href="run-plan.html" class="btn">Run Plan →</a>
+      <a href="../index.html" class="btn btn-primary">← 홈</a>
+    </p>
+  </section>
+
+</div>
+
+<footer class="footer">
+  <p><a href="https://github.com/tmdgusya/engineering-discipline">tmdgusya/engineering-discipline</a> · MIT License</p>
+</footer>
+
+</body>
+</html>

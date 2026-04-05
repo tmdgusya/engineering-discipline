@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="/engineering-discipline/">
+  <title>Long Run — Engineering Discipline</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../index.html" class="nav-brand">&#x25A3; Engineering Discipline</a>
+  <ul class="nav-links">
+    <li><a href="../index.html">홈</a></li>
+    <li><a href="milestone-planning.html">Milestones</a></li>
+    <li><a href="long-run.html" class="active">Long Run</a></li>
+  </ul>
+</nav>
+
+<div class="skill-header">
+  <div class="container">
+    <div>
+      <span class="skill-badge">장기 실행</span>
+      <span class="skill-badge blue">체크포인트</span>
+    </div>
+    <h1>Long Run</h1>
+    <p style="font-size:1.1rem;">며칠에 걸친 실행을 오케스트레이션합니다. 디스크 체크포인트로 크래시에서 생존하고, 병렬 마일스톤을 worktree 격리로 실행합니다.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <section>
+    <h2>언제 사용하나요?</h2>
+    <div class="callout">
+      Milestone Planning이 완료된 직후. 또는 며칠에 걸친 대규모 리팩토링/기능 개발이 필요할 때.
+    </div>
+    <ul>
+      <li><code>"long run"</code>, <code>"장기 실행 시작"</code>, <code>"마일스톤 실행해줘"</code></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>어떻게 동작하나요?</h2>
+
+    <div class="callout blue">
+      <strong>핵심 원리:</strong> 모든 마일스톤이 독립적인 plan-crafting → run-plan → review-work 사이클을 거칩니다. 실패한 마일스톤은 후속 마일스톤을 차단합니다.
+    </div>
+
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-number">1</div>
+        <div>
+          <strong>마일스톤 순차 실행</strong>
+          <p>각 마일스톤: plan-crafting → run-plan → review-work → 체크포인트 저장.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">2</div>
+        <div>
+          <strong>재시도 에스컬레이션</strong>
+          <p>재실행 → 재계획 → 중단 (3회 시도, 영구 카운터 유지).</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">3</div>
+        <div>
+          <strong>병렬 마일스톤 (worktree 격리)</strong>
+          <p>의존성이 없는 마일스톤은 별도 git worktree에서 동시에 실행됩니다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">4</div>
+        <div>
+          <strong>크로스-마일스톤 통합 검사</strong>
+          <p>각 마일스톤 완료 후 통합 검사를 실행합니다. 마일스톤 간 간섭을 탐지.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">5</div>
+        <div>
+          <strong>Final E2E 게이트</strong>
+          <p>전체 완료 후 최종 End-to-End 검증. Simplify로 코드 품질 정리, Systematic Debugging으로 이슈 해결.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>내구성 설계</h2>
+    <table>
+      <tr><th>기능</th><th>설명</th></tr>
+      <tr><td>디스크 체크포인트</td><td><code>state.md</code>에 모든 상태 전환 기록 — 크래시 생존</td></tr>
+      <tr><td>복구 프로토콜</td><td>중단된 세션에서 마지막 체크포인트부터 재개</td></tr>
+      <tr><td>Rate limit 처리</td><td>Claude Code 내장 재시도와 정렬됨</td></tr>
+      <tr><td>컨텍스트 윈도우 관리</td><td>장기 대화를 위해 자동 압축 및 상태 분리</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>연결된 스킬</h2>
+    <p>
+      <a href="milestone-planning.html" class="btn">← Milestone Planning</a>
+      <a href="simplify.html" class="btn">Simplify →</a>
+      <a href="../index.html" class="btn btn-primary">← 홈</a>
+    </p>
+  </section>
+
+</div>
+
+<footer class="footer">
+  <p><a href="https://github.com/tmdgusya/engineering-discipline">tmdgusya/engineering-discipline</a> · MIT License</p>
+</footer>
+
+</body>
+</html>

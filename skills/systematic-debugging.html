@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="/engineering-discipline/">
+  <title>Systematic Debugging — Engineering Discipline</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../index.html" class="nav-brand">▣ Engineering Discipline</a>
+  <ul class="nav-links">
+    <li><a href="../index.html">홈</a></li>
+    <li><a href="simplify.html">Simplify</a></li>
+    <li><a href="systematic-debugging.html" class="active">Debugging</a></li>
+  </ul>
+</nav>
+
+<div class="skill-header">
+  <div class="container">
+    <div>
+      <span class="skill-badge">독립</span>
+      <span class="skill-badge blue">7단계</span>
+    </div>
+    <h1>Systematic Debugging</h1>
+    <p style="font-size:1.1rem;">재현 우선, 근본 원인 우선, 실패 테스트 우선. "하면서 다른 것도 고치는" 행위를 차단하는 엄격한 디버깅 워크플로입니다.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <section>
+    <h2>언제 사용하나요?</h2>
+    <div class="callout">
+      버그, 테스트 실패, 예상치 못한 동작 — <strong>무엇이든</strong> 고쳐야 할 때.
+    </div>
+    <ul>
+      <li>런타임 에러, 테스트 실패, 예기치 않은 동작</li>
+      <li>Run Plan 또는 Long Run 실패 시 자동 전환</li>
+      <li>"이 테스트가 불안정해", "버그 있어"</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>어떻게 동작하나요?</h2>
+
+    <div class="callout blue">
+      <strong>핵심 원리:</strong> 재현 없으면 수정 없습니다. 가설 없으면 수정 없습니다. 한 번에 하나의 가설만.
+    </div>
+
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-number">1</div>
+        <div>
+          <strong>문제 정의 (한 문장)</strong>
+          <p>"무엇이 기대와 다른가"를 한 문장으로 명확히 합니다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">2</div>
+        <div>
+          <strong>재현 또는 계측</strong>
+          <p>최소 재현 경로를 확보합니다. 재현 불가면 계측부터.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">3</div>
+        <div>
+          <strong>컴포넌트 경계에서 증거 수집</strong>
+          <p>입력/출력을 추적하여 실패 지점을 좁힙니다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">4</div>
+        <div>
+          <strong>단일 근본 원인 가설 분리</strong>
+          <p>"A가 B 때문에 실패한다" — 하나의 구체적 가설.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">5</div>
+        <div>
+          <strong>실패 테스트로 고정</strong>
+          <p>가설을 증명하는 실패 테스트를 작성합니다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">6</div>
+        <div>
+          <strong>가설당 하나의 수정</strong>
+          <p>한 가설, 한 수정. 리팩토링 금지.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">7</div>
+        <div>
+          <strong>검증 및 종료</strong>
+          <p>테스트 통과 → 종료. 3회 실패 시 구조적 문제 분석.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>하드 게이트</h2>
+    <table>
+      <tr><th>규칙</th><th>설명</th></tr>
+      <tr><td>재현 금지</td><td>재현 없이는 수정하지 않음</td></tr>
+      <tr><td>가설 금지</td><td>가설 없이는 수정하지 않음</td></tr>
+      <tr><td>한 번에 하나</td><td>동시 다중 가설/수정 금지</td></tr>
+      <tr><td>"하면서" 금지</td><td>"while I'm here" 리팩토링 금지</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>참고 가이드</h2>
+    <ul>
+      <li><strong>조건 기반 대기</strong> — 불안정한 타임아웃을 안정적인 조건 폴링으로 교체</li>
+      <li><strong>심층 방어 검증</strong> — 데이터가 통과하는 모든 레이어에서 검증</li>
+      <li><strong>근본 원인 추적</strong> — 호출 체인을 역추적하여 원래 트리거 찾기</li>
+      <li><strong>오염자 찾기 스크립트</strong> — 원치 않는 파일/상태를 생성하는 테스트를 찾는 이분법 스크립트</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>연결된 스킬</h2>
+    <p>
+      <a href="run-plan.html" class="btn">← Run Plan</a>
+      <a href="rob-pike.html" class="btn">Rob Pike →</a>
+      <a href="../index.html" class="btn btn-primary">← 홈</a>
+    </p>
+  </section>
+
+</div>
+
+<footer class="footer">
+  <p><a href="https://github.com/tmdgusya/engineering-discipline">tmdgusya/engineering-discipline</a> · MIT License</p>
+</footer>
+
+</body>
+</html>

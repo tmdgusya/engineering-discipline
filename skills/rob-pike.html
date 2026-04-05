@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="/engineering-discipline/">
+  <title>Rob Pike's 5 Rules — Engineering Discipline</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../index.html" class="nav-brand">▣ Engineering Discipline</a>
+  <ul class="nav-links">
+    <li><a href="../index.html">홈</a></li>
+    <li><a href="systematic-debugging.html">Debugging</a></li>
+    <li><a href="rob-pike.html" class="active">Rob Pike</a></li>
+  </ul>
+</nav>
+
+<div class="skill-header">
+  <div class="container">
+    <div>
+      <span class="skill-badge">독립</span>
+      <span class="skill-badge blue">측정 우선</span>
+    </div>
+    <h1>Rob Pike's 5 Rules</h1>
+    <p style="font-size:1.1rem;">조기 최적화를 방지하고 측정 기반 개발을 강제합니다. "느려 보여도 측정 전에는 만지지 않는다."</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <section>
+    <h2>언제 사용하나요?</h2>
+    <div class="callout">
+      성능 개선이 필요할 때 — 최적화를 <strong>시작하기 직전</strong>에 작동합니다.
+    </div>
+    <ul>
+      <li><code>"최적화"</code>, <code>"느려"</code>, <code>"성능"</code>, <code>"병목"</code>, <code>"빠르게"</code></li>
+      <li>이 루프가 느려 보인다는 느낌이 들 때</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>어떻게 동작하나요?</h2>
+
+    <div class="callout blue">
+      <strong>핵심 원리:</strong> "이 루프가 느려 보인다" → <em>"프로파일링 해보셨나요?"</em>. 측정이 병목을 확인하고, 가장 단순한 변경이 최적화가 됩니다.
+    </div>
+
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-number">1</div>
+        <div>
+          <strong>Rule 1: 병목을 예측할 수 없다</strong>
+          <p>누가 어디가 느린지 맞추지 않습니다. 프로파일러가 알려줍니다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">2</div>
+        <div>
+          <strong>Rule 2: 튜닝 전 측정</strong>
+          <p>기존 계측(loge, profiling, timing, APM)을 스캔하고, 없으면 계측부터.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">3</div>
+        <div>
+          <strong>Rule 3: n이 작으면 복잡한 알고리즘도 느리다</strong>
+          <p>그리고 n은 보통 작습니다. 단순한 코드가 이깁니다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">4</div>
+        <div>
+          <strong>Rule 4: 복잡한 알고리즘은 버그도 많다</strong>
+          <p>단순한 알고리즘이 유지보수도 쉽고 디버깅도 쉽습니다.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">5</div>
+        <div>
+          <strong>Rule 5: 데이터 구조가 핵심이다</strong>
+          <p>올바른 데이터 구조를 선택하면 알고리즘은 자명해집니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>적용 순서</h2>
+    <div class="callout">
+      1. 기존 계측 확인 → 2. 측정 질문 → 3. 병목 확인 시 가장 단순한 수정 제안 → 4. 변경 후 재측정으로 검증
+    </div>
+  </section>
+
+  <section>
+    <h2>연결된 스킬</h2>
+    <p>
+      <a href="systematic-debugging.html" class="btn">← Systematic Debugging</a>
+      <a href="../index.html" class="btn btn-primary">← 홈</a>
+    </p>
+  </section>
+
+</div>
+
+<footer class="footer">
+  <p><a href="https://github.com/tmdgusya/engineering-discipline">tmdgusya/engineering-discipline</a> · MIT License</p>
+</footer>
+
+</body>
+</html>
