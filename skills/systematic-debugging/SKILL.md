@@ -5,77 +5,77 @@ description: Use when encountering any bug, test failure, or unexpected behavior
 
 # Systematic Debugging
 
-엄격한 디버깅 워크플로우다. 버그, 테스트 실패, 예기치 않은 동작을 다룰 때 사용한다.
+A strict debugging workflow. Use when dealing with bugs, test failures, or unexpected behavior.
 
-핵심 목적은 세 가지다.
+Three core purposes:
 
-1. 증상이 아니라 원인을 고친다.
-2. 추측 기반 수정을 막는다.
-3. 실패를 테스트로 고정한 뒤 수정한다.
+1. Fix the cause, not the symptom.
+2. Prevent guess-based fixes.
+3. Lock the failure with a test before fixing.
 
 ## Hard Gates
 
-다음 규칙은 예외 없이 따른다.
+These rules have no exceptions.
 
-1. **재현 또는 관측 가능 상태를 만들기 전에는 수정하지 않는다.**
-2. **원인 가설을 명시하기 전에는 수정하지 않는다.**
-3. **실패 테스트 또는 동등한 재현 장치를 만들기 전에는 수정하지 않는다.**
-4. **한 번에 하나의 가설만 검증한다.**
-5. **수정 시 "while I'm here" 리팩터링을 금지한다.**
-6. **수정 시도가 3번 실패하면 추가 패치 전에 구조적 문제를 의심한다.**
+1. **Do not fix until you have a reproducible or observable state.**
+2. **Do not fix until you have stated a root-cause hypothesis.**
+3. **Do not fix until you have a failing test or equivalent reproduction mechanism.**
+4. **Verify only one hypothesis at a time.**
+5. **No "while I'm here" refactoring during a fix.**
+6. **If three fix attempts fail, suspect a structural issue before applying another patch.**
 
-이 과정을 어기는 것은 디버깅 실패로 본다.
+Violating this process is considered a debugging failure.
 
 ## When To Use
 
-다음 상황이면 이 스킬을 사용한다.
+Use this skill in the following situations:
 
-- 테스트가 실패할 때
-- 운영 또는 로컬에서 버그가 발생할 때
-- 예상과 다른 응답, 상태, 렌더링, 쿼리 결과가 나올 때
-- 성능 저하, 타임아웃, 레이스 컨디션, 간헐 실패를 조사할 때
-- 이미 한 번 이상 고쳤는데 다시 깨졌을 때
+- When a test fails
+- When a bug occurs in production or locally
+- When a response, state, rendering, or query result differs from expectations
+- When investigating performance degradation, timeouts, race conditions, or intermittent failures
+- When something breaks again after being fixed at least once
 
-다음 핑계는 허용하지 않는다.
+The following excuses are not accepted:
 
-- "간단해 보여서 바로 고치면 된다"
-- "시간이 없으니 일단 패치하고 보자"
-- "이거 같으니까 그냥 바꿔보자"
+- "It looks simple, I'll just fix it directly"
+- "No time, let's patch it and move on"
+- "It's probably this, let me just change it"
 
 ## Required Output Contract
 
-이 스킬을 사용할 때는 내부적으로 아래 항목을 반드시 고정한다.
+When using this skill, the following items must be locked internally:
 
-1. **Problem statement**: 무엇이 잘못되었는지 한 문장으로 정의
-2. **Reproduction path**: 어떻게 실패를 재현하거나 관측할지
-3. **Evidence**: 실제 관측 결과
-4. **Root-cause hypothesis**: 왜 이 문제가 발생한다고 보는지
-5. **Failing guard**: 실패 테스트, 재현 스크립트, 로그 검증 중 하나
-6. **Fix**: 원인에 대한 단일 수정
-7. **Verification**: 수정 후 재현 경로와 관련 테스트 결과
+1. **Problem statement**: Define what went wrong in one sentence
+2. **Reproduction path**: How to reproduce or observe the failure
+3. **Evidence**: Actual observed results
+4. **Root-cause hypothesis**: Why you believe this problem occurs
+5. **Failing guard**: One of: failing test, reproduction script, or log verification
+6. **Fix**: A single fix targeting the root cause
+7. **Verification**: Reproduction path and related test results after the fix
 
-이 7개 중 빠진 항목이 있으면 아직 끝난 일이 아니다.
+If any of these seven items are missing, the work is not done.
 
 ## Workflow
 
-반드시 아래 순서로 진행한다.
+Follow the steps below in order.
 
 ### Phase 1. Define The Problem
 
-먼저 문제를 축약한다.
+First, condense the problem.
 
-- 실제 기대 동작은 무엇인가
-- 실제 관측 동작은 무엇인가
-- 영향 범위는 어디까지인가
-- 항상 재현되는가, 간헐적인가
+- What is the expected behavior
+- What is the observed behavior
+- What is the scope of impact
+- Is it always reproducible or intermittent
 
-출력 형식:
+Output format:
 
 ```text
 Problem: <expected> but got <actual> under <condition>
 ```
 
-증상과 추측을 섞지 않는다.
+Do not mix symptoms with speculation.
 
 ```text
 Good: Product detail API returns 500 when brand is null.
@@ -84,191 +84,191 @@ Bad: Serializer is broken because brand mapping seems wrong.
 
 ### Phase 2. Reproduce Or Instrument
 
-수정 전에 실패를 다시 볼 수 있어야 한다.
+You must be able to see the failure again before fixing it.
 
-우선순위:
+Priority:
 
-1. 기존 테스트로 재현
-2. 최소 통합 테스트로 재현
-3. 단위 테스트로 재현
-4. 재현 스크립트 또는 명령으로 관측
-5. 로그/계측 추가 후 관측
+1. Reproduce with existing tests
+2. Reproduce with a minimal integration test
+3. Reproduce with a unit test
+4. Observe via reproduction script or command
+5. Observe after adding logs/instrumentation
 
-규칙:
+Rules:
 
-- 재현 경로는 가능한 한 가장 작게 만든다.
-- UI에서만 보이는 버그라도 더 아래 계층에서 재현 가능하면 그쪽을 선호한다.
-- 간헐 실패면 로그, 입력, 시간, 동시성 조건을 추가해 관측성을 높인다.
-- 재현되지 않으면 수정으로 넘어가지 말고 관측 수단을 늘린다.
+- Make the reproduction path as small as possible.
+- Even if the bug is only visible in the UI, prefer reproducing at a lower layer if possible.
+- For intermittent failures, increase observability by adding logs, capturing inputs, timestamps, and concurrency conditions.
+- If reproduction fails, do not proceed to fixing — increase observability instead.
 
-재현 불가 상태에서 해야 할 일:
+What to do when reproduction is not possible:
 
-1. 입력값 기록
-2. 환경 차이 확인
-3. 최근 변경점 확인
-4. 경계 지점별 로그 추가
-5. 동일 증상을 만드는 더 작은 조건 탐색
+1. Record input values
+2. Check for environment differences
+3. Check recent changes
+4. Add logs at boundary points
+5. Search for smaller conditions that produce the same symptom
 
 ### Phase 3. Gather Evidence
 
-관측 가능한 사실만 모은다.
+Collect only observable facts.
 
-항상 확인할 것:
+Always check:
 
-- 에러 메시지와 스택트레이스 전문
-- 실패 입력값
-- 최근 변경 파일 또는 커밋
-- 환경/설정 차이
-- 호출 경로와 데이터 흐름
+- Full error messages and stack traces
+- Failing input values
+- Recently changed files or commits
+- Environment/configuration differences
+- Call paths and data flow
 
-멀티 컴포넌트 문제에서는 경계마다 확인한다.
+For multi-component problems, check at each boundary.
 
-예시:
+Examples:
 
 - controller -> application -> service -> repository
 - client -> API -> external service
 - scheduler -> batch service -> database
 
-각 경계에서 확인할 것:
+At each boundary, check:
 
-- 무엇이 들어왔는가
-- 무엇이 나갔는가
-- 어떤 값이 변형되었는가
-- 어떤 조건에서만 깨지는가
+- What came in
+- What went out
+- What values were transformed
+- Under what conditions it breaks
 
-문제 위치를 특정하기 전에는 고치지 않는다.
+Do not fix until you have pinpointed the problem location.
 
 ### Phase 4. Isolate Root Cause
 
-원인 후보를 하나만 세운다.
+Formulate exactly one cause candidate.
 
-형식:
+Format:
 
 ```text
 Hypothesis: <root cause> because <evidence>
 ```
 
-좋은 가설의 조건:
+Qualities of a good hypothesis:
 
-- 단일 원인을 가리킨다
-- 관측 증거와 연결된다
-- 작은 실험으로 반증 가능하다
+- Points to a single cause
+- Connects to observed evidence
+- Can be disproved with a small experiment
 
-나쁜 가설의 예:
+Examples of bad hypotheses:
 
-- "어딘가 비동기 문제가 있는 것 같다"
-- "직렬화 쪽 전체가 불안정한 듯하다"
+- "There seems to be some async issue somewhere"
+- "The whole serialization layer seems unstable"
 
-원인을 소스까지 거슬러 올라간다. 오류가 깊은 스택에서 보이면 증상이 아니라 입력의 출처를 추적한다.
+Trace the cause back to the source. If the error appears deep in the stack, trace the origin of the input, not the symptom.
 
 ### Phase 5. Lock The Failure
 
-수정 전에 실패를 고정한다.
+Lock the failure before fixing.
 
-우선순위:
+Priority:
 
-1. 자동화된 failing test
-2. 기존 테스트에 회귀 케이스 추가
-3. 최소 재현 스크립트
-4. 로그/어설션 기반 임시 검증 장치
+1. Automated failing test
+2. Add a regression case to existing tests
+3. Minimal reproduction script
+4. Temporary verification via logs/assertions
 
-규칙:
+Rules:
 
-- 가능하면 자동화 테스트를 만든다.
-- 수정 전에는 실패해야 한다.
-- 수정 후에는 같은 경로에서 통과해야 한다.
-- 테스트 이름은 무엇이 깨졌는지 드러내야 한다.
+- Create an automated test whenever possible.
+- It must fail before the fix.
+- It must pass on the same path after the fix.
+- The test name must reveal what broke.
 
-자동화 테스트를 쓸 수 있으면 `test-driven-development` 스킬을 함께 사용한다.
+If an automated test is feasible, use the `test-driven-development` skill alongside this one.
 
 ### Phase 6. Implement A Single Fix
 
-수정은 하나의 가설만 다룬다.
+The fix addresses only one hypothesis.
 
-허용:
+Allowed:
 
-- 원인에 직접 대응하는 최소 코드 변경
-- 검증에 필요한 최소한의 보조 수정
+- Minimal code change that directly addresses the cause
+- Minimal supporting changes needed for verification
 
-금지:
+Forbidden:
 
-- 관련 있어 보이는 여러 수정 묶기
-- 리팩터링 겸 수정
-- 포맷/정리/이름 변경 끼워넣기
-- 근거 없는 null-guard 추가
-- 예외 삼키기
+- Bundling multiple seemingly related fixes
+- Combining refactoring with the fix
+- Sneaking in formatting/cleanup/renaming
+- Adding null-guards without evidence
+- Swallowing exceptions
 
-실패하면 즉시 다시 Phase 1 또는 Phase 3으로 돌아간다. 이전 가설이 틀렸다는 뜻이다.
+If the fix fails, immediately return to Phase 1 or Phase 3. The previous hypothesis was wrong.
 
 ### Phase 7. Verify And Close
 
-아래를 모두 만족해야 종료한다.
+All of the following must be satisfied before closing:
 
-1. 원래 재현 경로가 더 이상 실패하지 않는다.
-2. 새 failing guard가 통과한다.
-3. 관련 테스트가 깨지지 않는다.
-4. 수정이 증상이 아니라 원인을 막는다는 설명이 가능하다.
+1. The original reproduction path no longer fails.
+2. The new failing guard passes.
+3. Related tests are not broken.
+4. You can explain that the fix blocks the cause, not the symptom.
 
-간헐 버그라면 한 번 통과로 끝내지 않는다. 반복 실행 또는 조건 변화 하 검증이 필요하다.
+For intermittent bugs, a single pass is not enough. Verification under repeated runs or varying conditions is required.
 
 ## Stop Conditions
 
-다음 상황이면 멈추고 프레임을 다시 잡는다.
+Stop and reframe in the following situations.
 
 ### 1. Reproduction Failed
 
-여러 번 시도해도 재현이 안 되면:
+If reproduction fails after multiple attempts:
 
-- 관측 수단이 부족한지 본다.
-- 환경 차이가 있는지 본다.
-- 문제 정의가 잘못되었는지 본다.
+- Check if observability is insufficient.
+- Check if there are environment differences.
+- Check if the problem definition is wrong.
 
-재현이 안 되는데 코드를 바꾸는 것은 금지다.
+Changing code without reproduction is forbidden.
 
 ### 2. Three Failed Fixes
 
-세 번 연속으로 수정이 빗나가면 이렇게 판단한다.
+If three consecutive fixes miss the mark, conclude:
 
-- 현재 이해가 틀렸거나
-- 문제가 공유 상태, 경계 설계, 책임 분리 같은 구조 문제일 가능성이 크다
+- The current understanding is wrong, or
+- The problem is likely structural — shared state, boundary design, responsibility separation
 
-이 시점부터는 "네 번째 땜질"이 아니라 구조 논의가 필요하다.
+From this point, a "fourth patch" is not the answer — a structural discussion is needed.
 
 ### 3. No Failing Guard
 
-실패 테스트나 동등한 재현 장치를 만들 수 없으면, 완료로 선언하지 않는다. 최소한 재현 명령과 관측 결과를 남긴다.
+If you cannot create a failing test or equivalent reproduction mechanism, do not declare completion. At minimum, leave behind the reproduction command and observed results.
 
 ## Red Flags
 
-아래 생각이 들면 즉시 멈추고 앞 단계로 돌아간다.
+If any of the following thoughts arise, stop immediately and return to an earlier phase.
 
-- "이 줄만 바꿔보면 될 것 같다"
-- "로그는 나중에 보고 일단 수정해보자"
-- "테스트는 나중에 추가하지 뭐"
-- "한 번에 이것도 저것도 같이 고치자"
-- "에러는 사라졌으니 원인은 몰라도 됐다"
+- "I'll just change this one line and it should work"
+- "I'll check the logs later, let me fix it first"
+- "I'll add the test later"
+- "Let me fix this and that together at once"
+- "The error is gone, so I don't need to know the cause"
 
 ## Minimal Checklist
 
-실행 중에는 아래 체크리스트를 기준으로 스스로 검증한다.
+Use this checklist for self-verification during execution.
 
-- [ ] 문제를 한 문장으로 정의했다
-- [ ] 실패를 재현하거나 관측 가능하게 만들었다
-- [ ] 증거를 수집했다
-- [ ] 단일 원인 가설을 만들었다
-- [ ] 수정 전 실패 guard를 만들었다
-- [ ] 단일 수정만 적용했다
-- [ ] 같은 경로로 수정 후 검증했다
+- [ ] Defined the problem in one sentence
+- [ ] Reproduced or made the failure observable
+- [ ] Collected evidence
+- [ ] Created a single root-cause hypothesis
+- [ ] Created a failing guard before fixing
+- [ ] Applied only a single fix
+- [ ] Verified via the same path after fixing
 
 ## Completion Standard
 
-이 스킬의 완료 기준은 "코드가 바뀌었다"가 아니다.
+The completion criterion for this skill is not "the code changed."
 
-완료 기준:
+Completion criteria:
 
-- 문제 정의가 명확하다
-- 실패가 수정 전에 고정되었다
-- 수정이 원인과 연결된다
-- 검증 결과가 남아 있다
+- The problem definition is clear
+- The failure was locked before fixing
+- The fix is connected to the root cause
+- Verification results remain
 
-이 네 가지가 없으면 디버깅은 끝난 것이 아니다.
+Without these four, debugging is not finished.
