@@ -14,11 +14,12 @@
 <body>
 
 <nav class="nav">
-  <a href="../index.html" class="nav-brand">&#x25A3; Engineering Discipline</a>
+  <a href="../index.html" class="nav-brand">▣ Engineering Discipline</a>
   <ul class="nav-links">
     <li><a href="../index.html">홈</a></li>
     <li><a href="milestone-planning.html">Milestones</a></li>
     <li><a href="long-run.html" class="active">Long Run</a></li>
+    <li><a href="simplify.html">Simplify</a></li>
   </ul>
 </nav>
 
@@ -29,85 +30,131 @@
       <span class="skill-badge blue">체크포인트</span>
     </div>
     <h1>Long Run</h1>
-    <p style="font-size:1.1rem;">며칠에 걸친 실행을 오케스트레이션합니다. 디스크 체크포인트로 크래시에서 생존하고, 병렬 마일스톤을 worktree 격리로 실행합니다.</p>
+    <p style="font-size:1.1rem; margin-top: 0.5rem;">며칠에 걸친 실행을 오케스트레이션합니다. 디스크 체크포인트로 크래시에서 생존합니다.</p>
   </div>
 </div>
 
 <div class="container">
 
+  <!-- Workflow Position -->
   <section>
-    <h2>언제 사용하나요?</h2>
+    <h2>▸ 워크플로우 위치</h2>
+    <div class="skill-chain">
+      <span class="chain-node">Milestone Planning</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node active">Long Run</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node">Simplify</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node">[완료]</span>
+    </div>
+  </section>
+
+  <!-- Meta Info -->
+  <div class="meta-card">
+    <div class="meta-item">
+      <div class="meta-label">트리거</div>
+      <div class="meta-value">
+        <code>long run</code>
+        <code>마일스톤 실행해줘</code>
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">입력</div>
+      <div class="meta-value">잠긴 마일스톤 DAG</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">내구성</div>
+      <div class="meta-value">체크포인트 + worktree 격리 + 복구 프로토콜</div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stat-grid">
+    <div class="stat-item"><span class="stat-number">3</span><span class="stat-label">재시도 시도</span></div>
+    <div class="stat-item"><span class="stat-number">∞</span><span class="stat-label">마일스톤 확장</span></div>
+    <div class="stat-item"><span class="stat-number">1</span><span class="stat-label">E2E Final Gate</span></div>
+  </div>
+
+  <!-- When to use -->
+  <section>
+    <h2>▸ 언제 사용하나요?</h2>
     <div class="callout">
       Milestone Planning이 완료된 직후. 또는 며칠에 걸친 대규모 리팩토링/기능 개발이 필요할 때.
     </div>
-    <ul>
-      <li><code>"long run"</code>, <code>"장기 실행 시작"</code>, <code>"마일스톤 실행해줘"</code></li>
-    </ul>
   </section>
 
+  <!-- How it works -->
   <section>
-    <h2>어떻게 동작하나요?</h2>
+    <h2>▸ 어떻게 동작하나요?</h2>
 
     <div class="callout blue">
-      <strong>핵심 원리:</strong> 모든 마일스톤이 독립적인 plan-crafting → run-plan → review-work 사이클을 거칩니다. 실패한 마일스톤은 후속 마일스톤을 차단합니다.
+      <strong>핵심 원리:</strong> 모든 마일스톤이 독립 plan→run→review 사이클을 거칩니다. 실패된 마일스톤은 후속을 차단합니다.
     </div>
 
-    <div class="flow-steps">
-      <div class="flow-step">
-        <div class="flow-number">1</div>
-        <div>
+    <div class="rule-list">
+      <div class="rule-item">
+        <span class="rule-number">1</span>
+        <div class="rule-content">
           <strong>마일스톤 순차 실행</strong>
-          <p>각 마일스톤: plan-crafting → run-plan → review-work → 체크포인트 저장.</p>
+          <p>각 마일스톤: plan → run → review → 체크포인트 저장.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">2</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">2</span>
+        <div class="rule-content">
           <strong>재시도 에스컬레이션</strong>
-          <p>재실행 → 재계획 → 중단 (3회 시도, 영구 카운터 유지).</p>
+          <p>재실행 → 재계획 → 중단 (3회, 영구 카운터).</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">3</div>
-        <div>
-          <strong>병렬 마일스톤 (worktree 격리)</strong>
-          <p>의존성이 없는 마일스톤은 별도 git worktree에서 동시에 실행됩니다.</p>
+      <div class="rule-item">
+        <span class="rule-number">3</span>
+        <div class="rule-content">
+          <strong>병렬 마일스톤 (worktree)</strong>
+          <p>의존성 없는 마일스톤은 별도 worktree에서 동시 실행.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">4</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">4</span>
+        <div class="rule-content">
           <strong>크로스-마일스톤 통합 검사</strong>
-          <p>각 마일스톤 완료 후 통합 검사를 실행합니다. 마일스톤 간 간섭을 탐지.</p>
+          <p>각 완료 후 통합 검사 — 마일스톤 간 간섭 탐지.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">5</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">5</span>
+        <div class="rule-content">
           <strong>Final E2E 게이트</strong>
-          <p>전체 완료 후 최종 End-to-End 검증. Simplify로 코드 품질 정리, Systematic Debugging으로 이슈 해결.</p>
+          <p>전체 완료 후 최종 검증. Simplify로 정리, Debugging으로 이슈 해결.</p>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Durability -->
   <section>
-    <h2>내구성 설계</h2>
+    <h2>▸ 내구성 설계</h2>
     <table>
       <tr><th>기능</th><th>설명</th></tr>
-      <tr><td>디스크 체크포인트</td><td><code>state.md</code>에 모든 상태 전환 기록 — 크래시 생존</td></tr>
-      <tr><td>복구 프로토콜</td><td>중단된 세션에서 마지막 체크포인트부터 재개</td></tr>
-      <tr><td>Rate limit 처리</td><td>Claude Code 내장 재시도와 정렬됨</td></tr>
-      <tr><td>컨텍스트 윈도우 관리</td><td>장기 대화를 위해 자동 압축 및 상태 분리</td></tr>
+      <tr><td>디스크 체크포인트</td><td><code>state.md</code>에 모든 상태 기록 — 크래시 생존</td></tr>
+      <tr><td>복구 프로토콜</td><td>중단 세션에서 마지막 체크포인트부터 재개</td></tr>
+      <tr><td>Rate limit</td><td>Claude Code 내장 재시도와 정렬</td></tr>
+      <tr><td>컨텍스트 윈도우</td><td>장기 대화용 자동 압축 및 상태 분리</td></tr>
     </table>
   </section>
 
+  <!-- Related Skills -->
   <section>
-    <h2>연결된 스킬</h2>
+    <h2>▸ 연결된 스킬</h2>
+    <div class="skill-chain">
+      <span class="chain-node"><a href="milestone-planning.html" style="color:inherit; text-decoration:none;">Milestone</a></span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node active">Long Run</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node blue"><a href="simplify.html" style="color:inherit; text-decoration:none;">Simplify</a></span>
+    </div>
     <p>
-      <a href="milestone-planning.html" class="btn">← Milestone Planning</a>
-      <a href="simplify.html" class="btn">Simplify →</a>
-      <a href="../index.html" class="btn btn-primary">← 홈</a>
+      <a href="../index.html" class="btn btn-primary">← 홈으로 돌아가기</a>
     </p>
   </section>
 

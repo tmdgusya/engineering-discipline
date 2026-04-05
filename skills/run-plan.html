@@ -33,71 +33,108 @@
       <span class="skill-badge blue">Worker-Validator</span>
     </div>
     <h1>Run Plan</h1>
-    <p style="font-size:1.1rem;">Worker가 구현하고 Validator가 독립적으로 검증합니다. 실패 시 자동 재시도, 3회 실패 시 사용자에게 에스컬레이션.</p>
+    <p style="font-size:1.1rem; margin-top: 0.5rem;">Worker가 구현하고 Validator가 독립 검증합니다. 실패 시 자동 재시도, 3회 실패 시 에스컬레이션.</p>
   </div>
 </div>
 
 <div class="container">
 
+  <!-- Workflow Position -->
   <section>
-    <h2>언제 사용하나요?</h2>
+    <h2>▸ 워크플로우 위치</h2>
+    <div class="skill-chain">
+      <span class="chain-node">Plan Crafting</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node active">Run Plan</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node">Review Work</span>
+    </div>
+  </section>
+
+  <!-- Meta Info -->
+  <div class="meta-card">
+    <div class="meta-item">
+      <div class="meta-label">트리거</div>
+      <div class="meta-value">
+        <code>계획 실행해</code>
+        <code>플랜 돌려줘</code>
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">입력</div>
+      <div class="meta-value">계획 문서 (plan-crafting 출력)</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">메커니즘</div>
+      <div class="meta-value">Worker → Validator 정보 격리 루프</div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stat-grid">
+    <div class="stat-item"><span class="stat-number">3</span><span class="stat-label">서브에이전트</span></div>
+    <div class="stat-item"><span class="stat-number">3</span><span class="stat-label">재시도 후 에스컬</span></div>
+    <div class="stat-item"><span class="stat-number">∅</span><span class="stat-label">정보 교차 금지</span></div>
+  </div>
+
+  <!-- When to use -->
+  <section>
+    <h2>▸ 언제 사용하나요?</h2>
     <div class="callout">
       Plan Crafting이 완료된 직후. 또는 이미 작성된 계획 문서를 실행해야 할 때.
     </div>
-    <ul>
-      <li><code>"계획 실행해"</code>, <code>"플랜 돌려줘"</code></li>
-      <li>plan-crafting 완료 후 자동 전환</li>
-    </ul>
   </section>
 
+  <!-- How it works -->
   <section>
-    <h2>어떻게 동작하나요?</h2>
+    <h2>▸ 어떻게 동작하나요?</h2>
 
     <div class="callout blue">
-      <strong>핵심 원리:</strong> Validator는 Worker의 코드를 절대 보지 않습니다. 오직 <em>계획의 목표</em>와 <em>수락 기준</em>만으로 독립 검증합니다.
+      <strong>핵심 원리:</strong> Validator는 Worker의 코드를 절대 보지 않습니다. <em>계획의 목표</em>와 <em>수락 기준</em>만으로 독립 검증합니다.
     </div>
 
-    <div class="flow-steps">
-      <div class="flow-step">
-        <div class="flow-number">0</div>
-        <div>
-          <strong>검증 인프라 발견 + 에이전트 탐색</strong>
-          <p>프로젝트의 테스트 러너, 사용 가능한 에이전트/스킬을 파악합니다.</p>
+    <div class="rule-list">
+      <div class="rule-item">
+        <span class="rule-number">0</span>
+        <div class="rule-content">
+          <strong>검증 인프라 발견</strong>
+          <p>테스트 러너, 사용 가능한 에이전트/스킬 파악.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">1</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">1</span>
+        <div class="rule-content">
           <strong>계획 사전 검토</strong>
-          <p>실행 전 계획 자체의 이슈(파일 충돌, 순서 오류)를 검사합니다.</p>
+          <p>파일 충돌, 순서 오류 검사.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">2</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">2</span>
+        <div class="rule-content">
           <strong>Worker-Validator 루프</strong>
-          <p>각 작업이 3단계 서브에이전트를 거칩니다: 적합성 검사 → Worker 구현 → Validator 검토. 정보 격리가 핵심입니다 — Validator는 Worker의 결과를 보지 않습니다.</p>
+          <p>적합성 검사 → Worker 구현 → Validator 검토. Validator는 Worker 결과를 보지 않습니다.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">3</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">3</span>
+        <div class="rule-content">
           <strong>E2E 검증 게이트</strong>
-          <p>모든 작업 완료 후 최종 통합 검증을 실행합니다.</p>
+          <p>모든 작업 완료 후 최종 통합 검증.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">?</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number" style="font-size:0.8rem">?</span>
+        <div class="rule-content">
           <strong>재시도 → 에스컬레이션</strong>
-          <p>Validator 실패 시 Worker에게 피드백과 함께 재시도. 3회 연속 실패 시 사용자에게 에스컬레이션.</p>
+          <p>3회 연속 실패 시 사용자에게 에스컬레이션.</p>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Parallel Rules -->
   <section>
-    <h2>병렬 실행 규칙</h2>
+    <h2>▸ 병렬 실행 규칙</h2>
     <table>
       <tr><th>조건</th><th>실행 방식</th></tr>
       <tr><td>파일 겹침 없음 + 의존성 없음</td><td><strong>병렬</strong></td></tr>
@@ -106,13 +143,18 @@
     </table>
   </section>
 
+  <!-- Related Skills -->
   <section>
-    <h2>연결된 스킬</h2>
+    <h2>▸ 연결된 스킬</h2>
+    <div class="skill-chain">
+      <span class="chain-node"><a href="plan-crafting.html" style="color:inherit; text-decoration:none;">Plan Crafting</a></span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node active">Run Plan</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node blue"><a href="review-work.html" style="color:inherit; text-decoration:none;">Review Work</a></span>
+    </div>
     <p>
-      <a href="plan-crafting.html" class="btn">← Plan Crafting</a>
-      <a href="review-work.html" class="btn">Review Work →</a>
-      <a href="systematic-debugging.html" class="btn">버그 발생 시 →</a>
-      <a href="../index.html" class="btn btn-primary">← 홈</a>
+      <a href="../index.html" class="btn btn-primary">← 홈으로 돌아가기</a>
     </p>
   </section>
 

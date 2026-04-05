@@ -19,6 +19,7 @@
     <li><a href="../index.html">홈</a></li>
     <li><a href="karpathy.html">Karpathy</a></li>
     <li><a href="clean-ai-slop.html" class="active">Clean AI Slop</a></li>
+    <li><a href="simplify.html">Simplify</a></li>
   </ul>
 </nav>
 
@@ -29,92 +30,136 @@
       <span class="skill-badge blue">6단계 정리</span>
     </div>
     <h1>Clean AI Slop</h1>
-    <p style="font-size:1.1rem;">AI 생성 코드의 교정적 정리. 동작을 보존하면서 LLM 특유의 패턴을 제거합니다. 회귀 테스트 우선, 단일 스멜 패스 규율.</p>
+    <p style="font-size:1.1rem; margin-top: 0.5rem;">AI 생성 코드의 교정적 정리. 동작을 보존하면서 LLM 특유의 패턴을 제거합니다.</p>
   </div>
 </div>
 
 <div class="container">
 
+  <!-- Workflow Position -->
   <section>
-    <h2>언제 사용하나요?</h2>
-    <div class="callout">
-      대규모 AI 코드 생성 세션 이후. 또는 <code>"정리해줘"</code>, <code>"deslop"</code>, <code>"AI 코드 정리"</code>라고 말했을 때.
+    <h2>▸ 워크플로우 위치</h2>
+    <div class="skill-chain">
+      <span class="chain-node">코드 생성</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node active">Clean AI Slop</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node">Simplify</span>
     </div>
   </section>
 
+  <!-- Meta Info -->
+  <div class="meta-card">
+    <div class="meta-item">
+      <div class="meta-label">트리거</div>
+      <div class="meta-value">
+        <code>정리해줘</code> <code>deslop</code> <code>AI 코드 정리</code>
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">메커니즘</div>
+      <div class="meta-value">6개 스멜 순차 패스 (테스트 잠금 후)</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">규칙</div>
+      <div class="meta-value">단일 스멜 패스 · 실패 시 롤백</div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stat-grid">
+    <div class="stat-item"><span class="stat-number">6</span><span class="stat-label">스멜 패스</span></div>
+    <div class="stat-item"><span class="stat-number">12</span><span class="stat-label">테스트 실행</span></div>
+    <div class="stat-item"><span class="stat-number">0</span><span class="stat-label">동작 변경</span></div>
+    <div class="stat-item"><span class="stat-number">1</span><span class="stat-label">롤백 룰</span></div>
+  </div>
+
+  <!-- When to use -->
   <section>
-    <h2>어떻게 동작하나요?</h2>
+    <h2>▸ 언제 사용하나요?</h2>
+    <div class="callout">
+      대규모 AI 코드 생성 세션 이후. 또는 <code>"정리해줘"</code>, <code>"deslop"</code>라고 말했을 때.
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section>
+    <h2>▸ 6단계 정리 패스</h2>
 
     <div class="callout blue">
-      <strong>핵심 원리:</strong> 테스트로 동작을 먼저 잠근 다음, 6개 스멜 카테고리를 <strong>순차적 패스</strong>로 정리합니다. 각 패스 전후로 테스트를 실행하고 실패 시 되돌립니다.
+      <strong>핵심 원리:</strong> 테스트로 동작 잠근 후, 6개 스멜을 <strong>순차적 패스</strong>로 정리. 실패 시 되돌립니다.
     </div>
 
-    <div class="flow-steps">
-      <div class="flow-step">
-        <div class="flow-number">0</div>
-        <div>
+    <div class="rule-list">
+      <div class="rule-item">
+        <span class="rule-number">0</span>
+        <div class="rule-content">
           <strong>테스트로 동작 잠금</strong>
-          <p>정리 전 테스트를 실행해 통과 상태를 확인합니다. 회귀 기준점.</p>
+          <p>정리 전 테스트 통과 확인 — 회귀 기준점.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">1</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">1</span>
+        <div class="rule-content">
           <strong>死 code 제거</strong>
           <p>사용하지 않는 함수, 변수, import, 리턴값.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">2</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">2</span>
+        <div class="rule-content">
           <strong>과잉 주석 제거</strong>
-          <p>명백한 코드를 설명하는 주석, "이 함수는 ~한다" 타입의 LLM 필러.</p>
+          <p>명백한 코드를 설명하는 주석, LLM 필러.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">3</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">3</span>
+        <div class="rule-content">
           <strong>불필요 추상화 제거</strong>
-          <p>한 번만 쓰는 헬퍼, 과도한 인터페이스, wrapper.</p>
+          <p>한 번만 쓰는 헬퍼, 과도한 인터페이스.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">4</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">4</span>
+        <div class="rule-content">
           <strong>방어적 편집증 제거</strong>
-          <p>불가능한 케이스 핸들링, 과잉 검증, null 체크 폭포.</p>
+          <p>불가능한 케이스, 과잉 검증, null 체크 폭포.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">5</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">5</span>
+        <div class="rule-content">
           <strong>장황한 네이밍 정리</strong>
           <p>AnalyzeAndProcessTheData → processData</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">6</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">6</span>
+        <div class="rule-content">
           <strong>LLM 필러 아티팩트 제거</strong>
-          <p>"이 코드는 ~합니다" 타입의 자체 설명 주석, 과도한 docstring.</p>
+          <p>자체 설명 주석, 과도한 docstring.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section>
-    <h2>하드 게이트</h2>
-    <div class="callout">
-      동작을 테스트로 잠그기 전 <strong>어떤 정리도 시작하지 않습니다</strong>. AI가 touch한 파일만 대상으로 합니다.
-    </div>
-  </section>
+  <!-- Gate -->
+  <div class="gate-box">
+    동작을 테스트로 잠그기 전 <strong>어떤 정리도 시작하지 않습니다</strong>. AI가 touch한 파일만 대상으로 합니다.
+  </div>
 
+  <!-- Related Skills -->
   <section>
-    <h2>연결된 스킬</h2>
+    <h2>▸ 연결된 스킬</h2>
+    <div class="skill-chain">
+      <span class="chain-node"><a href="karpathy.html" style="color:inherit; text-decoration:none;">Karpathy</a></span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node active">Clean AI Slop</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node blue"><a href="simplify.html" style="color:inherit; text-decoration:none;">Simplify</a></span>
+    </div>
     <p>
-      <a href="karpathy.html" class="btn">← Karpathy</a>
-      <a href="simplify.html" class="btn">Simplify →</a>
-      <a href="../index.html" class="btn btn-primary">← 홈</a>
+      <a href="../index.html" class="btn btn-primary">← 홈으로 돌아가기</a>
     </p>
   </section>
 

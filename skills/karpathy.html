@@ -29,16 +29,45 @@
       <span class="skill-badge blue">예방 가드레일</span>
     </div>
     <h1>Karpathy Guidelines</h1>
-    <p style="font-size:1.1rem;">코드 구현을 위한 예방적 가드레일 — 수술적 변경, 가정 검증, 범위 규율을 코딩 전과 코딩 중에 강제합니다.</p>
+    <p style="font-size:1.1rem; margin-top: 0.5rem;">수술적 변경, 가정 검증, 범위 규율 — 코딩 전과 중에 LLM의 흔한 실수를 방지합니다.</p>
   </div>
 </div>
 
 <div class="container">
 
+  <!-- Workflow Position -->
   <section>
-    <h2>언제 사용하나요?</h2>
+    <h2>▸ 워크플로우 위치</h2>
+    <div class="skill-chain">
+      <span class="chain-node">어떤 스킬이든</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node active">Karpathy (코딩 직전)</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node">구현</span>
+    </div>
+  </section>
+
+  <!-- Meta Info -->
+  <div class="meta-card">
+    <div class="meta-item">
+      <div class="meta-label">트리거</div>
+      <div class="meta-value">기능 구현 전, 코드 수정 시</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">역할</div>
+      <div class="meta-value">예방적 가드레일 — 코딩 중에도 활성화</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">규칙</div>
+      <div class="meta-value">5 하드 규칙 (예외 없음)</div>
+    </div>
+  </div>
+
+  <!-- When to use -->
+  <section>
+    <h2>▸ 언제 사용하나요?</h2>
     <div class="callout">
-      기능 구현 <strong>전</strong>과 코딩 <strong>중</strong>에 작동합니다. LLM의 흔한 실수를 사전에 차단합니다.
+      기능 구현 <strong>전</strong>과 코딩 <strong>중</strong>. LLM의 흔한 실수를 사전에 차단합니다.
     </div>
     <ul>
       <li>기능 구현을 시작하기 전</li>
@@ -47,59 +76,65 @@
     </ul>
   </section>
 
+  <!-- 5 Rules -->
   <section>
-    <h2>어떻게 동작하나요?</h2>
+    <h2>▸ 5가지 하드 규칙</h2>
 
     <div class="callout blue">
-      <strong>핵심 원리:</strong> 예외 없는 5가지 하드 규칙. 각 규칙 위반 시 변경을 멈추고 규칙을 따르도록 수정합니다.
+      <strong>핵심 원리:</strong> 예외 없는 5가지 하드 규칙. 각 위반 시 변경을 멈추고 수정합니다.
     </div>
 
-    <div class="flow-steps">
-      <div class="flow-step">
-        <div class="flow-number">1</div>
-        <div>
+    <div class="rule-list">
+      <div class="rule-item">
+        <span class="rule-number">1</span>
+        <div class="rule-content">
           <strong>수술적 변경 — Minimum Edit Needed</strong>
-          <p>목표를 충족하는 최소 변경만 합니다. 리팩토링은 별도 작업입니다.</p>
+          <p>목표를 충족하는 최소 변경만 합니다. 리팩토링은 별도 작업.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">2</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">2</span>
+        <div class="rule-content">
           <strong>기존 코드 읽기 전까지 수정 금지</strong>
-          <p>수정할 파일의 현재 컨벤션을 먼저 파악합니다. 읽지 않고 추측하지 않습니다.</p>
+          <p>수정할 파일의 컨벤션을 먼저 파악합니다. 읽지 않고 추측 금지.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">3</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">3</span>
+        <div class="rule-content">
           <strong>모든 가정 검증</strong>
-          <p>API, 함수 시그니처, 동작 — 읽거나 grep으로 확인합니다. 추측으로 코딩하지 않습니다.</p>
+          <p>API, 함수 시그니처 — 읽거나 grep으로 확인. 추측으로 코딩 금지.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">4</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">4</span>
+        <div class="rule-content">
           <strong>구체적 성공 기준 정의</strong>
-          <p>코딩 전 "이렇게 되면 완료"를 명확히 합니다.</p>
+          <p>코딩 전 "이렇게 되면 완료"를 명확히.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">5</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">5</span>
+        <div class="rule-content">
           <strong>가상의 미래 문제 해결 금지</strong>
-          <p>"나중에 필요할 것 같아서" 추가하는 추상화, 설정, 검증은 하지 않습니다.</p>
+          <p>"나중에 필요할 것 같아서" 추가하는 추상화, 설정 금지.</p>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Related Skills -->
   <section>
-    <h2>연결된 스킬</h2>
+    <h2>▸ 연결된 스킬</h2>
+    <div class="skill-chain">
+      <span class="chain-node active">Karpathy</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node blue"><a href="clean-ai-slop.html" style="color:inherit; text-decoration:none;">Clean AI Slop</a></span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node"><a href="systematic-debugging.html" style="color:inherit; text-decoration:none;">Debugging</a></span>
+    </div>
     <p>
-      <a href="clean-ai-slop.html" class="btn">Clean AI Slop →</a>
-      <a href="systematic-debugging.html" class="btn">버그 발생 시 →</a>
-      <a href="rob-pike.html" class="btn">성능 우려 시 →</a>
-      <a href="../index.html" class="btn btn-primary">← 홈</a>
+      <a href="../index.html" class="btn btn-primary">← 홈으로 돌아가기</a>
     </p>
   </section>
 

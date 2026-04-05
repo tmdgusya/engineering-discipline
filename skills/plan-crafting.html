@@ -33,89 +33,132 @@
       <span class="skill-badge blue">계획</span>
     </div>
     <h1>Plan Crafting</h1>
-    <p style="font-size:1.1rem;">명확한 범위로부터 실행 가능한 다단계 구현 계획을 생성합니다. 모든 단계에 실제 코드가 포함됩니다 — 플레이스홀더는 허용되지 않습니다.</p>
+    <p style="font-size:1.1rem; margin-top: 0.5rem;">명확한 범위로부터 실행 가능한 다단계 구현 계획을 생성합니다. 모든 단계에 실제 코드가 포함됩니다.</p>
   </div>
 </div>
 
 <div class="container">
 
+  <!-- Workflow Position -->
   <section>
-    <h2>언제 사용하나요?</h2>
+    <h2>▸ 워크플로우 위치</h2>
+    <div class="skill-chain">
+      <span class="chain-node">Clarification</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node active">Plan Crafting</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node">Run Plan</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node">Review Work</span>
+    </div>
+  </section>
+
+  <!-- Meta Info -->
+  <div class="meta-card">
+    <div class="meta-item">
+      <div class="meta-label">트리거</div>
+      <div class="meta-value">
+        <code>계획 세워줘</code>
+        <code>플랜 만들어줘</code>
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">입력</div>
+      <div class="meta-value">Context Brief 파일 (clarification 출)</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">출력</div>
+      <div class="meta-value">실행 가능한 계획 문서 (파일 매핑 + 작업 분해)</div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stat-grid">
+    <div class="stat-item"><span class="stat-number">0</span><span class="stat-label">플레이스홀더</span></div>
+    <div class="stat-item"><span class="stat-number">5</span><span class="stat-label">검증 체크</span></div>
+    <div class="stat-item"><span class="stat-number">∞</span><span class="stat-label">구체성</span></div>
+  </div>
+
+  <!-- When to use -->
+  <section>
+    <h2>▸ 언제 사용하나요?</h2>
     <div class="callout">
-      Clarification이 <strong>단순(Simple)</strong> 판정으로 완료된 직후. 또는 이미 범위가 명료할 때 직접 호출합니다.
+      Clarification이 <strong>단순(Simple, 5-8점)</strong> 판정으로 완료된 직후. 또는 이미 범위가 명료할 때 직접 호출합니다.
     </div>
     <ul>
       <li>Context Brief 파일이 준비되었을 때</li>
       <li>명확한 목표 + 범위가 있고 단계별 계획이 필요할 때</li>
-      <li>"계획 세워줘", "플랜 만들어줘"</li>
     </ul>
   </section>
 
+  <!-- How it works -->
   <section>
-    <h2>어떻게 동작하나요?</h2>
+    <h2>▸ 어떻게 동작하나요?</h2>
 
     <div class="callout blue">
-      <strong>핵심 원리:</strong> 계획은 <em>실행 문서</em>입니다. 코드가 없는 단계, "나중에 구현" 같은 플레이스홀더는 계획 결함으로 간주됩니다.
+      <strong>핵심 원리:</strong> 계획은 <em>실행 문서</em>입니다. 코드가 없는 단계는 계획 결함입니다.
     </div>
 
-    <div class="flow-steps">
-      <div class="flow-step">
-        <div class="flow-number">1</div>
-        <div>
+    <div class="rule-list">
+      <div class="rule-item">
+        <span class="rule-number">1</span>
+        <div class="rule-content">
           <strong>검증 인프라 탐색</strong>
-          <p>프로젝트에서 가장 높은 수준의 검증(e2e, 통합, 테스트 스위트, 빌드)을 찾아 Final Verification Task를 결정합니다.</p>
+          <p>e2e, 통합, 테스트 스위트, 빌드 — 가장 높은 수준 검증을 찾아 Final Verification Task를 결정합니다.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">2</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">2</span>
+        <div class="rule-content">
           <strong>파일 구조 매핑</strong>
-          <p>어떤 파일을 생성/수정할지 미리 매핑합니다. 함께 변경되는 파일은 같은 작업에 묶고, 다른 책임은 분리합니다.</p>
+          <p>함께 변경되는 파일은 같은 작업, 다른 책임은 분리.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">3</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">3</span>
+        <div class="rule-content">
           <strong>작업 분해 — Worker-Validator 구조</strong>
-          <p>각 작업은 실행자와 검증자가 쌍으로 작동하도록 설계됩니다. 같은 파일을 수정하는 작업은 직렬로, 독립적인 작업은 병렬로 배치합니다.</p>
+          <p>같은 파일 수정은 직렬, 독립 작업은 병렬.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">4</div>
-        <div>
-          <strong>모든 단계에 실제 코드 포함</strong>
-          <p>TBD, TODO, "적절한 에러 처리 추가" 금지. 모든 코드 변경 사항이 계획에 명시됩니다.</p>
+      <div class="rule-item">
+        <span class="rule-number">4</span>
+        <div class="rule-content">
+          <strong>모든 단계에 실제 코드</strong>
+          <p>TBD, TODO, "적절한 에러 처리 추가" — 모두 금지.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">5</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">5</span>
+        <div class="rule-content">
           <strong>Self-Review</strong>
-          <p>사양 커버리지, 플레이스홀더 스캔, 타입 일관성, 의존성 검증, 검증 커버리지를 자체 점검합니다.</p>
+          <p>사양 커버리지, 타입 일관성, 의존성 검증, 검증 커버리지 자체 점검.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section>
-    <h2>플레이스홀더 금지 목록</h2>
-    <div class="callout">
-      다음 패턴은 계획 <strong>결함</strong>입니다:
-    </div>
+  <!-- Hard Gates -->
+  <div class="gate-box">
     <ul>
-      <li><code>"TBD"</code>, <code>"TODO"</code>, <code>"implement later"</code></li>
-      <li><code>"적절한 에러 처리 추가"</code></li>
-      <li><code>"테스트 작성"</code> (실제 테스트 코드 없이)</li>
-      <li><code>"Task N과 유사"</code> (실제 코드 반복 필요 — 워커는 순서대로 읽지 않을 수 있음)</li>
+      <li><code>TBD</code>, <code>TODO</code>, <code>implement later</code> — 계획 결함</li>
+      <li>"적절한 에러 처리 추가" — 구체적 코드 없으면 결함</li>
+      <li>"Task N과 유사" — 실제 코드를 반복해야 함</li>
     </ul>
-  </section>
+  </div>
 
+  <!-- Related Skills -->
   <section>
-    <h2>연결된 스킬</h2>
+    <h2>▸ 연결된 스킬</h2>
+    <div class="skill-chain">
+      <span class="chain-node"><a href="clarification.html" style="color:inherit; text-decoration:none;">Clarification</a></span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node active">Plan Crafting</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node blue"><a href="run-plan.html" style="color:inherit; text-decoration:none;">Run Plan</a></span>
+    </div>
     <p>
-      <a href="clarification.html" class="btn">← Clarification</a>
-      <a href="run-plan.html" class="btn">Run Plan →</a>
-      <a href="../index.html" class="btn btn-primary">← 홈</a>
+      <a href="../index.html" class="btn btn-primary">← 홈으로 돌아가기</a>
     </p>
   </section>
 

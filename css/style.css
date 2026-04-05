@@ -398,6 +398,204 @@ th {
   background: var(--blue);
 }
 
+/* === Skill Meta Card (info panel) === */
+.meta-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.meta-item {
+  border: var(--border-width) solid var(--black);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
+  padding: 1rem;
+}
+
+.meta-label {
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--black);
+  margin-bottom: 0.5rem;
+}
+
+.meta-value {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.meta-value code {
+  display: inline-block;
+  background: var(--black);
+  color: var(--bg);
+  font-size: 0.8rem;
+  padding: 0.15rem 0.5rem;
+  margin: 0.15rem;
+}
+
+.meta-links a {
+  display: inline-block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--blue);
+  margin-right: 0.75rem;
+}
+
+/* === Skill Chain Diagram === */
+.skill-chain {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  border: var(--border-width-thick) solid var(--black);
+  box-shadow: var(--shadow-offset-lg) var(--shadow-offset-lg) 0 var(--black);
+  background: var(--bg);
+}
+
+.chain-node {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border: var(--border-width) solid var(--black);
+  font-weight: 800;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  background: var(--bg);
+}
+
+.chain-node.active {
+  background: var(--black);
+  color: var(--bg);
+}
+
+.chain-node.blue {
+  background: var(--blue);
+  color: var(--bg);
+  border-color: var(--blue);
+}
+
+.chain-arrow {
+  color: var(--black);
+  font-weight: 900;
+  font-size: 1.2rem;
+  margin: 0 0.5rem;
+}
+
+/* === Rule List === */
+.rule-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.rule-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  border: var(--border-width) solid var(--black);
+  margin-bottom: -4px;
+  background: var(--bg);
+  transition: background 0.1s;
+}
+
+.rule-item:last-child {
+  margin-bottom: 0;
+}
+
+.rule-item:hover {
+  background: #f0f0f0;
+}
+
+.rule-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: var(--black);
+  color: var(--bg);
+  font-weight: 900;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.rule-content strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 1rem;
+}
+
+.rule-content p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* === Stat Grid === */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0;
+  margin: 1.5rem 0;
+}
+
+.stat-item {
+  border: var(--border-width) solid var(--black);
+  padding: 1.25rem;
+  text-align: center;
+  margin-right: -4px;
+  background: var(--bg);
+}
+
+.stat-item:nth-child(odd) {
+  background: var(--black);
+  color: var(--bg);
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1;
+  display: block;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-top: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.9;
+}
+
+/* === Gate Box === */
+.gate-box {
+  border: var(--border-width-thick) solid var(--black);
+  box-shadow: var(--shadow-offset-lg) var(--shadow-offset-lg) 0 var(--black);
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.gate-box::before {
+  content: '⛔ HARD GATE';
+  position: absolute;
+  top: -0.75rem;
+  left: 1rem;
+  background: var(--black);
+  color: var(--bg);
+  font-size: 0.75rem;
+  font-weight: 900;
+  padding: 0.15rem 0.5rem;
+  letter-spacing: 0.05em;
+}
+
 /* === Responsive (minimal) === */
 @media (max-width: 768px) {
   .container { padding: 1rem; }
@@ -407,4 +605,8 @@ th {
   .nav-links { gap: 0.75rem; }
   .workflow { font-size: 0.7rem; padding: 1rem; }
   .card:hover { transform: none; box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black); }
+  .meta-card { grid-template-columns: 1fr; }
+  .skill-chain { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  .chain-arrow { transform: rotate(90deg); margin: 0; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
 }

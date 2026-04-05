@@ -35,41 +35,78 @@
 
 <div class="container">
 
+  <!-- Workflow Position -->
   <section>
-    <h2>언제 사용하나요?</h2>
+    <h2>▸ 워크플로우 위치</h2>
+    <div class="skill-chain">
+      <span class="chain-node">Long Run</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node active">Simplify</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node">Review Work</span>
+    </div>
+  </section>
+
+  <!-- Meta Info -->
+  <div class="meta-card">
+    <div class="meta-item">
+      <div class="meta-label">트리거</div>
+      <div class="meta-value">
+        <code>simplify</code> <code>코드 정리해줘</code> <code>변경사항 검토해줘</code>
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">메커니즘</div>
+      <div class="meta-value">3개 병렬 리뷰어 + 통합</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">규칙</div>
+      <div class="meta-value">최소 수정만 적용</div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stat-grid">
+    <div class="stat-item"><span class="stat-number">3</span><span class="stat-label">병렬 리뷰어</span></div>
+    <div class="stat-item"><span class="stat-number">1</span><span class="stat-label">통합 패스</span></div>
+    <div class="stat-item"><span class="stat-number">0</span><span class="stat-label">리팩토링</span></div>
+    <div class="stat-item"><span class="stat-number">1</span><span class="stat-label">테스트 실행</span></div>
+  </div>
+
+  <!-- When to use -->
+  <section>
+    <h2>▸ 언제 사용하나요?</h2>
     <div class="callout">
       구현 완료 후 코드 품질을 높이고 싶을 때. Long Run의 마지막 정제 단계로도 사용됩니다.
     </div>
-    <ul>
-      <li><code>"simplify"</code>, <code>"코드 정리해줘"</code>, <code>"변경사항 검토해줘"</code></li>
-    </ul>
   </section>
 
+  <!-- How it works -->
   <section>
-    <h2>어떻게 동작하나요?</h2>
+    <h2>▸ 어떻게 동작하나요?</h2>
 
     <div class="callout blue">
       <strong>핵심 원리:</strong> 세 리뷰어는 같은 diff를 보지만 <strong>서로 다른 렌즈</strong>로 분석합니다. 중복 findings는 통합되고, 최소 수정만 적용됩니다.
     </div>
 
-    <div class="flow-steps">
-      <div class="flow-step">
-        <div class="flow-number">1</div>
-        <div>
+    <div class="rule-list">
+      <div class="rule-item">
+        <span class="rule-number">1</span>
+        <div class="rule-content">
           <strong>변경사항 식별</strong>
           <p><code>git diff</code>로 최근 변경된 파일을 파악합니다.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">2</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">2</span>
+        <div class="rule-content">
           <strong>3개 병렬 리뷰어 동시 생성</strong>
           <p><strong>Agent 1 — 재사용:</strong> 중복 코드, 기존 유틸리티로 인라인 가능한 로직.<br><strong>Agent 2 — 품질:</strong> 중복 상태, 파라미터 과다, 사본-붙여넣기 변형, 추상화 누수, 문자열 타입 코드, 불필요 주석.<br><strong>Agent 3 — 효율성:</strong> 불필요 작업, 누락된 동시성, 핫패스 비대, TOCTOU, 메모리 누수.</p>
         </div>
       </div>
-      <div class="flow-step">
-        <div class="flow-number">3</div>
-        <div>
+      <div class="rule-item">
+        <span class="rule-number">3</span>
+        <div class="rule-content">
           <strong>통합 + 최소 수정</strong>
           <p>results를 집계하고 중복을 제거한 뒤, 최소 수정을 적용하고 테스트를 실행합니다.</p>
         </div>
@@ -77,12 +114,23 @@
     </div>
   </section>
 
+  <!-- Gate -->
+  <div class="gate-box">
+    ⛔ HARD GATE: <strong>리팩토링은 하지 않습니다.</strong> 발견된 문제는 별도 작업으로 처리합니다.
+  </div>
+
+  <!-- Related Skills -->
   <section>
-    <h2>연결된 스킬</h2>
+    <h2>▸ 연결된 스킬</h2>
+    <div class="skill-chain">
+      <span class="chain-node"><a href="long-run.html" style="color:inherit; text-decoration:none;">Long Run</a></span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node active">Simplify</span>
+      <span class="chain-arrow">→</span>
+      <span class="chain-node blue"><a href="review-work.html" style="color:inherit; text-decoration:none;">Review Work</a></span>
+    </div>
     <p>
-      <a href="long-run.html" class="btn">← Long Run</a>
-      <a href="review-work.html" class="btn">Review Work →</a>
-      <a href="../index.html" class="btn btn-primary">← 홈</a>
+      <a href="../index.html" class="btn btn-primary">← 홈으로 돌아가기</a>
     </p>
   </section>
 
