@@ -11,15 +11,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
-<body class="en">
+<body class="landing-page en">
 
 <nav class="nav">
   <a href="index-en.html" class="nav-brand">▣ Engineering Discipline</a>
   <ul class="nav-links">
     <li><a href="index-en.html" class="active">Home</a></li>
-    <li><a href="index-en.html#skills">Skills</a></li>
-    <li><a href="index-en.html#workflow">Workflow</a></li>
-    <li><a href="index-en.html#install">Install</a></li>
+    <li><a href="#workflow">Workflow</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#install">Install</a></li>
     <li class="lang-switcher">
       <a href="index.html">KO</a>
       <span class="divider">|</span>
@@ -28,245 +28,293 @@
   </ul>
 </nav>
 
-<div class="container">
-
-  <!-- Hero -->
-  <section>
-    <h1>Engineering Discipline for<br>AI Coding Agents</h1>
-    <p style="font-size:1.15rem;margin-bottom:1.5rem;">
-      From vague requests → clear plans → verified implementation.<br>
-      Works directly with Claude Code, Gemini CLI, Cursor, and Codex.
-    </p>
-    <a href="index-en.html#workflow" class="btn btn-primary">View Workflow ↓</a>
-    <a href="https://github.com/tmdgusya/engineering-discipline" class="btn" target="_blank">GitHub ↗</a>
-  </section>
-
-  <!-- Workflow Diagram -->
-  <section id="workflow">
-    <h2>01 ▸ Workflow</h2>
-
-    <div class="callout">
-      <strong>How it works?</strong> Skills are chained to route tasks automatically.
-      All you need to do is say <em>what you want</em>.
-    </div>
-
-    <div class="workflow">User Request (Vague)
-    │
-    ▼
-┌─────────────────────────────┐
-│  clarification              │
-│  De-risk + Codebase Search  │
-│  ─────────────────────────  │
-│  Complexity Check (Routing) │
-└──────────────┬──────────────┘
-               │
-      ┌────────┴────────┐
-      │                 │
-      ▼                 ▼
-  Simple (5-8)     Complex (9-15)
-      │                 │
-      ▼                 ▼
-┌─────────────┐   ┌──────────────────┐
-│plan-crafting│   │milestone-planning│
-│Plan Creation│   │  5 Parallel Rev. │
-└──────┬──────┘   └────────┬─────────┘
-       │                   │
-       ▼                   ▼
-┌─────────────┐   ┌──────────────────┐
-│  run-plan   │   │    long-run       │
-│  Worker-    │   │ Orchestration    │
-│  Validator  │   │                  │
-└──────┬──────┘   └────────┬─────────┘
-       │                   │
-       ▼                   │
-┌─────────────┐            │
-│ review-work │◄───────────┘
-│ Independent │  Each Milestone:
-└─────────────┘  plan → run → review
-      │
-      ▼
-  [DONE]
-
-  ─── Independent Skills (On-demand) ───
-
-  karpathy          → Pre-coding Guardrails
-  clean-ai-slop     → Deslop AI output
-  simplify          → Quality Review
-  systematic-debug  → Root-cause Debugging
-  rob-pike          → Measurement-driven Perf
-</div>
-
-    <div class="callout blue">
-      <strong>Core Principle:</strong> <em>Information Isolation</em> is applied at every transition.
-      Validators never know the worker's intent — only the plan and the result.
-    </div>
-  </section>
-
-  <!-- Skills Map -->
-  <section id="skills">
-    <h2>02 ▸ Skill Map</h2>
-
-    <h3>Workflow Skills</h3>
-
-    <div class="card">
-      <a href="skills/en/clarification.html" class="card-link">
-        <div class="card-title">Clarification</div>
-      </a>
-      <div>
-        <span class="card-tag">Start</span>
-        <span class="card-tag blue">Auto-routing</span>
+<div class="page-shell">
+  <header class="hero-panel">
+    <div class="hero-copy">
+      <div class="eyebrow-row">
+        <span class="eyebrow">NEUBRUTALISM LANDING</span>
+        <span class="eyebrow mint">OPEN SOURCE SKILL PACK</span>
       </div>
-      <p style="margin-top:0.5rem;">Narrow down vague requests via iterative Q&A + codebase search. Automatically routes to the next skill based on complexity.</p>
+
+      <ul class="hero-badges" aria-label="Supported tools">
+        <li>CLAUDE CODE</li>
+        <li>GEMINI CLI</li>
+        <li>CURSOR</li>
+        <li>CODEX</li>
+      </ul>
+
+      <h1>Engineering Discipline for<br>AI Coding Agents</h1>
+      <p class="hero-lead">
+        Vague requests should not go straight into implementation. This pack forces
+        clarification first, planning second, execution third, and independent review last.
+      </p>
+      <p class="hero-subcopy">
+        Clarification → Planning → Execution → Review becomes a single operating system for AI coding:
+        less guesswork, more structure, and much stronger verification.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#workflow" class="btn btn-primary">View Workflow ↓</a>
+        <a href="#install" class="btn btn-blue">Install Now</a>
+        <a href="https://github.com/tmdgusya/engineering-discipline" class="btn" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </div>
+
+      <div class="hero-metrics" aria-label="Core values">
+        <article class="metric-card yellow">
+          <span class="metric-value">01</span>
+          <span class="metric-label">Clarify First</span>
+          <p>Ambiguous requests get narrowed before any coding begins.</p>
+        </article>
+        <article class="metric-card pink">
+          <span class="metric-value">02</span>
+          <span class="metric-label">Plan Before Code</span>
+          <p>Short tasks become explicit plans instead of impulse edits.</p>
+        </article>
+        <article class="metric-card blue">
+          <span class="metric-value">03</span>
+          <span class="metric-label">Independent Review</span>
+          <p>Implementation intent and verification context stay separated.</p>
+        </article>
+        <article class="metric-card mint">
+          <span class="metric-value">04</span>
+          <span class="metric-label">Long-Run Ready</span>
+          <p>Large work gets decomposed into milestones and checkpoints.</p>
+        </article>
+      </div>
     </div>
 
-    <div class="card">
-      <a href="skills/en/plan-crafting.html" class="card-link">
-        <div class="card-title">Plan Crafting</div>
-      </a>
-      <div>
-        <span class="card-tag">Plan</span>
-        <span class="card-tag">Executable</span>
+    <aside class="hero-side" aria-label="Workflow summary">
+      <div class="paper-card coral">
+        <p class="mini-label">HOW IT MOVES</p>
+        <ol class="step-list">
+          <li><strong>clarification</strong><span>Lock the request with questions and codebase search</span></li>
+          <li><strong>plan-crafting / milestone-planning</strong><span>Split short work and long work into different paths</span></li>
+          <li><strong>run-plan / long-run</strong><span>Execute, retry, and orchestrate</span></li>
+          <li><strong>review-work</strong><span>Deliver an isolated PASS/FAIL review</span></li>
+        </ol>
       </div>
-      <p style="margin-top:0.5rem;">Create multi-step implementation plans. Every step must include actual code — no placeholders allowed.</p>
+
+      <div class="paper-card cream ascii-card">
+        <p class="mini-label">ROUTING SNAPSHOT</p>
+        <pre>User request
+   ↓
+clarification
+   ├─ simple  → plan-crafting → run-plan → review-work
+   └─ complex → milestone-planning → long-run → review-work</pre>
+      </div>
+
+      <div class="sticker-stack" aria-hidden="true">
+        <span class="sticker yellow">THICK BORDERS</span>
+        <span class="sticker blue">HARD SHADOWS</span>
+        <span class="sticker pink">LOUD STRUCTURE</span>
+      </div>
+    </aside>
+  </header>
+
+  <section id="workflow" class="section-panel panel-pink">
+    <div class="section-heading">
+      <p class="section-kicker">01 — WORKFLOW</p>
+      <h2>A stricter route from prompt to proof</h2>
+      <p>
+        This is not just a list of skills. It is a routing system that interprets the request,
+        chooses the right execution path, and ends with independent verification instead of “looks good to me.”
+      </p>
     </div>
 
-    <div class="card">
-      <a href="skills/en/run-plan.html" class="card-link">
-        <div class="card-title">Run Plan</div>
-      </a>
-      <div>
-        <span class="card-tag">Execute</span>
-        <span class="card-tag blue">Worker-Validator</span>
-      </div>
-      <p style="margin-top:0.5rem;">Worker implements, Validator independently verifies. Auto-retry on failure, escalation after 3 failures.</p>
+    <div class="feature-callout">
+      <strong>Core principle:</strong> every handoff is designed for information isolation and verifiability.
+      Builders build. Reviewers review.
     </div>
 
-    <div class="card">
-      <a href="skills/en/review-work.html" class="card-link">
-        <div class="card-title">Review Work</div>
-      </a>
-      <div>
-        <span class="card-tag">Verify</span>
-        <span class="card-tag blue">Isolation</span>
-      </div>
-      <p style="margin-top:0.5rem;">Verify plan vs implementation with zero context overlap. Delivers a binary PASS/FAIL verdict.</p>
-    </div>
+    <div class="workflow-grid">
+      <article class="path-card">
+        <p class="path-step">STEP 1</p>
+        <h3>Clarification</h3>
+        <p>Turn vague requests into bounded work using iterative questions and codebase exploration.</p>
+        <ul>
+          <li>Requirement narrowing</li>
+          <li>Scope control</li>
+          <li>Complexity scoring</li>
+        </ul>
+      </article>
 
-    <h3>Long Running</h3>
+      <article class="path-card">
+        <p class="path-step">STEP 2A</p>
+        <h3>Plan Crafting</h3>
+        <p>Short tasks become executable implementation plans rather than improvised edits.</p>
+        <ul>
+          <li>Concrete code-oriented steps</li>
+          <li>No placeholders</li>
+          <li>Clear sequencing</li>
+        </ul>
+      </article>
 
-    <div class="card">
-      <a href="skills/en/milestone-planning.html" class="card-link">
-        <div class="card-title">Milestone Planning</div>
-      </a>
-      <div>
-        <span class="card-tag">Decompose</span>
-        <span class="card-tag blue">5 Parallel Rev.</span>
-      </div>
-      <p style="margin-top:0.5rem;">Synthesize an optimized milestone DAG after concurrent reviews across feasibility, architecture, risk, dependency, and value.</p>
-    </div>
+      <article class="path-card accent-blue">
+        <p class="path-step">STEP 2B</p>
+        <h3>Milestone Planning</h3>
+        <p>Large work gets decomposed through five parallel review lenses into a milestone DAG.</p>
+        <ul>
+          <li>Feasibility</li>
+          <li>Risk and dependencies</li>
+          <li>User value alignment</li>
+        </ul>
+      </article>
 
-    <div class="card">
-      <a href="skills/en/long-run.html" class="card-link">
-        <div class="card-title">Long Run</div>
-      </a>
-      <div>
-        <span class="card-tag">Orchestration</span>
-        <span class="card-tag blue">Checkpoints</span>
-      </div>
-      <p style="margin-top:0.5rem;">Orchestrate executions spanning multiple days. Survives crashes with checkpoints and runs parallel milestones via worktree isolation.</p>
-    </div>
+      <article class="path-card accent-yellow">
+        <p class="path-step">STEP 3</p>
+        <h3>Run Plan / Long Run</h3>
+        <p>Short tasks use worker-validator execution. Long tasks use checkpointed orchestration.</p>
+        <ul>
+          <li>Retry loops</li>
+          <li>Checkpoint recovery</li>
+          <li>Parallel worktrees</li>
+        </ul>
+      </article>
 
-    <h3>Independent Skills</h3>
-
-    <div class="card">
-      <a href="skills/en/karpathy.html" class="card-link">
-        <div class="card-title">Karpathy</div>
-      </a>
-      <div>
-        <span class="card-tag">Prevent</span>
-        <span class="card-tag">Guardrails</span>
-      </div>
-      <p style="margin-top:0.5rem;">Surgical changes, assumption verification, scope discipline — prevent common LLM mistakes before and during coding.</p>
-    </div>
-
-    <div class="card">
-      <a href="skills/en/clean-ai-slop.html" class="card-link">
-        <div class="card-title">Clean AI Slop</div>
-      </a>
-      <div>
-        <span class="card-tag">Cleanup</span>
-        <span class="card-tag blue">6-Pass</span>
-      </div>
-      <p style="margin-top:0.5rem;">Remove excessive comments, redundant abstractions, and defensive paranoia while preserving behavior. Test-first, single-smell passes.</p>
-    </div>
-
-    <div class="card">
-      <a href="skills/en/simplify.html" class="card-link">
-        <div class="card-title">Simplify</div>
-      </a>
-      <div>
-        <span class="card-tag">Review</span>
-        <span class="card-tag blue">3 Parallel Agents</span>
-      </div>
-      <p style="margin-top:0.5rem;">Reuse, quality, efficiency — 3 parallel reviewers audit changes and automatically fix discovered issues.</p>
-    </div>
-
-    <div class="card">
-      <a href="skills/en/systematic-debugging.html" class="card-link">
-        <div class="card-title">Systematic Debugging</div>
-      </a>
-      <div>
-        <span class="card-tag">Debug</span>
-        <span class="card-tag">7-Step</span>
-      </div>
-      <p style="margin-top:0.5rem;">Reproduce first → Trace root cause → Failing test → Single fix → Verify. Blocks "fixing other things while I'm here."</p>
-    </div>
-
-    <div class="card">
-      <a href="skills/en/rob-pike.html" class="card-link">
-        <div class="card-title">Rob Pike's 5 Rules</div>
-      </a>
-      <div>
-        <span class="card-tag">Perf</span>
-        <span class="card-tag blue">Measure First</span>
-      </div>
-      <p style="margin-top:0.5rem;">"Don't touch it if you haven't measured it." Prevents premature optimization and enforces data-driven tuning.</p>
+      <article class="path-card accent-mint">
+        <p class="path-step">STEP 4</p>
+        <h3>Review Work</h3>
+        <p>Review is done from the plan and the resulting code, not from implementation rationale.</p>
+        <ul>
+          <li>Information isolation</li>
+          <li>Plan-vs-result inspection</li>
+          <li>Binary PASS/FAIL output</li>
+        </ul>
+      </article>
     </div>
   </section>
 
-  <!-- Install -->
-  <section id="install">
-    <h2>03 ▸ Install</h2>
+  <section id="skills" class="section-panel panel-blue">
+    <div class="section-heading">
+      <p class="section-kicker">02 — SKILL MAP</p>
+      <h2>Skills designed to connect, not just coexist</h2>
+      <p>
+        Each skill can be called directly, but the real value appears when they operate as a chained system:
+        entry point, planning, execution, review, long-run orchestration, and quality reinforcement.
+      </p>
+    </div>
 
-    <div class="card">
-      <div class="card-title">Claude Code</div>
-      <pre>/plugin marketplace add tmdgusya/engineering-discipline
+    <div class="category-grid">
+      <section class="category-card yellow">
+        <div class="category-header">
+          <p class="mini-label">WORKFLOW SKILLS</p>
+          <h3>The core chain</h3>
+        </div>
+
+        <a href="skills/en/clarification.html" class="skill-tile">
+          <strong>Clarification</strong>
+          <span>Narrow vague requests into explicit scope</span>
+        </a>
+        <a href="skills/en/plan-crafting.html" class="skill-tile">
+          <strong>Plan Crafting</strong>
+          <span>Create executable multi-step plans</span>
+        </a>
+        <a href="skills/en/run-plan.html" class="skill-tile">
+          <strong>Run Plan</strong>
+          <span>Worker-validator execution loop</span>
+        </a>
+        <a href="skills/en/review-work.html" class="skill-tile">
+          <strong>Review Work</strong>
+          <span>Isolated implementation review</span>
+        </a>
+      </section>
+
+      <section class="category-card pink">
+        <div class="category-header">
+          <p class="mini-label">LONG RUNNING</p>
+          <h3>For complex work</h3>
+        </div>
+
+        <a href="skills/en/milestone-planning.html" class="skill-tile">
+          <strong>Milestone Planning</strong>
+          <span>Synthesize milestones from 5 parallel reviewers</span>
+        </a>
+        <a href="skills/en/long-run.html" class="skill-tile">
+          <strong>Long Run</strong>
+          <span>Checkpointed orchestration for multi-day execution</span>
+        </a>
+      </section>
+
+      <section class="category-card mint">
+        <div class="category-header">
+          <p class="mini-label">INDEPENDENT SKILLS</p>
+          <h3>Call on demand</h3>
+        </div>
+
+        <a href="skills/en/karpathy.html" class="skill-tile">
+          <strong>Karpathy</strong>
+          <span>Scope discipline and surgical-change guardrails</span>
+        </a>
+        <a href="skills/en/clean-ai-slop.html" class="skill-tile">
+          <strong>Clean AI Slop</strong>
+          <span>Deslop AI-generated code</span>
+        </a>
+        <a href="skills/en/simplify.html" class="skill-tile">
+          <strong>Simplify</strong>
+          <span>Reuse, quality, and efficiency review</span>
+        </a>
+        <a href="skills/en/systematic-debugging.html" class="skill-tile">
+          <strong>Systematic Debugging</strong>
+          <span>Reproduce first, fix root cause second</span>
+        </a>
+        <a href="skills/en/rob-pike.html" class="skill-tile">
+          <strong>Rob Pike's 5 Rules</strong>
+          <span>Measurement-driven optimization</span>
+        </a>
+      </section>
+    </div>
+  </section>
+
+  <section id="install" class="section-panel panel-mint">
+    <div class="section-heading">
+      <p class="section-kicker">03 — INSTALL</p>
+      <h2>Attach it to the agent you already use</h2>
+      <p>
+        Claude Code, Gemini CLI, Cursor, and Codex are all supported.
+        After installation, you can trigger the system naturally with prompts like “plan this”, “debug this test”, or “start a long run.”
+      </p>
+    </div>
+
+    <div class="install-grid">
+      <article class="install-card yellow">
+        <h3>Claude Code</h3>
+        <pre>/plugin marketplace add tmdgusya/engineering-discipline
 /plugin install engineering-discipline</pre>
+      </article>
+
+      <article class="install-card pink">
+        <h3>Gemini CLI</h3>
+        <pre>gemini extensions install https://github.com/tmdgusya/engineering-discipline</pre>
+      </article>
+
+      <article class="install-card blue">
+        <h3>Cursor</h3>
+        <pre>/add-plugin engineering-discipline</pre>
+      </article>
+
+      <article class="install-card cream">
+        <h3>Codex</h3>
+        <pre>npx skills add tmdgusya/engineering-discipline</pre>
+      </article>
     </div>
 
-    <div class="card">
-      <div class="card-title">Gemini CLI</div>
-      <pre>gemini extensions install https://github.com/tmdgusya/engineering-discipline</pre>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Cursor</div>
-      <pre>/add-plugin engineering-discipline</pre>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Codex</div>
-      <pre>npx skills add tmdgusya/engineering-discipline</pre>
+    <div class="feature-callout dark">
+      <strong>Open-source repo:</strong>
+      docs, HTML skill pages, and install flows all live in
+      <a href="https://github.com/tmdgusya/engineering-discipline" target="_blank" rel="noreferrer">tmdgusya/engineering-discipline</a>.
     </div>
   </section>
 
-  <footer class="footer">
+  <footer class="landing-footer">
+    <p><strong>Engineering Discipline</strong> · AI coding needs clearer requests, stronger plans, and tougher review.</p>
     <p>
-      <a href="https://github.com/tmdgusya/engineering-discipline">tmdgusya/engineering-discipline</a>
-      · MIT License
+      <a href="https://github.com/tmdgusya/engineering-discipline" target="_blank" rel="noreferrer">GitHub ↗</a>
+      <span aria-hidden="true">·</span>
+      <a href="README.md">README.md</a>
+      <span aria-hidden="true">·</span>
+      <a href="README.ko.md">README.ko.md</a>
     </p>
   </footer>
-
 </div>
 
 </body>
