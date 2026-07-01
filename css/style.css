@@ -209,6 +209,7 @@ h3 {
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
   color: var(--phosphor-bright);
+  text-shadow: var(--glow-bright);
 }
 
 /* Headings inside Korean skill pages keep mono for Latin/numbers but
