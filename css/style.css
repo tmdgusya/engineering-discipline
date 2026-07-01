@@ -1,17 +1,44 @@
-/* css/style.css — Neo-Brutalist Design System */
+/* css/style.css — Phosphor Green CRT Terminal Theme */
+
+/* === Font import (HTML immutable constraint → @import) === */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Nanum+Gothic+Coding&family=Noto+Sans+KR:wght@400;700;900&display=swap');
 
 /* === Custom Properties === */
 :root {
-  --bg: #FFFFFF;
-  --black: #000000;
-  --blue: #0000FF;
-  --border-width: 4px;
-  --border-width-thick: 8px;
-  --shadow-offset: 6px;
-  --shadow-offset-lg: 10px;
-  --font-ko: 'MiSans', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-  --font-en: 'Arial', 'Helvetica', sans-serif;
-  --mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  /* CRT backgrounds */
+  --bg: #001100;              /* phosphor-tinted near-black (global page bg) */
+  --crt-bg: #001100;          /* explicit alias */
+  --black: #33FF33;           /* REPURPOSED: "ink" is now phosphor green.
+                                 Most component rules use var(--black) for borders/text,
+                                 so this single token flips them to phosphor. */
+  /* Phosphor scale (readability-tiered) */
+  --phosphor-bright: #33FF33; /* AAA 14.34:1 — headings, code, terminal UI, landing */
+  --phosphor-body: #66AA66;   /* AA 6.95:1  — long-form skill body text */
+  --phosphor-muted: #88C488;  /* AAA 9.53:1 — captions, secondary text */
+  --phosphor-dim: #33CC33;    /* AAA 9.10:1 — links/emphasis in body */
+  --amber: #FFB000;           /* AAA 10.61:1 — secondary accent (P3 phosphor) */
+  --crt-grid: #003300;        /* faint grid-line green for panels */
+  --crt-panel: #001a00;       /* slightly lighter panel bg */
+  /* Accent (repurposed from blue → amber for CRT secondary accent) */
+  --blue: #FFB000;            /* REPURPOSED: was #0000FF. Now amber so every
+                                 existing var(--blue) reference (links, active
+                                 states, .callout.blue, .btn-blue, .skill-badge.blue)
+                                 becomes amber accent automatically. */
+  /* Borders — neubrutalism used 4px/8px solid. CRT keeps thin phosphor lines. */
+  --border-width: 1px;
+  --border-width-thick: 2px;
+  /* Shadows — neubrutalism hard offset shadow becomes phosphor glow.
+     These tokens are still referenced by .card/.callout/.workflow etc. */
+  --shadow-offset: 0;
+  --shadow-offset-lg: 0;
+  --glow-bright: 0 0 5px rgba(51,255,51,0.8), 0 0 10px rgba(51,255,51,0.5), 0 0 20px rgba(51,255,51,0.3);
+  --glow-amber: 0 0 5px rgba(255,176,0,0.8), 0 0 10px rgba(255,176,0,0.4);
+  /* Fonts — split stack: mono for Latin/code/UI, Hangul fallback for mixed */
+  --font-ko: 'JetBrains Mono', 'Nanum Gothic Coding', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', monospace;
+  --font-en: 'JetBrains Mono', 'Nanum Gothic Coding', monospace;
+  --mono: 'JetBrains Mono', 'Nanum Gothic Coding', 'Fira Code', 'Consolas', monospace;
+  /* Readability body font — proportional Hangul for long-form Korean text */
+  --font-body-ko: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
 }
 
 /* === Reset === */
@@ -28,31 +55,33 @@ html {
 }
 
 body {
-  font-family: var(--font-ko);
+  font-family: var(--font-body-ko);   /* proportional for Korean long-form */
   background: var(--bg);
-  color: var(--black);
+  color: var(--phosphor-body);
   line-height: 1.7;
   min-height: 100vh;
 }
 
 .en {
-  font-family: var(--font-en);
+  font-family: var(--font-en);        /* mono for English-only page */
 }
 
 code {
   font-family: var(--mono);
   font-size: 0.9em;
+  color: var(--phosphor-bright);
 }
 
 pre {
   font-family: var(--mono);
-  background: var(--bg);
-  border: var(--border-width) solid var(--black);
-  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
+  background: var(--crt-panel);
+  border: var(--border-width) solid var(--phosphor-bright);
+  box-shadow: var(--glow-bright);
   padding: 1rem;
   overflow-x: auto;
   margin: 1rem 0;
   line-height: 1.4;
+  color: var(--phosphor-bright);
 }
 
 pre code {
@@ -71,7 +100,7 @@ pre code {
 
 /* === Navigation Bar === */
 .nav {
-  border-bottom: var(--border-width-thick) solid var(--black);
+  border-bottom: var(--border-width-thick) solid var(--phosphor-bright);
   padding: 1rem 1.5rem;
   display: flex;
   align-items: center;
@@ -80,18 +109,22 @@ pre code {
   position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: 0 0 12px rgba(51,255,51,0.25);
 }
 
 .nav-brand {
   font-size: 1.25rem;
-  font-weight: 900;
-  color: var(--black);
+  font-weight: 800;
+  font-family: var(--font-en);
+  color: var(--phosphor-bright);
   text-decoration: none;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
+  text-shadow: var(--glow-bright);
 }
 
 .nav-brand:hover {
-  color: var(--blue);
+  color: var(--amber);
+  text-shadow: var(--glow-amber);
 }
 
 .nav-links {
@@ -99,25 +132,27 @@ pre code {
   gap: 1.5rem;
   list-style: none;
   flex-wrap: wrap;
+  font-family: var(--font-en);
 }
 
 .nav-links a {
-  color: var(--black);
+  color: var(--phosphor-body);
   text-decoration: none;
   font-weight: 700;
   font-size: 0.9rem;
   padding: 0.25rem 0.5rem;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   transition: all 0.1s;
 }
 
 .nav-links a:hover {
-  border-color: var(--black);
-  box-shadow: 2px 2px 0 var(--black);
+  border-color: var(--phosphor-bright);
+  box-shadow: var(--glow-bright);
+  color: var(--phosphor-bright);
 }
 
 .nav-links a.active {
-  background: var(--black);
+  background: var(--phosphor-bright);
   color: var(--bg);
 }
 
@@ -126,13 +161,14 @@ pre code {
   align-items: center;
   gap: 0.25rem;
   margin-left: 0.5rem;
-  border-left: 2px solid #eee;
+  border-left: 1px solid var(--phosphor-dim);
   padding-left: 1rem;
+  font-family: var(--font-en);
 }
 
 .lang-switcher .divider {
-  color: var(--black);
-  opacity: 0.3;
+  color: var(--phosphor-muted);
+  opacity: 0.5;
   font-size: 0.8rem;
 }
 
@@ -144,27 +180,42 @@ pre code {
 /* === Typography === */
 h1 {
   font-size: 2.5rem;
-  font-weight: 900;
-  letter-spacing: -0.03em;
+  font-weight: 800;
+  font-family: var(--font-en);
+  letter-spacing: -0.01em;
   line-height: 1.2;
   margin-bottom: 1.5rem;
+  color: var(--phosphor-bright);
+  text-shadow: var(--glow-bright);
 }
 
 h2 {
   font-size: 1.75rem;
   font-weight: 800;
-  letter-spacing: -0.02em;
+  font-family: var(--font-en);
+  letter-spacing: -0.01em;
   margin-top: 2rem;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: var(--border-width) solid var(--black);
+  border-bottom: var(--border-width) solid var(--phosphor-dim);
+  color: var(--phosphor-bright);
+  text-shadow: var(--glow-bright);
 }
 
 h3 {
   font-size: 1.25rem;
   font-weight: 700;
+  font-family: var(--font-en);
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
+  color: var(--phosphor-bright);
+}
+
+/* Headings inside Korean skill pages keep mono for Latin/numbers but
+   Hangul glyphs fall through to Nanum Gothic Coding in the stack. */
+.landing-page h1, .landing-page h2, .landing-page h3,
+.skill-header h1, .skill-header h2 {
+  font-family: var(--font-en);
 }
 
 /* === Sections === */
@@ -172,18 +223,33 @@ section {
   margin: 2rem 0;
 }
 
+/* === Links / inline emphasis === */
+a {
+  color: var(--amber);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+  text-shadow: var(--glow-amber);
+}
+strong {
+  color: var(--phosphor-bright);
+  font-weight: 700;
+}
+
 /* === Cards === */
 .card {
-  border: var(--border-width) solid var(--black);
-  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
+  border: var(--border-width) solid var(--phosphor-bright);
+  box-shadow: var(--glow-bright);
   padding: 1.5rem;
   margin: 1rem 0;
+  background: var(--crt-panel);
   transition: transform 0.1s, box-shadow 0.1s;
 }
 
 .card:hover {
-  transform: translate(2px, 2px);
-  box-shadow: calc(var(--shadow-offset) - 2px) calc(var(--shadow-offset) - 2px) 0 var(--black);
+  transform: none;
+  box-shadow: 0 0 8px rgba(51,255,51,0.9), 0 0 16px rgba(51,255,51,0.6), 0 0 28px rgba(51,255,51,0.4);
 }
 
 .card-link {
@@ -193,83 +259,88 @@ section {
 }
 
 .card-link:hover .card-title {
-  color: var(--blue);
+  color: var(--amber);
 }
 
 .card-title {
   font-size: 1.25rem;
   font-weight: 800;
   margin-bottom: 0.5rem;
+  color: var(--phosphor-bright);
+  font-family: var(--font-en);
 }
 
 .card-tag {
   display: inline-block;
-  background: var(--black);
+  background: var(--phosphor-bright);
   color: var(--bg);
   font-size: 0.75rem;
   font-weight: 700;
   padding: 0.15rem 0.5rem;
   margin-right: 0.35rem;
   margin-bottom: 0.35rem;
+  font-family: var(--font-en);
 }
 
 .card-tag.blue {
-  background: var(--blue);
+  background: var(--amber);
 }
 
 /* === Buttons === */
 .btn {
   display: inline-block;
   padding: 0.6rem 1.25rem;
-  border: var(--border-width) solid var(--black);
-  box-shadow: 4px 4px 0 var(--black);
+  border: var(--border-width) solid var(--phosphor-bright);
+  box-shadow: var(--glow-bright);
   background: var(--bg);
-  color: var(--black);
+  color: var(--phosphor-bright);
   font-weight: 700;
   font-size: 0.95rem;
+  font-family: var(--font-en);
   text-decoration: none;
   cursor: pointer;
   transition: all 0.1s;
-  font-family: var(--font-ko);
   margin-right: 0.5rem;
   margin-bottom: 0.5rem;
 }
 
 .btn:hover {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0 var(--black);
+  transform: none;
+  box-shadow: 0 0 8px rgba(51,255,51,0.9), 0 0 16px rgba(51,255,51,0.6);
+  background: var(--crt-panel);
 }
 
 .btn:active {
-  transform: translate(4px, 4px);
-  box-shadow: none;
+  background: var(--phosphor-bright);
+  color: var(--bg);
 }
 
 .btn-primary {
-  background: var(--black);
+  background: var(--phosphor-bright);
   color: var(--bg);
 }
 
 .btn-blue {
-  background: var(--blue);
+  background: var(--amber);
   color: var(--bg);
-  border-color: var(--blue);
-  box-shadow: 4px 4px 0 var(--black);
+  border-color: var(--amber);
+  box-shadow: var(--glow-amber);
 }
 
 /* === Workflow Diagram === */
 .workflow {
-  background: var(--bg);
-  border: var(--border-width-thick) solid var(--black);
-  box-shadow: var(--shadow-offset-lg) var(--shadow-offset-lg) 0 var(--black);
+  background: var(--crt-panel);
+  border: var(--border-width-thick) solid var(--phosphor-bright);
+  box-shadow: var(--glow-bright);
   padding: 2rem;
   margin: 2rem 0;
-  font-family: var(--mono);
+  font-family: var(--font-en);
   font-size: 0.9rem;
   line-height: 1.6;
   white-space: pre;
   overflow-x: auto;
-  color: var(--black);
+  color: var(--phosphor-bright);
+  text-shadow: 0 0 3px rgba(51,255,51,0.6);
 }
 
 /* === Lists === */
@@ -287,49 +358,51 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin: 1rem 0;
+  font-family: var(--font-en);
 }
 
 th, td {
-  border: var(--border-width) solid var(--black);
+  border: var(--border-width) solid var(--phosphor-dim);
   padding: 0.75rem;
   text-align: left;
 }
 
 th {
-  background: var(--black);
+  background: var(--phosphor-bright);
   color: var(--bg);
   font-weight: 700;
 }
 
 /* === Callout / Badge === */
 .callout {
-  border: var(--border-width) solid var(--black);
-  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
+  border: var(--border-width) solid var(--phosphor-bright);
+  box-shadow: var(--glow-bright);
   padding: 1rem 1.25rem;
   margin: 1.5rem 0;
+  background: var(--crt-panel);
 }
 
 .callout::before {
   content: '▸ ';
-  font-weight: 900;
-  color: var(--blue);
+  font-weight: 800;
+  color: var(--amber);
 }
 
 .callout.blue {
-  border-color: var(--blue);
-  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--blue);
+  border-color: var(--amber);
+  box-shadow: var(--glow-amber);
 }
 
 .callout.blue::before {
-  color: var(--black);
+  color: var(--amber);
 }
 
 /* === Trigger badge (inline code-like) === */
 .trigger {
   display: inline-block;
-  background: var(--black);
+  background: var(--phosphor-bright);
   color: var(--bg);
-  font-family: var(--mono);
+  font-family: var(--font-en);
   font-size: 0.8rem;
   padding: 0.2rem 0.6rem;
   margin: 0.25rem 0;
@@ -337,54 +410,62 @@ th {
 
 /* === ASCII Arrow / diagram helpers === */
 .ascii-arrow {
-  color: var(--blue);
-  font-weight: 900;
+  color: var(--amber);
+  font-weight: 800;
 }
 
 /* === Footer === */
 .footer {
-  border-top: var(--border-width) solid var(--black);
+  border-top: var(--border-width) solid var(--phosphor-bright);
   padding: 1.5rem;
   margin-top: 3rem;
   text-align: center;
   font-size: 0.85rem;
+  color: var(--phosphor-muted);
+  font-family: var(--font-en);
 }
 
 .footer a {
-  color: var(--blue);
+  color: var(--amber);
   font-weight: 700;
 }
 
 /* === Skill detail page header === */
 .skill-header {
   padding: 4rem 1.5rem;
-  border-bottom: var(--border-width-thick) solid var(--black);
+  border-bottom: var(--border-width-thick) solid var(--phosphor-bright);
   background: var(--bg);
+  box-shadow: inset 0 0 40px rgba(51,255,51,0.08);
 }
 
 .skill-header h1 {
   font-size: 3.5rem;
   margin-bottom: 1rem;
   line-height: 1.2;
+  font-family: var(--font-en);
+  color: var(--phosphor-bright);
+  text-shadow: var(--glow-bright);
 }
 
 .skill-header p {
   font-size: 1.25rem;
   max-width: 800px;
+  color: var(--phosphor-muted);
 }
 
 .skill-badge {
   display: inline-block;
-  background: var(--black);
+  background: var(--phosphor-bright);
   color: var(--bg);
   font-size: 0.8rem;
   font-weight: 700;
+  font-family: var(--font-en);
   padding: 0.25rem 0.75rem;
   margin-right: 0.5rem;
 }
 
 .skill-badge.blue {
-  background: var(--blue);
+  background: var(--amber);
 }
 
 /* === Flow diagram for skill pages === */
@@ -400,8 +481,9 @@ th {
   align-items: flex-start;
   gap: 1rem;
   padding: 1rem;
-  border: var(--border-width) solid var(--black);
-  margin-bottom: -4px;
+  border: var(--border-width) solid var(--phosphor-dim);
+  margin-bottom: -1px;
+  background: var(--crt-panel);
 }
 
 .flow-step:last-child {
@@ -414,15 +496,16 @@ th {
   justify-content: center;
   width: 2rem;
   height: 2rem;
-  background: var(--black);
+  background: var(--phosphor-bright);
   color: var(--bg);
-  font-weight: 900;
+  font-weight: 800;
   font-size: 0.9rem;
+  font-family: var(--font-en);
   flex-shrink: 0;
 }
 
 .flow-step:first-child .flow-number {
-  background: var(--blue);
+  background: var(--amber);
 }
 
 /* === Skill Meta Card (info panel) === */
@@ -434,18 +517,20 @@ th {
 }
 
 .meta-item {
-  border: var(--border-width) solid var(--black);
-  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
+  border: var(--border-width) solid var(--phosphor-bright);
+  box-shadow: var(--glow-bright);
   padding: 1rem;
+  background: var(--crt-panel);
 }
 
 .meta-label {
   font-size: 0.75rem;
-  font-weight: 900;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--black);
+  color: var(--phosphor-muted);
   margin-bottom: 0.5rem;
+  font-family: var(--font-en);
 }
 
 .meta-value {
@@ -455,19 +540,21 @@ th {
 
 .meta-value code {
   display: inline-block;
-  background: var(--black);
-  color: var(--bg);
+  background: var(--bg);
+  color: var(--phosphor-bright);
   font-size: 0.8rem;
   padding: 0.15rem 0.5rem;
   margin: 0.15rem;
+  border: 1px solid var(--phosphor-dim);
 }
 
 .meta-links a {
   display: inline-block;
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--blue);
+  color: var(--amber);
   margin-right: 0.75rem;
+  font-family: var(--font-en);
 }
 
 /* === Skill Chain Diagram === */
@@ -478,9 +565,9 @@ th {
   gap: 0;
   margin: 1.5rem 0;
   padding: 1.5rem;
-  border: var(--border-width-thick) solid var(--black);
-  box-shadow: var(--shadow-offset-lg) var(--shadow-offset-lg) 0 var(--black);
-  background: var(--bg);
+  border: var(--border-width-thick) solid var(--phosphor-bright);
+  box-shadow: var(--glow-bright);
+  background: var(--crt-panel);
 }
 
 .chain-node {
@@ -488,29 +575,32 @@ th {
   align-items: center;
   justify-content: center;
   padding: 0.5rem 1rem;
-  border: var(--border-width) solid var(--black);
+  border: var(--border-width) solid var(--phosphor-bright);
   font-weight: 800;
   font-size: 0.8rem;
+  font-family: var(--font-en);
   white-space: nowrap;
   background: var(--bg);
+  color: var(--phosphor-bright);
 }
 
 .chain-node.active {
-  background: var(--black);
+  background: var(--phosphor-bright);
   color: var(--bg);
 }
 
 .chain-node.blue {
-  background: var(--blue);
+  background: var(--amber);
   color: var(--bg);
-  border-color: var(--blue);
+  border-color: var(--amber);
 }
 
 .chain-arrow {
-  color: var(--black);
-  font-weight: 900;
+  color: var(--phosphor-muted);
+  font-weight: 800;
   font-size: 1.2rem;
   margin: 0 0.5rem;
+  font-family: var(--font-en);
 }
 
 /* === Rule List === */
@@ -525,9 +615,9 @@ th {
   align-items: flex-start;
   gap: 1rem;
   padding: 1rem;
-  border: var(--border-width) solid var(--black);
-  margin-bottom: -4px;
-  background: var(--bg);
+  border: var(--border-width) solid var(--phosphor-dim);
+  margin-bottom: -1px;
+  background: var(--crt-panel);
   transition: background 0.1s;
 }
 
@@ -536,7 +626,7 @@ th {
 }
 
 .rule-item:hover {
-  background: #f0f0f0;
+  background: var(--crt-grid);
 }
 
 .rule-number {
@@ -545,10 +635,11 @@ th {
   justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
-  background: var(--black);
+  background: var(--phosphor-bright);
   color: var(--bg);
-  font-weight: 900;
+  font-weight: 800;
   font-size: 1.1rem;
+  font-family: var(--font-en);
   flex-shrink: 0;
 }
 
@@ -556,12 +647,13 @@ th {
   display: block;
   margin-bottom: 0.25rem;
   font-size: 1rem;
+  color: var(--phosphor-bright);
 }
 
 .rule-content p {
   margin: 0;
   font-size: 0.95rem;
-  color: #333;
+  color: var(--phosphor-body);
 }
 
 /* === Stat Grid === */
@@ -573,21 +665,22 @@ th {
 }
 
 .stat-item {
-  border: var(--border-width) solid var(--black);
+  border: var(--border-width) solid var(--phosphor-dim);
   padding: 1.25rem;
   text-align: center;
-  margin-right: -4px;
-  background: var(--bg);
+  margin-right: -1px;
+  background: var(--crt-panel);
+  font-family: var(--font-en);
 }
 
 .stat-item:nth-child(odd) {
-  background: var(--black);
+  background: var(--phosphor-bright);
   color: var(--bg);
 }
 
 .stat-number {
   font-size: 2rem;
-  font-weight: 900;
+  font-weight: 800;
   line-height: 1;
   display: block;
 }
@@ -603,11 +696,12 @@ th {
 
 /* === Gate Box === */
 .gate-box {
-  border: var(--border-width-thick) solid var(--black);
-  box-shadow: var(--shadow-offset-lg) var(--shadow-offset-lg) 0 var(--black);
+  border: var(--border-width-thick) solid var(--phosphor-bright);
+  box-shadow: var(--glow-bright);
   padding: 1.5rem;
   margin: 1.5rem 0;
   position: relative;
+  background: var(--crt-panel);
 }
 
 .gate-box::before {
@@ -615,15 +709,16 @@ th {
   position: absolute;
   top: -0.75rem;
   left: 1rem;
-  background: var(--black);
+  background: var(--amber);
   color: var(--bg);
   font-size: 0.75rem;
-  font-weight: 900;
+  font-weight: 800;
   padding: 0.15rem 0.5rem;
   letter-spacing: 0.05em;
+  font-family: var(--font-en);
 }
 
-/* === Responsive (minimal) === */
+/* === Responsive (skill pages) === */
 @media (max-width: 768px) {
   .container { padding: 1rem; }
   h1 { font-size: 1.75rem; }
@@ -631,66 +726,73 @@ th {
   .nav { flex-direction: column; gap: 0.75rem; }
   .nav-links { gap: 0.75rem; }
   .workflow { font-size: 0.7rem; padding: 1rem; }
-  .card:hover { transform: none; box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black); }
+  .card:hover { transform: none; }
   .meta-card { grid-template-columns: 1fr; }
   .skill-chain { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
   .chain-arrow { transform: rotate(90deg); margin: 0; }
   .stat-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* === Landing page redesign (issue #1) === */
+/* =========================================================================
+   LANDING PAGE — Full Phosphor CRT (rewritten from neubrutalism)
+   The .landing-page scope overrides the muted skill-body tones with
+   full bright phosphor + scanline vignette for atmosphere.
+   ========================================================================= */
 .landing-page {
-  --landing-bg: #fff9ef;
-  --landing-ink: #111111;
-  --landing-yellow: #ffd64d;
-  --landing-pink: #ffc7d8;
-  --landing-blue: #7cb8ff;
-  --landing-mint: #9ff3df;
-  --landing-coral: #ff9e7a;
-  --landing-cream: #fff3c4;
+  --landing-bg: #001100;
+  --landing-ink: #33FF33;
+  --landing-bright: #33FF33;
+  --landing-amber: #FFB000;
+  --landing-grid: #003300;
+  --landing-panel: #001a00;
+  --landing-muted: #88C488;
   background: var(--landing-bg);
-  color: var(--landing-ink);
+  color: var(--landing-bright);
+  font-family: var(--font-en);
 }
 
 .landing-page .nav {
   background: var(--landing-bg);
-  border-bottom: 4px solid var(--landing-ink);
-  box-shadow: 0 6px 0 var(--landing-ink);
+  border-bottom: 2px solid var(--landing-bright);
+  box-shadow: 0 0 12px rgba(51,255,51,0.3);
   padding: 1rem 1.5rem;
 }
 
 .landing-page .nav-links a,
 .landing-page .lang-switcher a {
-  border: 3px solid transparent;
+  border: 1px solid transparent;
+  color: var(--landing-bright);
 }
 
 .landing-page .nav-links a:hover,
 .landing-page .lang-switcher a:hover {
-  border-color: var(--landing-ink);
-  box-shadow: 4px 4px 0 var(--landing-ink);
-  background: #fff;
+  border-color: var(--landing-bright);
+  box-shadow: var(--glow-bright);
+  background: var(--landing-panel);
 }
 
 .landing-page .nav-links a.active,
 .landing-page .lang-switcher a.active {
-  background: var(--landing-ink);
-  color: #fff;
-  border-color: var(--landing-ink);
+  background: var(--landing-bright);
+  color: var(--landing-bg);
+  border-color: var(--landing-bright);
 }
 
 .page-shell {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1.5rem 4rem;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-panel {
   display: grid;
   grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.85fr);
   gap: 1.5rem;
-  background: var(--landing-yellow);
-  border: 4px solid var(--landing-ink);
-  box-shadow: 12px 12px 0 var(--landing-ink);
+  background: var(--landing-panel);
+  border: 2px solid var(--landing-bright);
+  box-shadow: var(--glow-bright);
   padding: 2rem;
   margin: 2rem 0 3rem;
 }
@@ -698,9 +800,11 @@ th {
 .hero-copy h1 {
   font-size: clamp(2.7rem, 6vw, 5.2rem);
   line-height: 0.98;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.02em;
   margin: 0 0 1rem;
-  max-width: 9ch;
+  max-width: 12ch;
+  color: var(--landing-bright);
+  text-shadow: var(--glow-bright);
 }
 
 .eyebrow-row {
@@ -716,19 +820,22 @@ th {
 .section-kicker {
   display: inline-block;
   font-size: 0.78rem;
-  font-weight: 900;
+  font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 0.3rem 0.65rem;
-  border: 3px solid var(--landing-ink);
-  box-shadow: 4px 4px 0 var(--landing-ink);
-  background: #fff;
+  border: 1px solid var(--landing-bright);
+  box-shadow: var(--glow-bright);
+  background: var(--landing-bg);
+  color: var(--landing-bright);
 }
 
 .eyebrow.mint,
 .accent-mint,
 .install-card.cream h3 {
-  background: var(--landing-mint);
+  background: var(--landing-panel);
+  border-color: var(--landing-muted);
+  color: var(--landing-muted);
 }
 
 .hero-badges {
@@ -742,12 +849,13 @@ th {
 
 .hero-badges li,
 .sticker {
-  background: #fff;
-  border: 3px solid var(--landing-ink);
-  box-shadow: 4px 4px 0 var(--landing-ink);
+  background: var(--landing-bg);
+  border: 1px solid var(--landing-bright);
+  box-shadow: var(--glow-bright);
   padding: 0.4rem 0.7rem;
   font-size: 0.82rem;
-  font-weight: 900;
+  font-weight: 800;
+  color: var(--landing-bright);
 }
 
 .hero-lead,
@@ -761,6 +869,7 @@ th {
 .landing-footer p {
   font-size: 1rem;
   line-height: 1.6;
+  color: var(--landing-muted);
 }
 
 .hero-lead {
@@ -768,6 +877,7 @@ th {
   margin-bottom: 0.75rem;
   font-size: 1.18rem;
   font-weight: 700;
+  color: var(--landing-bright);
 }
 
 .hero-subcopy {
@@ -785,20 +895,21 @@ th {
 .landing-page .btn {
   margin: 0;
   padding: 0.85rem 1.35rem;
-  box-shadow: 5px 5px 0 var(--landing-ink);
-  border-width: 3px;
+  box-shadow: var(--glow-bright);
+  border-width: 1px;
   font-size: 0.95rem;
 }
 
 .landing-page .btn:hover {
-  transform: translate(3px, 3px);
-  box-shadow: 2px 2px 0 var(--landing-ink);
+  transform: none;
+  box-shadow: 0 0 8px rgba(51,255,51,0.9), 0 0 16px rgba(51,255,51,0.6);
 }
 
 .landing-page .btn-blue {
-  background: var(--landing-blue);
-  color: var(--landing-ink);
-  border-color: var(--landing-ink);
+  background: var(--landing-amber);
+  color: var(--landing-bg);
+  border-color: var(--landing-amber);
+  box-shadow: var(--glow-amber);
 }
 
 .hero-metrics {
@@ -814,33 +925,39 @@ th {
 .install-card,
 .feature-callout,
 .section-panel {
-  border: 4px solid var(--landing-ink);
-  box-shadow: 8px 8px 0 var(--landing-ink);
+  border: 2px solid var(--landing-bright);
+  box-shadow: var(--glow-bright);
+  background: var(--landing-panel);
 }
 
 .metric-card {
   padding: 1rem;
-  background: #fff;
+  background: var(--landing-panel);
 }
 
-.metric-card.yellow { background: var(--landing-cream); }
-.metric-card.pink { background: var(--landing-pink); }
-.metric-card.blue { background: #cfe5ff; }
-.metric-card.mint { background: var(--landing-mint); }
+.metric-card.yellow,
+.metric-card.pink,
+.metric-card.blue,
+.metric-card.mint {
+  background: var(--landing-panel);
+}
 
 .metric-value {
   display: block;
   font-size: 2rem;
-  font-weight: 900;
+  font-weight: 800;
   line-height: 1;
+  color: var(--landing-bright);
+  text-shadow: var(--glow-bright);
 }
 
 .metric-label {
   display: block;
   margin: 0.35rem 0 0.5rem;
-  font-weight: 900;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  color: var(--landing-muted);
 }
 
 .hero-side {
@@ -851,11 +968,13 @@ th {
 
 .paper-card {
   padding: 1.25rem;
-  background: #fff;
+  background: var(--landing-panel);
 }
 
-.paper-card.coral { background: var(--landing-coral); }
-.paper-card.cream { background: var(--landing-cream); }
+.paper-card.coral,
+.paper-card.cream {
+  background: var(--landing-panel);
+}
 
 .step-list {
   list-style: none;
@@ -869,23 +988,26 @@ th {
   display: grid;
   gap: 0.25rem;
   padding: 0.85rem;
-  background: rgba(255, 255, 255, 0.72);
-  border: 3px solid var(--landing-ink);
+  background: rgba(51, 255, 51, 0.06);
+  border: 1px solid var(--landing-grid);
 }
 
 .step-list li strong {
   font-size: 0.95rem;
+  color: var(--landing-bright);
 }
 
 .step-list li span {
   font-size: 0.95rem;
   line-height: 1.45;
+  color: var(--landing-muted);
 }
 
 .ascii-card pre {
   margin: 1rem 0 0;
-  background: #fff;
+  background: var(--landing-bg);
   font-size: 0.82rem;
+  color: var(--landing-bright);
 }
 
 .sticker-stack {
@@ -894,19 +1016,25 @@ th {
   gap: 0.75rem;
 }
 
-.sticker.yellow { background: var(--landing-yellow); }
-.sticker.blue { background: var(--landing-blue); }
-.sticker.pink { background: var(--landing-pink); }
+.sticker.yellow,
+.sticker.blue,
+.sticker.pink {
+  background: var(--landing-bg);
+  border-color: var(--landing-bright);
+  color: var(--landing-bright);
+}
 
 .section-panel {
   padding: 1.75rem;
   margin: 0 0 2.5rem;
-  background: #fff;
+  background: var(--landing-panel);
 }
 
-.panel-pink { background: #ffd5e2; }
-.panel-blue { background: #d8ebff; }
-.panel-mint { background: #ccf8ee; }
+.panel-pink,
+.panel-blue,
+.panel-mint {
+  background: var(--landing-panel);
+}
 
 .section-heading {
   max-width: 760px;
@@ -919,22 +1047,27 @@ th {
   line-height: 1;
   border: 0;
   padding: 0;
+  color: var(--landing-bright);
+  text-shadow: var(--glow-bright);
 }
 
 .feature-callout {
   padding: 1rem 1.25rem;
   margin-bottom: 1.5rem;
-  background: #fff;
+  background: var(--landing-panel);
   font-weight: 700;
+  color: var(--landing-bright);
 }
 
 .feature-callout.dark {
-  background: var(--landing-ink);
-  color: #fff;
+  background: var(--landing-bg);
+  color: var(--landing-bright);
+  border-color: var(--landing-amber);
+  box-shadow: var(--glow-amber);
 }
 
 .feature-callout.dark a {
-  color: var(--landing-yellow);
+  color: var(--landing-amber);
 }
 
 .workflow-grid {
@@ -945,7 +1078,7 @@ th {
 }
 
 .path-card {
-  background: #fff;
+  background: var(--landing-panel);
   padding: 1rem;
   min-height: 100%;
 }
@@ -956,16 +1089,21 @@ th {
   margin: 0.8rem 0 0.6rem;
   font-size: 1.35rem;
   line-height: 1.1;
+  color: var(--landing-bright);
+  text-shadow: var(--glow-bright);
 }
 
 .path-card ul {
   margin: 0.75rem 0 0;
   padding-left: 1rem;
+  color: var(--landing-muted);
 }
 
-.path-card.accent-blue { background: #cfe5ff; }
-.path-card.accent-yellow { background: var(--landing-cream); }
-.path-card.accent-mint { background: var(--landing-mint); }
+.path-card.accent-blue,
+.path-card.accent-yellow,
+.path-card.accent-mint {
+  background: var(--landing-panel);
+}
 
 .category-grid,
 .install-grid {
@@ -982,30 +1120,34 @@ th {
   display: grid;
   gap: 0.85rem;
   align-content: start;
+  background: var(--landing-panel);
 }
 
-.category-card.yellow { background: var(--landing-yellow); }
-.category-card.pink { background: var(--landing-pink); }
-.category-card.mint { background: var(--landing-mint); }
+.category-card.yellow,
+.category-card.pink,
+.category-card.mint {
+  background: var(--landing-panel);
+}
 
 .skill-tile {
   display: grid;
   gap: 0.25rem;
   text-decoration: none;
   color: inherit;
-  background: rgba(255, 255, 255, 0.85);
-  border: 3px solid var(--landing-ink);
-  box-shadow: 5px 5px 0 var(--landing-ink);
+  background: var(--landing-bg);
+  border: 1px solid var(--landing-bright);
+  box-shadow: var(--glow-bright);
   padding: 0.9rem;
 }
 
 .skill-tile strong {
   font-size: 1rem;
+  color: var(--landing-bright);
 }
 
 .skill-tile:hover {
-  transform: translate(3px, 3px);
-  box-shadow: 2px 2px 0 var(--landing-ink);
+  transform: none;
+  box-shadow: 0 0 8px rgba(51,255,51,0.9), 0 0 16px rgba(51,255,51,0.6), 0 0 28px rgba(51,255,51,0.4);
 }
 
 .install-grid {
@@ -1014,31 +1156,35 @@ th {
 
 .install-card {
   padding: 1.1rem;
+  background: var(--landing-panel);
 }
 
-.install-card.yellow { background: var(--landing-yellow); }
-.install-card.pink { background: var(--landing-pink); }
-.install-card.blue { background: var(--landing-blue); }
-.install-card.cream { background: var(--landing-cream); }
+.install-card.yellow,
+.install-card.pink,
+.install-card.blue,
+.install-card.cream {
+  background: var(--landing-panel);
+}
 
 .install-card pre {
   margin: 0.6rem 0 0;
-  background: rgba(255, 255, 255, 0.82);
+  background: var(--landing-bg);
 }
 
 .landing-footer {
   padding: 1.25rem 1.5rem;
-  background: #fff;
-  border: 4px solid var(--landing-ink);
-  box-shadow: 8px 8px 0 var(--landing-ink);
+  background: var(--landing-panel);
+  border: 2px solid var(--landing-bright);
+  box-shadow: var(--glow-bright);
   margin-bottom: 1rem;
 }
 
 .landing-footer a {
-  color: inherit;
+  color: var(--landing-amber);
   font-weight: 800;
 }
 
+/* === Landing responsive === */
 @media (max-width: 1080px) {
   .hero-panel {
     grid-template-columns: 1fr;
@@ -1061,7 +1207,7 @@ th {
   .hero-panel,
   .section-panel,
   .landing-footer {
-    box-shadow: 6px 6px 0 var(--landing-ink);
+    box-shadow: var(--glow-bright);
   }
 
   .hero-panel {
@@ -1086,6 +1232,66 @@ th {
   .section-kicker,
   .hero-badges li,
   .sticker {
-    box-shadow: 3px 3px 0 var(--landing-ink);
+    box-shadow: var(--glow-bright);
+  }
+}
+
+/* =========================================================================
+   CRT SCREEN EFFECTS — scanlines + vignette + flicker
+   Pure CSS pseudo-elements on body. pointer-events:none so they never
+   block clicks. Wrapped in reduced-motion for accessibility.
+   ========================================================================= */
+
+/* Scanlines: thin dark horizontal lines every 3px */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.18) 3px,
+    rgba(0, 0, 0, 0.18) 4px
+  );
+}
+
+/* Vignette: darkened screen edges (curved-tube illusion) */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 55%,
+    rgba(0, 0, 0, 0.45) 100%
+  );
+}
+
+/* Subtle phosphor flicker on the whole screen — low amplitude */
+@keyframes crt-flicker {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.97; }
+  100% { opacity: 1; }
+}
+
+body::before {
+  animation: crt-flicker 0.15s infinite;
+}
+
+/* === Accessibility: disable all CRT motion/flicker on request === */
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+  * {
+    transition: none !important;
   }
 }
