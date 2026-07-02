@@ -149,7 +149,7 @@ Dependencies are stated in the task header:
 **Dependencies:** Runs after Task K completes
 **Files:**
 - Create: `path/to/file`
-- Modify: `path/to/existing-file:line-range`
+- Modify: `path/to/existing-file` (anchor: `functionName`)
 - Test: `path/to/test-file`
 ```
 
@@ -168,10 +168,10 @@ Tasks with no dependencies are marked as parallelizable:
 
 Each task is designed so an independent worker (subagent) can execute it and a separate validator can verify it:
 
-- **Worker:** Executes the task's steps exactly as written. Makes no judgments beyond what the plan specifies.
-- **Validator:** Reviews the worker's output after completion. Checks test pass/fail, code quality, and spec compliance.
+- **Worker:** Executes the task's steps. The task's Goal and Acceptance Criteria are the binding contract; the steps are the intended route. Where the codebase contradicts a step, the worker adapts minimally to satisfy the criteria (see run-plan's adaptation rules).
+- **Validator:** Judges the task's Acceptance Criteria against the codebase, binary per criterion. Nothing else — regression checking and plan-level success criteria belong to later verification layers.
 
-This structure enables spawning multiple tasks simultaneously, each independently verifiable.
+This structure enables spawning multiple tasks simultaneously, each independently verifiable. It only works if the criteria are written to be judged without interpretation — see Acceptance Criteria Rules below.
 
 **3. Task Granularity**
 
@@ -188,11 +188,16 @@ Each step is one action (2-5 minutes):
 ````markdown
 ### Task N: [Component Name]
 
+**Goal:** [One sentence stating what this task accomplishes — written to be copied verbatim into the validator prompt]
 **Dependencies:** [Predecessor task or "None (can run in parallel)"]
 **Files:**
 - Create: `exact/path/to/file`
-- Modify: `exact/path/to/existing-file:123-145`
+- Modify: `exact/path/to/existing-file` (anchor: `functionOrSectionName`)
 - Test: `tests/exact/path/to/test-file`
+
+**Acceptance Criteria:**
+- [ ] [binary-decidable condition, e.g., "`pytest tests/path/test.py::test_name` passes"]
+- [ ] [binary-decidable condition, e.g., "`function(input)` returns `expected` for the null-brand case"]
 
 - [ ] **Step 1: Write the failing test**
 
@@ -226,6 +231,19 @@ git add tests/path/test.py src/path/file.py
 git commit -m "feat: add specific feature"
 ```
 ````
+
+**File references use symbol anchors, not line numbers.** Line ranges (`file.ts:123-145`) go stale the moment an earlier task edits the file. Anchor to what survives edits: function names, class names, config keys, section headers.
+
+### Acceptance Criteria Rules
+
+Acceptance Criteria are the task's contract — the worker adapts steps to reality, but the criteria are non-negotiable, and the validator judges nothing else.
+
+1. **Every task has at least one criterion.** A task whose completion cannot be stated as criteria is not a task — it's a wish.
+2. **Every criterion must be binary-decidable.** An independent validator, reading the code and running the listed commands, must be able to answer met / not-met with no judgment call. If a criterion needs interpretation, it is a **plan failure** — rewrite it.
+   - Plan failures: "code is clean", "handles errors appropriately", "works correctly", "reasonably fast"
+   - Binary-decidable: "`pytest tests/api/test_users.py` passes", "POST /api/users with missing email returns 400", "`grep -r 'legacyParser' src/` returns no matches"
+3. **The overall task verdict is the AND of its criteria.** No partial credit, no "mostly done". One unmet criterion = task not done.
+4. **Criteria state outcomes, not implementation.** "Uses a HashMap internally" is not a criterion; "lookup returns in the passing test" is. Criteria must survive the worker choosing a different route than the steps describe.
 
 ### Final Verification Task
 
@@ -267,6 +285,7 @@ Every step must contain the actual content a worker needs. These are **plan fail
 - "Similar to Task N" (repeat the code — the worker may be reading tasks out of order)
 - Steps that describe what to do without showing how (code blocks required for code steps)
 - References to types, functions, or methods not defined in any task
+- Acceptance criteria that are not binary-decidable ("works correctly", "clean code")
 
 ## Remember
 
@@ -288,6 +307,8 @@ After writing the complete plan, look at the spec with fresh eyes and check the 
 **4. Dependency verification:** Verify that parallel tasks don't modify the same file. Verify that no dependency chain is missing.
 
 **5. Verification coverage:** Does the plan include a Final Verification Task? Does it reference the discovered verification command? If no verification was discovered, is there a Task 0 creating verification infrastructure?
+
+**6. Criteria decidability:** Does every task have a Goal and Acceptance Criteria? Read each criterion as a hostile validator would: can it be answered met/not-met purely by reading code and running commands? Rewrite any that require interpretation.
 
 If you find issues, fix them inline. No need to re-review — just fix and move on. If a spec requirement has no corresponding task, add the task.
 
@@ -318,6 +339,7 @@ After saving the plan, offer execution choice:
 Self-check when plan writing is complete:
 
 - [ ] Do all tasks have exact file paths?
+- [ ] Does every task have a Goal and binary-decidable Acceptance Criteria?
 - [ ] Do all steps contain executable code/commands?
 - [ ] Are there no file conflicts between parallel tasks?
 - [ ] Are dependency chains accurately stated?

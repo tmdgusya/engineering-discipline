@@ -38,7 +38,7 @@
       <span class="skill-badge blue">DECOMPOSE</span>
     </div>
     <h1>Milestone Planning</h1>
-    <p>5 independent reviewers analyze the problem in parallel to design an optimized Milestone Dependency Graph (DAG).</p>
+    <p>Parallel exploration grounds a draft milestone DAG; rounds of adversarial critics attack the draft until only a surviving DAG is locked.</p>
   </div>
 </div>
 
@@ -52,13 +52,13 @@ User Request (Complex)
     │
     ▼
 ┌─────────────────────────────┐
-│  Clarification (9-15 points)│
+│ Clarification (10-15 points)│
 └──────────────┬──────────────┘
                │
                ▼
 ┌─────────────────────────────┐
 │  Milestone Planning (ACTIVE)│
-│  5 Parallel Reviews + DAG   │
+│  Explore → Draft → Critique │
 └──────────────┬──────────────┘
                │
                ▼
@@ -73,7 +73,7 @@ User Request (Complex)
   <section>
     <h2>02 ▸ When to use?</h2>
     <div class="callout">
-      Used when Clarification results in a <strong>Complex (9-15 points)</strong> verdict, or when a large-scale task spanning multiple days is required.
+      Used when Clarification results in a <strong>Complex (10-15 points)</strong> verdict, or when a large-scale task spanning multiple days is required.
     </div>
     <div class="card">
       <div class="card-title">Key Triggers</div>
@@ -89,16 +89,16 @@ User Request (Complex)
   <section>
     <h2>03 ▸ How it works?</h2>
     <div class="callout blue">
-      <strong>Core Principle:</strong> 5 reviewers criticize the problem from their own expert perspectives (Feasibility, Architecture, Risk, Dependency, User Value) while remaining information isolated from each other.
+      <strong>Core Principle:</strong> Draft first. Exploration evidence grounds a draft DAG; information-isolated critics (Hidden Complexity, Dependency &amp; Ordering, Verifiability, Integration &amp; Risk) attack it in rounds until a round yields zero new Blocking findings.
     </div>
     <div class="card">
       <div class="card-title">Execution Steps</div>
       <ol>
-        <li><strong>Problem Framing:</strong> Write a Problem Brief including goals, scope, and constraints.</li>
-        <li><strong>Parallel Dispatch:</strong> Launch 5 reviewer agents simultaneously (preventing cross-contamination).</li>
-        <li><strong>Synthesis:</strong> Compare review results to resolve conflicts and synthesize the Milestone DAG.</li>
-        <li><strong>DAG Validation:</strong> Verify circular dependencies and file conflicts.</li>
-        <li><strong>Integration Milestone:</strong> Automatically add a final integration verification milestone.</li>
+        <li><strong>Problem Framing + Broad Exploration:</strong> Parallel Explore agents (architecture, dependencies, verification landscape, conventions) feed the Problem Brief.</li>
+        <li><strong>Draft Decomposition:</strong> Compare two skeletons (interface-first vs risk-first) and compose DRAFT v1 — counters anchoring.</li>
+        <li><strong>Critic Rounds:</strong> Launch critics in parallel (preventing cross-contamination); each finding gets a Structural/Blocking/Concern/Nit severity.</li>
+        <li><strong>Revision Loop:</strong> Log every critique verbatim, accept (revise draft) or rebut with evidence — until a round yields zero new Blocking findings (max 3 rounds).</li>
+        <li><strong>DAG Validation + Integration Milestone:</strong> Verify cycles and file conflicts, then automatically append the final integration verification milestone.</li>
       </ol>
     </div>
   </section>
@@ -116,11 +116,11 @@ User Request (Complex)
     <h2>05 ▸ Hard Gates</h2>
     <div class="card">
       <ul>
-        <li>All reviewers must <strong>run in parallel</strong> (no sequential execution).</li>
-        <li>Maintain <strong>Information Isolation</strong> between reviewers (they cannot see each other's results).</li>
-        <li>Every milestone must have <strong>measurable success criteria</strong>.</li>
+        <li><strong>Explore before drafting</strong> — a milestone boundary without evidence is a guess.</li>
+        <li>All critics <strong>run in parallel</strong> with <strong>information isolation</strong> (they cannot see each other's critiques).</li>
+        <li>Every critique is <strong>logged verbatim and resolved explicitly</strong> (accepted, or rebutted with evidence).</li>
+        <li>Every milestone must have <strong>binary-decidable success criteria</strong> (answerable yes/no).</li>
         <li>Dependency structure must be a <strong>DAG (no cycles)</strong>.</li>
-        <li>Reviewer outputs must be delivered <strong>verbatim</strong> to the synthesis agent.</li>
       </ul>
     </div>
   </section>

@@ -23,9 +23,9 @@ clarification ─── resolve ambiguity, explore codebase
     |       |           |
     |       |       review-work ─── information-isolated verification
     |       |
-    |       |── Complex (score 9-15)
+    |       |── Complex (score 10-15)
     |               |
-    |           milestone-planning ─── 5 parallel reviewers + synthesis
+    |           milestone-planning ─── explore → draft → adversarial critics
     |               |
     |           long-run ─── multi-day orchestrator
     |               |── M1: plan-crafting → run-plan → review-work → checkpoint
@@ -47,7 +47,7 @@ You don't need to memorize this. Each skill activates automatically based on tri
 
 #### Clarification
 
-Resolves vague requests into well-defined work scopes through iterative Q&A + parallel codebase exploration. Outputs a Context Brief with automatic complexity routing.
+Resolves vague requests into well-defined work scopes — explores the codebase first, then runs iterative Q&A grounded in the findings. Outputs a Context Brief with automatic complexity routing.
 
 **Triggers on:** "I want to...", "I need...", "let's build...", or any request where scope isn't immediately clear.
 
@@ -81,19 +81,20 @@ For complex tasks that span multiple days.
 
 #### Milestone Planning (Ultraplan)
 
-Spawns 5 independent reviewer agents in parallel — feasibility, architecture, risk, dependency, user value — then synthesizes their findings into an optimized milestone dependency DAG.
+Grounds a draft milestone DAG in broad parallel exploration, then submits it to independent adversarial critics — hidden complexity, dependency & ordering, verifiability, integration risk — who attack the draft in rounds until no blocking findings remain.
 
-**Triggers on:** "plan milestones", "break this into milestones", "ultraplan", or after clarification with a Complex verdict (score 9-15).
+**Triggers on:** "plan milestones", "break this into milestones", "ultraplan", or after clarification with a Complex verdict (score 10-15).
 
 **Key features:**
-- 5 parallel reviewers with information isolation (no cross-pollination)
-- Synthesis agent with conflict resolution log
-- Independent DAG validation after synthesis
+- Two draft skeletons (interface-first vs risk-first) to counter anchoring
+- Independent adversarial critics with information isolation (no cross-pollination)
+- Critique-until-dry revision loop with a verbatim resolution log
+- Binary-decidable success criteria enforced per milestone
 - Milestone count guard (warn >7, require approval >10)
 
 #### Long Run Harness
 
-Orchestrates multi-day execution. Each milestone passes through plan-crafting, run-plan, review-work with checkpoint/recovery.
+Orchestrates multi-day execution. Each milestone passes through plan-crafting, run-plan, review-work with checkpoint/recovery. Runs autonomously — the milestone lock is the single approval gate; it escalates only on failures.
 
 **Triggers on:** "long run", "start long run", "execute milestones".
 

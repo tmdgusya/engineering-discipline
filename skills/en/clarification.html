@@ -58,7 +58,7 @@ User Request (Vague)
                │
       ┌────────┴────────┐
       ▼                 ▼
-  Simple (5-8)       Complex (9-15)
+  Simple (5-8)       Complex (10-15)
       │                 │
       ▼                 ▼
  Plan Crafting    Milestone Planning
@@ -85,13 +85,13 @@ User Request (Vague)
   <section>
     <h2>03 ▸ How it works?</h2>
     <div class="callout blue">
-      <strong>Core Principle:</strong> User Q&A and Code Exploration tracks run in parallel, complementing each other.
+      <strong>Core Principle:</strong> Explore first. Recon the codebase before asking, then ask confident questions grounded in the findings — iterating until ambiguity is gone.
     </div>
     <div class="card">
       <div class="card-title">Step-by-step Execution</div>
       <ol>
         <li><strong>Identify Ambiguity:</strong> Spot unclear points in the request.</li>
-        <li><strong>1 Question + Parallel Code Search:</strong> Ask only one question per turn while a sub-agent explores the codebase.</li>
+        <li><strong>Recon First + Informed Questions:</strong> Dispatch recon sub-agents before the first question, then ask rounds of evidence-grounded questions (bundle up to 4 independent ones).</li>
         <li><strong>Synthesize Answer + Search Results:</strong> Cross-verify answers with code findings. If still vague, ask the next question.</li>
         <li><strong>Generate Context Brief:</strong> Document goals, scope, constraints, success criteria, and complexity assessment.</li>
         <li><strong>Auto-routing based on Complexity:</strong> Decide the next workflow based on the score (5-15).</li>
@@ -120,7 +120,7 @@ User Request (Vague)
     <div class="card">
       <div class="card-title">Mandatory Rules</div>
       <ul>
-        <li><strong>Only 1 question</strong> per message — never ask multiple questions.</li>
+        <li><strong>Explore before you ask</strong> — never ask the user what the codebase can answer.</li>
         <li>Always search codebase via sub-agents — no assumptions or guesses.</li>
         <li>No implementation until scope is clear — no subjective "it's enough" judgments.</li>
         <li>Questions must narrow the scope — no repeating abstract questions.</li>

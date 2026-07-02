@@ -89,8 +89,8 @@
         <li><strong>Load & Parse Plan:</strong> Read the plan file directly to extract goals and acceptance criteria.</li>
         <li><strong>Inspect Codebase:</strong> Compare planned files vs actual files and detect residual artifacts (TODOs, etc.).</li>
         <li><strong>Independent Test Run:</strong> Do not trust worker results; execute all tests directly.</li>
-        <li><strong>Verify Git History:</strong> Confirm the planned commit structure matches the actual log.</li>
-        <li><strong>Binary Verdict:</strong> Judge only as PASS or FAIL and generate a review document.</li>
+        <li><strong>Git History Check (informational):</strong> Commit structure mismatches are recorded as advisory findings only — they never affect the verdict.</li>
+        <li><strong>Binary Verdict:</strong> Each criterion is judged met/not-met; the verdict is the AND of all criteria — no partial credit. Cosmetics (TODOs, commit messages, style) are excluded from the verdict.</li>
       </ol>
     </div>
   </section>

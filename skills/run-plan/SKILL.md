@@ -14,7 +14,7 @@ Do not follow plans blindly. If the plan has issues, flag them before executing.
 ## Hard Gates
 
 1. **Read and review the plan first.** Always review the entire plan before executing.
-2. **Follow steps exactly.** Do not skip or alter steps in the plan arbitrarily.
+2. **Criteria are binding; steps are the route.** Never skip a task or alter its Acceptance Criteria. Steps are followed as written when they match reality — when reality contradicts a step (stale anchor, renamed symbol, changed API), the worker adapts minimally to satisfy the criteria and reports the deviation. Silent deviation is prohibited; so is failing a task because the plan's route was stale.
 3. **Never skip verification.** Test runs, expected output checks, and other verifications stated in the plan must be performed.
 4. **Parallelizable tasks must always run in parallel.** Tasks with no dependencies and no shared file modifications must be dispatched concurrently. Sequential grouping is prohibited.
 5. **Worker and Validator must be separate subagents.** The main agent must NOT perform worker or validator roles inline. Each must be dispatched as an independent subagent via the Agent tool.
@@ -54,6 +54,7 @@ Before reviewing the plan, discover what the project offers for verification and
    - Are task dependencies correct?
    - Do file paths exist?
    - Are there any placeholders in steps?
+   - Does every task have a Goal and binary-decidable Acceptance Criteria? (If not, the validator contract cannot be filled — return to `plan-crafting`)
    - Is anything unclear?
 3. If issues found: notify the user before starting
 4. If no issues: create tasks via TaskCreate and proceed
@@ -96,8 +97,9 @@ If issues found: notify the user and resolve before proceeding.
 
 Dispatch a subagent (worker) via the Agent tool to execute the task's steps:
 
-- The worker follows the steps exactly as written in the plan
-- The worker makes no arbitrary judgments beyond what the plan specifies
+- The worker follows the steps as written when they match the actual codebase
+- **Bounded adaptation:** when a step contradicts reality (stale anchor, renamed symbol, API shape differs from the plan's code block), the worker makes the smallest change of route that still satisfies the task's Goal and Acceptance Criteria, and records the deviation in its report
+- **Adaptation limits — stop and report to the main agent instead of adapting when the fix would:** change an interface another task consumes, touch files outside the task's Files list, or alter an acceptance criterion. These are plan defects, not route noise — the main agent handles them via the Plan Amendment Protocol (see 2-3)
 - The worker performs each step's verification (test runs, etc.)
 - **If the plan references a project agent or skill for a step**, the worker should use it via the Agent tool or Skill tool. If the agent/skill is unavailable, execute the step directly.
 - The worker reports results back to the main agent
@@ -143,20 +145,26 @@ the goal described below, by reading files and running tests yourself.
 
 1. Read each file in the file list directly from disk.
 2. For each acceptance criterion, determine whether it is met
-   based on what you see in the code. Record PASS or FAIL per criterion.
+   based on what you see in the code. Record PASS or FAIL per criterion —
+   binary only, no "partially met".
 3. Run every test command listed above. Record results.
-4. Run the full test suite to check for regressions.
-5. Check for residual issues: placeholder code (TODO, FIXME, stubs),
-   debug code (console.log, print statements), commented-out blocks.
+4. Note (do not judge) residual issues you happen to see: placeholder
+   code (TODO, FIXME, stubs), debug code, commented-out blocks.
 
 ## Your Output
 
-Report your verdict as PASS or FAIL.
+Verdict = AND of all acceptance criteria and listed tests.
+PASS only if every criterion is met and every listed test passes.
+Anything less is FAIL — no partial credit, no "close enough".
 
 - If PASS: confirm which criteria were verified and which tests passed.
 - If FAIL: list exactly which criteria failed and why, with file paths
   and line numbers. Do not suggest fixes — only describe what is wrong.
+- Residual issues from step 4 are advisory findings appended to the
+  report. They do not affect the verdict.
 ```
+
+**Verification layer separation:** the validator judges only this task's contract — its Acceptance Criteria and listed test commands. It does NOT run the full test suite; cross-task regression checking happens exactly once, at the E2E Verification Gate (Step 3), not N times per task.
 
 **What must NOT appear in the validator prompt:**
 - The worker's diff, logs, output, or return message
@@ -168,9 +176,21 @@ Report your verdict as PASS or FAIL.
 
 **Validation results:**
 - **Pass:** Mark the task as completed and move to the next task
-- **Fail:** Deliver the validator's feedback to the worker and return to step 2-2 for re-implementation. The feedback is the validator's own assessment — do not augment it with the main agent's interpretation.
+- **Fail — triage before retrying.** Classify the failure first:
+  - **Worker defect** — the plan is right, the code doesn't meet it: deliver the validator's feedback to the worker and return to step 2-2 for re-implementation. The feedback is the validator's own assessment — do not augment it with the main agent's interpretation. On second and later retries, deliver ALL prior validator feedback for this task (accumulated, verbatim), not only the latest — repeated failures often share a root cause visible only across attempts.
+  - **Plan defect** — the code cannot meet the plan as written: an impossible route, a dependency the plan missed, an interface the plan got wrong, a criterion that contradicts verified codebase reality. Do NOT retry the worker against a broken plan — invoke the Plan Amendment Protocol below.
 
-**Retry limit:** If the same task fails 3 consecutive times, report the situation to the user and request intervention.
+**Retry limit:** If the same task fails 3 consecutive times (worker retries and amendments combined), report the situation to the user and request intervention.
+
+**Plan Amendment Protocol (plan-defect failures):**
+
+Triggered when triage classifies a failure as a plan defect, or when a worker stops at its adaptation limits.
+
+1. **Diagnose against the codebase.** Read the actual state that contradicts the plan; identify exactly which task fields (steps, files, dependency, criterion) are wrong.
+2. **Amend the plan document itself** — the affected task(s) only, staying within the plan's Goal and Work Scope. Append an entry to a `## Plan Amendment Log` section at the bottom of the plan file: what changed, why, and which task's failure triggered it. Amendments live in the file, not in conversation memory — later tasks' compliance checks and review-work both read the plan file, so an unamended file means drift.
+3. **Criteria guard (anti-gaming):** an acceptance criterion may be corrected only when it is factually stale (renamed command, moved file) — the corrected criterion must verify the SAME outcome as the original. NEVER weaken, loosen, or delete a criterion because the implementation fails it — that is reward hacking, and the binary verdict exists precisely to catch it. If a criterion seems genuinely wrong about the goal itself, escalate to the user: that is a scope decision, not an amendment.
+4. **Re-run the compliance check (2-1), then dispatch a fresh worker** against the amended task.
+5. An amendment counts toward the task's 3-attempt limit. A task needing repeated amendments is a planning failure — escalate rather than amending a third time.
 
 **Parallel Execution Rules (Hard Gate #4):**
 
@@ -185,6 +205,8 @@ When running in parallel:
 - Dispatch an independent "worker subagent" for each task
 - After each worker completes, dispatch an independent "validator subagent" for review
 - After all parallel tasks complete, aggregate results before proceeding to the next dependent task
+
+**Commit protocol for parallel tasks:** Workers dispatched in parallel do NOT execute their task's commit step — concurrent `git add`/`git commit` in a shared working tree race on the git index and can interleave staging across tasks. Instead, after each task's validator passes, the main agent stages exactly that task's files (from the plan's Files list) and creates that task's commit, sequentially. Sequentially-executed tasks commit as written in the plan.
 
 Sequential execution required for:
 - Tasks with explicit dependencies (run after predecessor completes)
@@ -236,10 +258,12 @@ The E2E gate failure means individual tasks passed their validators but the syst
 
 After each task completion, verify:
 
-- [ ] Did the tests pass?
-- [ ] Were the specified files created/modified correctly?
-- [ ] Does the code match what was specified in the steps?
-- [ ] Was the commit created correctly?
+- [ ] Is every acceptance criterion met? (binary per criterion — verdict is the AND)
+- [ ] Did the task's listed test commands pass?
+- [ ] Were the specified files created/modified?
+- [ ] Was the commit created? (by the worker, or by the main agent for parallel tasks)
+
+The validator does NOT check whether the code matches the plan's steps literally — the worker may have adapted the route. The criteria are the contract.
 
 ## Anti-Patterns
 
@@ -250,6 +274,13 @@ After each task completion, verify:
 | Guessing when blocked | Spec drift, rework required |
 | Running non-parallelizable tasks in parallel | File conflicts, dependency tangles |
 | Running parallelizable tasks sequentially | Wasted time, unnecessary execution delay |
+| Parallel workers each running `git commit` | Git index race; interleaved staging mixes tasks into one commit |
+| Worker failing a task because a line anchor was stale | Criteria are the contract, not the route; adapt and report instead |
+| Worker silently deviating from the plan without reporting | Main agent loses the audit trail; validator may pass code the plan never intended |
+| Validator running the full test suite per task | N redundant suite runs; regression checking belongs to the E2E gate, once |
+| Retrying the worker against a plan-defect failure | Burns the retry budget on an impossible task; triage first, amend the plan |
+| Weakening an acceptance criterion so a failing implementation passes | Reward hacking — the binary verdict exists to catch this, not to be bent around it |
+| Amending the plan in conversation only, not in the plan file | Later compliance checks and review-work read the file; an unamended file means silent drift |
 | Main agent performing worker/validator roles inline | Defeats independent verification; confirmation bias |
 | Passing worker output to the validator | Validator anchors on worker's framing instead of judging independently |
 | Composing the validator prompt freely instead of using the fixed template | Main agent unconsciously leaks worker context through word choice and framing |

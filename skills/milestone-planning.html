@@ -38,7 +38,7 @@
       <span class="skill-badge blue">분해</span>
     </div>
     <h1>Milestone Planning</h1>
-    <p>5개 독립 리뷰어가 병렬로 문제를 분석하고, 최적화된 마일스톤 의존성 그래프(DAG)를 설계합니다.</p>
+    <p>병렬 탐색으로 근거를 모아 초안 DAG를 작성하고, 적대적 비평가(critic) 라운드가 초안을 공격해 살아남은 마일스톤 DAG만 확정합니다.</p>
   </div>
 </div>
 
@@ -52,13 +52,13 @@
     │
     ▼
 ┌─────────────────────────────┐
-│  Clarification (9-15점)     │
+│  Clarification (10-15점)    │
 └──────────────┬──────────────┘
                │
                ▼
 ┌─────────────────────────────┐
 │  Milestone Planning (ACTIVE)│
-│  5개 병렬 리뷰 + DAG 합성     │
+│  탐색 → 초안 → 비평 라운드    │
 └──────────────┬──────────────┘
                │
                ▼
@@ -73,7 +73,7 @@
   <section>
     <h2>02 ▸ 언제 사용하나요?</h2>
     <div class="callout">
-      Clarification에서 <strong>복잡(Complex, 9-15점)</strong> 판정을 내렸거나, 며칠이 걸리는 대규모 작업이 필요할 때 사용합니다.
+      Clarification에서 <strong>복잡(Complex, 10-15점)</strong> 판정을 내렸거나, 며칠이 걸리는 대규모 작업이 필요할 때 사용합니다.
     </div>
     <div class="card">
       <div class="card-title">주요 트리거</div>
@@ -89,16 +89,16 @@
   <section>
     <h2>03 ▸ 어떻게 동작하나요?</h2>
     <div class="callout blue">
-      <strong>핵심 원리:</strong> 5개 리뷰어는 서로 정보가 격리된 상태에서 각자의 전문 관점(Feasibility, Architecture, Risk, Dependency, User Value)으로 문제를 비판합니다.
+      <strong>핵심 원리:</strong> 초안이 먼저다. 탐색 증거로 초안 DAG를 만들고, 정보가 격리된 비평가들(Hidden Complexity, Dependency &amp; Ordering, Verifiability, Integration &amp; Risk)이 초안을 공격합니다. 새 Blocking 발견이 0이 될 때까지 라운드를 반복합니다.
     </div>
     <div class="card">
       <div class="card-title">실행 단계</div>
       <ol>
-        <li><strong>Problem Framing:</strong> 목표, 범위, 제약사항을 포함한 Problem Brief 작성</li>
-        <li><strong>Parallel Dispatch:</strong> 5개 리뷰어 에이전트를 동시 가동 (교차 오염 방지)</li>
-        <li><strong>Synthesis:</strong> 리뷰 결과를 대조하여 갈등 해소 및 마일스톤 DAG 합성</li>
-        <li><strong>DAG Validation:</strong> 순환 의존성 및 파일 충돌 검증</li>
-        <li><strong>Integration Milestone:</strong> 최종 통합 검증 마일스톤 자동 추가</li>
+        <li><strong>Problem Framing + 병렬 탐색:</strong> 아키텍처·의존성·검증 인프라·컨벤션 렌즈로 동시 탐색해 Problem Brief 작성</li>
+        <li><strong>초안 작성:</strong> 두 개의 뼈대(인터페이스 우선 vs 리스크 우선)를 비교해 DRAFT v1 구성 — 앵커링 방지</li>
+        <li><strong>비평 라운드:</strong> 비평가들을 병렬 가동 (교차 오염 방지), 발견마다 Structural/Blocking/Concern/Nit 심각도 부여</li>
+        <li><strong>수정 루프:</strong> 모든 비평을 verbatim 기록 후 수용(초안 수정) 또는 근거 반박 — 새 Blocking이 0일 때까지 (최대 3라운드)</li>
+        <li><strong>DAG Validation + Integration Milestone:</strong> 순환·파일 충돌 검증 후 최종 통합 검증 마일스톤 자동 추가</li>
       </ol>
     </div>
   </section>
@@ -116,11 +116,11 @@
     <h2>05 ▸ 하드 게이트</h2>
     <div class="card">
       <ul>
-        <li>모든 리뷰어는 <strong>병렬로 실행</strong>되어야 함 (순차 실행 금지)</li>
-        <li>리뷰어 간 <strong>정보 격리</strong> 유지 (다른 리뷰어의 결과를 볼 수 없음)</li>
-        <li>모든 마일스톤은 <strong>측정 가능한 성공 기준</strong>을 가져야 함</li>
+        <li>초안 작성 전 반드시 <strong>병렬 탐색</strong> — 증거 없는 마일스톤 경계는 추측</li>
+        <li>모든 비평가는 <strong>병렬 실행</strong> + <strong>정보 격리</strong> (서로의 비평을 볼 수 없음)</li>
+        <li>모든 비평은 <strong>verbatim 기록 후 명시적으로 해소</strong> (수용 또는 근거 있는 반박)</li>
+        <li>모든 마일스톤은 <strong>binary-decidable 성공 기준</strong> (yes/no로 판정 가능해야 함)</li>
         <li>의존성 구조는 반드시 <strong>DAG(순환 없음)</strong> 형태여야 함</li>
-        <li>리뷰어 출력물은 합성 에이전트에게 <strong>원문 그대로(verbatim)</strong> 전달되어야 함</li>
       </ul>
     </div>
   </section>

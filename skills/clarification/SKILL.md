@@ -1,22 +1,22 @@
 ---
 name: clarification
-description: Use when a user's request is vague, ambiguous, or underspecified. Launches an iterative Q&A loop to resolve ambiguity while a subagent explores the codebase in parallel. Outputs a clear, well-scoped context brief so the user can plan sharply. Triggers on "I want to...", "I need...", "let's build...", "can you help me...", "we should...", or any request where the full scope isn't immediately clear.
+description: Use when a user's request is vague, ambiguous, or underspecified. Explores the codebase first, then runs an iterative Q&A loop grounded in the findings until ambiguity is gone. Outputs a clear, well-scoped context brief so the user can plan sharply. Triggers on "I want to...", "I need...", "let's build...", "can you help me...", "we should...", or any request where the full scope isn't immediately clear.
 ---
 
 # Clarification Through Iterative Discovery
 
-Narrows vague user requests into well-defined work scopes. Runs questions and code exploration in parallel to bring the user to a state where they can plan sharply.
+Narrows vague user requests into well-defined work scopes. Explores the codebase first, then asks questions grounded in what exploration found, iterating until ambiguity is gone.
 
 ## Core Principle
 
-Ambiguity does not resolve in one pass. Multiple rounds of questions and code exploration intersect, gradually sharpening the picture. The purpose of this skill is not "writing code" — it is making "what the user wants" and "what state the codebase is in" vivid and clear.
+Ambiguity does not resolve in one pass. Multiple rounds of exploration and questions intersect, gradually sharpening the picture. Exploration comes first: an agent that has seen the codebase asks confident, specific questions; an agent that hasn't asks generic ones and wastes the user's answers. The purpose of this skill is not "writing code" — it is making "what the user wants" and "what state the codebase is in" vivid and clear.
 
 ## Hard Gates
 
-1. **One question per message.** Never bundle multiple questions into a single message.
-2. **Always use subagents.** While conversing with the user, dispatch subagents to explore the codebase in response to the user's answers.
+1. **Explore before you ask.** Dispatch recon subagents BEFORE the first question. Every question must be grounded in exploration findings — never ask the user something the codebase can answer.
+2. **Always use subagents.** Dispatch subagents before the first question, and again in response to the user's answers.
 3. **Do not start implementation until you can say "this is clear enough."** Understanding must be complete at the codebase level.
-4. **Every question must narrow scope.** Do not repeat questions at the same level of ambiguity.
+4. **Every question must narrow scope.** Do not repeat questions at the same level of ambiguity. Independent questions may be bundled into one round (up to 4, e.g., via AskUserQuestion); dependent questions are asked iteratively. The loop ends when ambiguity is gone — not after a fixed number of rounds.
 5. **Never dump raw code exploration results on the user.** Summarize findings in the context of the user's question.
 
 ## When To Use
@@ -32,7 +32,13 @@ Ambiguity does not resolve in one pass. Multiple rounds of questions and code ex
 - The scope is obvious, like a simple bug fix or config change
 - The user explicitly says "don't ask questions, just do it"
 
-## The Two-Track Process
+## The Process: Recon First, Then the Q&A Loop
+
+### Phase 0: Initial Recon (before any question)
+
+On receiving the vague request, dispatch Explore subagent(s) immediately — before asking the user anything. The recon maps the territory the request likely touches: file structure, existing patterns, interface boundaries, recent related changes, test coverage.
+
+While recon runs, analyze the request and list its ambiguities. Compose the first question round only AFTER recon returns, so every question can cite what the code actually looks like: "The codebase already handles X in `services/y.ts` — should this follow that pattern or replace it?"
 
 ### Track 1: User Q&A (Ambiguity Resolution)
 
@@ -40,9 +46,10 @@ Ask the user questions to resolve ambiguity.
 
 **Question principles:**
 
-- One question per message
+- Ground every question in exploration findings — cite what was found
+- Bundle independent questions into one round (up to 4); ask dependent questions iteratively
 - Offer choices when possible (A/B/C)
-- When a new ambiguity emerges from an answer, drill into it in the next question
+- When a new ambiguity emerges from an answer, drill into it in the next round
 - Ask "which case?" rather than "why?" — draw out concrete scenarios, not abstract intent
 - If an answer contradicts a previous one, flag it immediately and realign
 
@@ -58,11 +65,11 @@ After each question, briefly update "what we've established so far."
 
 ### Track 2: Codebase Exploration (Technical Context)
 
-Use subagents to explore the codebase. Run in parallel with user Q&A.
+Exploration starts before the first question (Phase 0) and continues between rounds — each user answer typically opens a new area worth exploring.
 
 **How to dispatch exploration:**
 
-Immediately after asking the user a question, launch a subagent via the Agent tool. The goal is to make the user fully understand how the work plays out in the codebase. The subagent investigates:
+Launch follow-up subagents as soon as an answer (or a prior finding) opens a new area — typically right after posing the next question round, so exploration runs while the user is answering. The subagent investigates:
 
 - Related file structure and naming conventions
 - Existing implementation patterns (error handling, state management, data flow)
@@ -102,33 +109,33 @@ When the subagent returns findings:
 digraph clarification {
     rankdir=TB;
     "User states vague request" [shape=box];
-    "Assess: what's ambiguous?" [shape=box];
-    "Ask user ONE question" [shape=box];
-    "Dispatch explore subagent" [shape=box, style=dashed];
-    "Receive user answer" [shape=box];
-    "Receive subagent findings" [shape=box, style=dashed];
+    "Dispatch recon subagents" [shape=box, style=dashed];
+    "Assess ambiguities + receive recon findings" [shape=box];
+    "Ask informed question round" [shape=box];
+    "Dispatch follow-up exploration" [shape=box, style=dashed];
+    "Receive user answers" [shape=box];
     "Synthesize: still ambiguous?" [shape=diamond];
     "Present context brief" [shape=doublecircle];
 
-    "User states vague request" -> "Assess: what's ambiguous?";
-    "Assess: what's ambiguous?" -> "Ask user ONE question";
-    "Ask user ONE question" -> "Dispatch explore subagent" [style=dashed, label="parallel"];
-    "Ask user ONE question" -> "Receive user answer";
-    "Dispatch explore subagent" -> "Receive subagent findings" [style=dashed];
-    "Receive user answer" -> "Synthesize: still ambiguous?";
-    "Receive subagent findings" -> "Synthesize: still ambiguous?" [style=dashed];
-    "Synthesize: still ambiguous?" -> "Ask user ONE question" [label="yes"];
+    "User states vague request" -> "Dispatch recon subagents";
+    "Dispatch recon subagents" -> "Assess ambiguities + receive recon findings";
+    "Assess ambiguities + receive recon findings" -> "Ask informed question round";
+    "Ask informed question round" -> "Dispatch follow-up exploration" [style=dashed, label="parallel"];
+    "Ask informed question round" -> "Receive user answers";
+    "Dispatch follow-up exploration" -> "Synthesize: still ambiguous?" [style=dashed];
+    "Receive user answers" -> "Synthesize: still ambiguous?";
+    "Synthesize: still ambiguous?" -> "Ask informed question round" [label="yes"];
     "Synthesize: still ambiguous?" -> "Present context brief" [label="no"];
 }
 ```
 
 **Each cycle:**
 
-1. Receive the user's answer
+1. Receive the user's answers
 2. Merge subagent results if available (if still in progress, merge in the next cycle)
 3. Update the "remaining ambiguities" list
-4. Pick the next question (prioritize the one that most affects scope)
-5. If needed, launch additional subagents (when previous exploration revealed new areas to investigate)
+4. Compose the next question round (prioritize what most affects scope; bundle only independent questions)
+5. If needed, launch additional subagents (when answers or previous exploration revealed new areas to investigate)
 
 ## Output: Context Brief
 
@@ -177,7 +184,7 @@ Assess task complexity using these 5 signals. Score each signal, then determine 
 | **Risk surface** | No integration risk | Internal integration between components | External systems, schema changes, backward compatibility |
 
 **Score:** [sum of signals, range 5-15]
-**Verdict:** [Simple (5-8) | Complex (9-15)]
+**Verdict:** [Simple (5-8) | Borderline (9) | Complex (10-15)]
 **Rationale:** [1-2 sentences explaining the dominant complexity factor]
 
 ### Suggested Next Step
@@ -209,7 +216,8 @@ Stop and recalibrate if any of these occur:
 
 | Anti-Pattern | Why It Fails |
 |--------------|-------------|
-| Five questions in one message | The user gives shallow answers. Ambiguity persists. |
+| Asking the first question before recon returns | Generic questions the codebase could have answered; wastes the user's time and confidence |
+| Bundling dependent questions in one round | Later answers invalidate the earlier ones in the same batch |
 | Questions without code exploration | Scope can narrow in a direction that conflicts with existing code |
 | Showing full subagent output to the user | Too much noise. Provide only the summary relevant to the user's context |
 | Deciding "that's enough" unilaterally | Always present the Context Brief to the user and get confirmation |
@@ -219,9 +227,9 @@ Stop and recalibrate if any of these occur:
 
 Self-check at the end of each cycle:
 
-- [ ] Did one ambiguity get resolved this cycle?
+- [ ] Did at least one ambiguity get resolved this cycle?
 - [ ] Is subagent exploration in progress or complete?
-- [ ] Is the next question based on previous answers?
+- [ ] Is the next question round grounded in both previous answers and exploration findings?
 - [ ] Has progress been clearly communicated to the user?
 
 ## Routing Rules
@@ -231,25 +239,26 @@ After the Context Brief is approved, the **Complexity Assessment verdict** deter
 | Verdict | Route | Rationale |
 |---------|-------|-----------|
 | **Simple** (score 5-8) | `plan-crafting` | Task fits in a single plan cycle. Direct planning is sufficient. |
-| **Complex** (score 9-15) | `milestone-planning` | Task requires multiple plan cycles. Milestone decomposition needed before planning. |
+| **Borderline** (score 9) | User decides | Present both options with a recommendation. |
+| **Complex** (score 10-15) | `milestone-planning` | Task requires multiple plan cycles. Milestone decomposition needed before planning. |
 
 **Override:** The user can always override the routing. If the user says "just plan it" for a complex task, route to `plan-crafting`. If the user says "break it into milestones" for a simple task, route to `milestone-planning`.
 
-**Edge case (score 8-9):** Present both options to the user with a recommendation. Example: "This scores 9 — borderline complex. I recommend milestone-planning because [dominant factor], but plan-crafting could work if [condition]. Which do you prefer?"
+**Borderline (score 9):** Present both options to the user with a recommendation. Example: "This scores 9 — borderline. I recommend milestone-planning because [dominant factor], but plan-crafting could work if [condition]. Which do you prefer?"
 
 The "Suggested Next Step" field in the Context Brief must reflect this routing:
 
-- Simple: "Proceed to `plan-crafting` — task fits in a single plan cycle."
-- Complex: "Proceed to `milestone-planning` — task requires milestone decomposition for multi-phase execution."
-- Borderline: "Recommend `milestone-planning` (score 9), but `plan-crafting` is viable if [condition]. User choice needed."
+- Simple (5-8): "Proceed to `plan-crafting` — task fits in a single plan cycle."
+- Borderline (9): "Recommend [route] because [dominant factor], but [other route] is viable if [condition]. User choice needed."
+- Complex (10-15): "Proceed to `milestone-planning` — task requires milestone decomposition for multi-phase execution."
 
 ## Transition
 
 Once the Context Brief is approved by the user, route based on the Complexity Assessment:
 
 - **Simple** (score 5-8) → `plan-crafting` skill — single-cycle implementation planning
-- **Complex** (score 9-15) → `milestone-planning` skill — multi-phase milestone decomposition, then `long-run` for execution
-- **Borderline** (score 8-9) → present both options with recommendation, user decides
+- **Borderline** (score 9) → present both options with recommendation, user decides
+- **Complex** (score 10-15) → `milestone-planning` skill — multi-phase milestone decomposition, then `long-run` for execution
 - If further exploration is needed → `clarification` 스킬 자체의 Q&A 루프 계속
 - If the scope is already trivial and planning is unnecessary → direct implementation
 

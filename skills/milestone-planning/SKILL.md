@@ -1,26 +1,32 @@
 ---
 name: milestone-planning
-description: Decomposes complex, multi-day tasks into optimized milestones using parallel reviewer agents (ultraplan). Spawns 5 independent reviewers that analyze the problem from different angles, then synthesizes their findings into a milestone dependency DAG. Triggers when the user says "plan milestones", "break this into milestones", "ultraplan", or when long-run harness needs milestone generation.
+description: Decomposes complex, multi-day tasks into optimized milestones (ultraplan). Broad parallel exploration grounds a draft milestone DAG, then independent adversarial critics attack the draft in rounds until no blocking findings remain. Triggers when the user says "plan milestones", "break this into milestones", "ultraplan", or when long-run harness needs milestone generation.
 ---
 
 # Milestone Planning (Ultraplan)
 
-Decomposes a complex task into milestones by spawning 5 parallel reviewer agents, synthesizing their independent analyses, and producing a milestone dependency DAG.
+Decomposes a complex task into milestones in three moves: explore the codebase broadly in parallel, draft a milestone DAG grounded in what exploration found, then submit the draft to a panel of adversarial critics who attack it in rounds until it survives.
 
 ## Core Principle
 
-Milestones are the unit of long-running execution. A bad milestone decomposition cascades into days of wasted work. Therefore milestone generation must be adversarial — multiple independent perspectives must challenge each other before milestones are locked.
+Milestones are the unit of long-running execution. A bad milestone decomposition cascades into days of wasted work. Two things prevent that:
+
+- **Grounding.** The draft is built from actual codebase evidence gathered by parallel exploration — not from assumptions about what the code probably looks like.
+- **Adversarial pressure.** Independent critics whose only job is to break the draft, before execution does it the expensive way.
+
+A critic needs a concrete artifact to attack. This is why drafting comes before critique: "review the problem" produces suggestions; "break this draft" produces findings.
 
 ## Hard Gates
 
-1. **All 5 reviewer agents must run in parallel.** Sequential execution is prohibited. Dispatch all 5 concurrently in a single message via the Agent tool.
-2. **Each reviewer receives the full problem statement.** Do not split or filter the problem per reviewer. Every reviewer sees everything.
-3. **Reviewers must not see each other's findings.** Each reviewer operates independently. No cross-pollination during the review phase.
-4. **Synthesis must address every reviewer's concern.** The synthesis agent must explicitly respond to each finding — accepted, rejected with reason, or deferred to a specific milestone.
-5. **Every milestone must have measurable success criteria.** "Working correctly" is not a criterion. Specific test commands, file existence checks, or behavioral assertions are required.
-6. **Milestone dependencies must form a DAG.** Circular dependencies are a plan failure. Every milestone must have a clear topological ordering.
-7. **Do not generate milestones for trivial tasks.** If the problem can be solved in a single plan-crafting cycle (fewer than ~8 tasks), tell the user to use plan-crafting directly.
-8. **Reviewer outputs must be passed verbatim to the synthesis agent.** Do not summarize, filter, or reframe. Copy each reviewer's full output into the designated placeholder. The main agent must not editorialize the handoff.
+1. **Explore before drafting.** Dispatch parallel exploration agents before composing the draft. Every milestone boundary must cite exploration evidence — a boundary not grounded in the actual codebase is an assumption, not a decision.
+2. **All critics in a round run in parallel.** Dispatch every critic concurrently in a single message via the Agent tool. Sequential critique is prohibited.
+3. **Every critic receives the full Problem Brief and the full draft.** Do not filter or slice per critic.
+4. **Critics must not see each other's critiques.** Independence within a round is what makes agreement between critics meaningful.
+5. **Every critique must be resolved explicitly.** Each finding is logged verbatim in the Critique Resolution Log and marked accepted (draft revised — say how) or rejected (with evidence-backed reason). Silently dropping a finding is a planning failure.
+6. **Critique until dry.** After revising, dispatch a fresh critic round against the revised draft. The draft is locked only when a full round produces zero new Structural or Blocking findings. Maximum 3 rounds — Blocking findings still disputed after round 3 are escalated to the user with both sides stated.
+7. **Every milestone must have binary-decidable success criteria.** "Working correctly" is not a criterion. Each criterion must be answerable met/not-met by running a command or reading code — the same standard as plan-crafting's Acceptance Criteria Rules.
+8. **Milestone dependencies must form a DAG.** Circular dependencies are a plan failure. Every milestone must have a clear topological ordering.
+9. **Do not generate milestones for trivial tasks.** If the problem can be solved in a single plan-crafting cycle (fewer than ~8 tasks), tell the user to use plan-crafting directly.
 
 ## When To Use
 
@@ -47,14 +53,17 @@ If the input is ambiguous, return to the `clarification` skill before proceeding
 
 ## Process
 
-### Phase 1: Problem Framing
-
-Before dispatching reviewers, frame the problem:
+### Phase 1: Problem Framing + Broad Exploration
 
 1. Read the input (Context Brief or user request)
 2. Identify: goal, scope boundaries, technical constraints, success criteria
-3. If a codebase is involved, dispatch an Explore agent to map relevant architecture
-4. Compose the **Problem Brief** — a self-contained document that each reviewer will receive:
+3. **Dispatch parallel exploration agents** — several read-only Explore subagents concurrently, each with a distinct lens:
+   - **Architecture & interfaces:** modules, boundaries, and contracts the work will touch; existing patterns to follow
+   - **Dependencies & data flow:** what depends on what; shared state (DB schemas, config, globals); external systems and their setup requirements
+   - **Verification landscape:** e2e tests, integration tests, test suites, CI checks — this feeds the Verification Strategy
+   - **Conventions & history:** naming and structural conventions, recent related changes, prior attempts at similar work
+   Add task-specific lenses when the problem calls for them (a schema/migration lens for data work, an auth/permissions lens for security-touching work, a client-compat lens for API changes).
+4. Compose the **Problem Brief** — self-contained; both the draft and every critic will receive it:
 
 ```markdown
 ## Problem Brief
@@ -68,11 +77,15 @@ Before dispatching reviewers, frame the problem:
 **Technical Context:**
 [Relevant architecture, existing code, constraints]
 
+**Exploration Digest:**
+[Key findings per lens, with file references — this is the evidence base
+ the draft cites and the critics check against]
+
 **Constraints:**
 [Time, compatibility, dependencies, performance requirements]
 
 **Success Criteria:**
-[Specific, measurable outcomes]
+[Binary-decidable outcomes]
 
 **Verification Strategy:**
 - **Level:** [e2e | integration | skill/agent | test-suite | build-only]
@@ -80,374 +93,130 @@ Before dispatching reviewers, frame the problem:
 - **What it validates:** [what passing this verification proves]
 ```
 
-### Phase 2: Parallel Reviewer Dispatch
+**Verification Discovery:** Use the same discovery order as plan-crafting (e2e → integration → verification skills/agents → test suite → build+lint) and record the result in the Verification Strategy section. If no verification infrastructure exists, the Integration Verification Milestone's plan-crafting phase (during long-run execution) will create it as Task 0.
 
-Dispatch all 5 reviewer agents concurrently in a single message via the Agent tool. Each receives the full Problem Brief and its reviewer-specific prompt.
+### Phase 2: Draft Decomposition (two skeletons, then one draft)
 
-**Agent configuration for reviewers:**
-- Use `run_in_background: true` so reviewers execute concurrently without blocking each other
-- Do NOT set `isolation: "worktree"` — reviewers are read-only analysts, not code writers
-- The claude-code fork agent default is `maxTurns: 200` — reviewers should complete well within this. If a reviewer appears stuck (no response after extended time), this is likely a rate limit or timeout — see Phase 2.5 for failure handling.
+Iterating on a single draft anchors every later round to its initial shape — critics attack details, and the until-dry loop can only polish the skeleton it was given. Counter this with diverse initialization: draft twice before critiquing once.
 
-#### Reviewer 1: Feasibility Analyst
+1. **Dispatch two drafting agents in parallel**, each receiving the full Problem Brief + Exploration Digest with a different organizing principle:
+   - **Skeleton A — interface-first:** order milestones so contracts and interfaces are defined before their consumers; boundaries follow the architecture map
+   - **Skeleton B — risk-first:** order milestones so the riskiest integrations and most ambiguous requirements are exercised earliest; boundaries follow the failure modes
+2. **Compare and compose `DRAFT v1`:** the main agent picks the stronger skeleton and grafts superior elements from the other. Record the choice and rationale at the top of the resolution log ("Skeleton: B, because …; grafted A's M2/M3 split").
+
+The draft uses the full milestone format (see Phase 6) and is explicitly marked `DRAFT v1`.
+
+For each milestone, the draft must state:
+
+- **Name, Goal** (one sentence)
+- **Success Criteria** (binary-decidable — Hard Gate 7)
+- **Dependencies** (which milestones must complete first)
+- **Files affected** (from the dependency exploration)
+- **Risk / Effort / User Value / Abort Point**
+- **Evidence:** which Exploration Digest findings justify this boundary
+
+A milestone whose Evidence field is empty is a guess — explore more or merge it into a neighbor.
+
+### Phase 3: Adversarial Critic Panel
+
+Dispatch the critic panel against the draft — all critics concurrently, in a single message, `run_in_background: true`, no worktree isolation (critics are read-only).
+
+**Panel composition — 4 core critics, always:**
+
+1. **Hidden Complexity Critic** — attacks effort estimates: integration points, edge cases, data migration, backward compatibility that make a "Small" milestone Large; components that need a spike before they can be estimated at all.
+2. **Dependency & Ordering Critic** — attacks the DAG: missing dependency edges, file conflicts inside parallel groups, shared state modified by unordered milestones, interfaces consumed before the milestone that defines them, external dependencies without setup steps.
+3. **Verifiability Critic** — attacks the success criteria: any criterion not binary-decidable (requires interpretation to judge), milestones that cannot be independently verified when their turn comes, cross-milestone interfaces no criterion exercises.
+4. **Integration & Risk Critic** — attacks the sequencing: riskiest integration deferred to the end, most ambiguous requirements tackled last (when corrections are most expensive), milestones that leave the system in a broken state, expensive-to-redo milestones that are too large.
+
+**Plus up to 2 task-specific critics** chosen by the problem's nature: Value & Sequencing (early user-visible value, minimum viable first milestone, abort points), Migration & Compatibility, Security & Access, Performance. Justify the choice in one line in the resolution log.
+
+**Critic prompt template** (fill `{LENS}`, `{LENS_FOCUS}` from the panel definitions; copy Problem Brief and draft in full):
 
 ```
-You are a feasibility analyst reviewing a problem decomposition.
+You are the {LENS} critic reviewing a draft milestone decomposition.
+Your job is to find the ways this draft fails during execution.
+You are not here to be agreeable — an easy approval from you is
+a defect in the process.
 
 ## Problem Brief
 {PROBLEM_BRIEF}
 
-## Your Task
-
-Analyze the feasibility of solving this problem. For each major component:
-
-1. **Technical feasibility:** Can this be built with the stated tech stack?
-   Identify any components that require research, prototyping, or may not
-   be possible as described.
-
-2. **Effort estimation:** Classify each component as:
-   - Small (1-3 tasks, < 1 plan cycle)
-   - Medium (4-8 tasks, 1 plan cycle)
-   - Large (9+ tasks, multiple plan cycles → candidate for milestone)
-   - Uncertain (requires spike/prototype before estimation)
-
-3. **Risk of underestimation:** Flag components that appear simple but
-   have hidden complexity (integration points, edge cases, data migration,
-   backward compatibility).
-
-4. **Suggested milestone boundaries:** Based on effort and risk, suggest
-   where natural milestone boundaries should fall. A milestone should be
-   independently deliverable and testable.
-
-## Output Format
-
-For each suggested milestone:
-- **Name:** [milestone name]
-- **Effort:** [Small/Medium/Large/Uncertain]
-- **Feasibility risk:** [Low/Medium/High] — [reason]
-- **Key deliverable:** [what this milestone produces]
-
-Also list:
-- **Spike candidates:** Components needing prototype before planning
-- **Underestimation risks:** Components likely harder than they appear
-```
-
-#### Reviewer 2: Architecture Analyst
-
-```
-You are an architecture analyst reviewing a problem decomposition.
-
-## Problem Brief
-{PROBLEM_BRIEF}
+## Draft Milestone DAG (v{N})
+{DRAFT}
 
 ## Your Task
 
-Analyze the architectural implications and suggest milestone boundaries
-that respect architectural constraints.
+Attack the draft strictly from your lens: {LENS_FOCUS}
 
-1. **Interface boundaries:** Identify the key interfaces, contracts, and
-   APIs that must be defined. Milestones should align with interface
-   boundaries — one milestone should not half-define an interface.
-
-2. **Data flow:** Map how data flows through the system. Milestones that
-   cut across data flows create integration risk.
-
-3. **Dependency direction:** Identify which components depend on which.
-   Milestones should be ordered so dependencies are built before dependents.
-
-4. **Incremental deliverability:** Each milestone should leave the system
-   in a working state. No milestone should produce a half-built component
-   that only works after the next milestone.
-
-5. **Existing pattern alignment:** Where possible, milestones should follow
-   existing patterns in the codebase rather than introducing new patterns.
-
-## Output Format
-
-For each suggested milestone:
-- **Name:** [milestone name]
-- **Architectural rationale:** [why this is a natural boundary]
-- **Interfaces defined:** [what contracts this milestone establishes]
-- **Depends on:** [which milestones must complete first]
-- **Leaves system in working state:** [Yes/No — explain]
-
-Also list:
-- **Interface risks:** Interfaces that may need revision after initial implementation
-- **Pattern conflicts:** Where the proposed work conflicts with existing patterns
-```
-
-#### Reviewer 3: Risk Analyst
-
-```
-You are a risk analyst reviewing a problem decomposition.
-
-## Problem Brief
-{PROBLEM_BRIEF}
-
-## Your Task
-
-Identify risks that could derail multi-day execution and suggest milestone
-ordering that minimizes cumulative risk.
-
-1. **Integration risk:** Which components have the highest risk of not
-   working together? These should be integrated early, not in the last
-   milestone.
-
-2. **Ambiguity risk:** Which requirements are most likely to change or
-   be misunderstood? These should be tackled early so course corrections
-   are cheap.
-
-3. **Dependency risk:** Which external dependencies (APIs, libraries,
-   services) are least reliable? Milestones depending on them should
-   include fallback plans.
-
-4. **Regression risk:** Which changes are most likely to break existing
-   functionality? These milestones need heavier test coverage.
-
-5. **Recovery cost:** If a milestone fails validation, how expensive is
-   it to redo? High-cost milestones should be smaller and more frequent.
+Rules:
+- Every finding must be concrete: name the milestone, quote the draft
+  text you are attacking, and state the failure scenario during
+  execution. Check claims against the Exploration Digest — a draft
+  assertion that contradicts the digest is automatically a finding.
+- Assign each finding a severity:
+  - **Structural:** the decomposition's fundamental shape is wrong —
+    wrong unit of decomposition, wrong ordering philosophy, or a
+    missing phase that no milestone-level edit can add. Use only when
+    revision cannot fix it; a Structural finding must include a 3-5
+    line sketch of the alternative shape.
+  - **Blocking:** execution will fail, produce the wrong thing, or
+    require redoing a completed milestone
+  - **Concern:** elevated risk that needs a stated mitigation
+  - **Nit:** improvement, safe to ignore
+- Do not propose a full alternative decomposition — attack this one.
+  The only exceptions: the "smallest fix" per finding, and the 3-5
+  line shape sketch required for a Structural finding.
+- If you find nothing Blocking, earn it: list the attacks you attempted
+  and why the draft survived each one.
 
 ## Output Format
 
-For each identified risk:
-- **Risk:** [description]
-- **Severity:** [Low/Medium/High/Critical]
-- **Affected milestone(s):** [which milestones]
-- **Mitigation:** [how to structure milestones to reduce this risk]
+For each finding:
+- **[Severity] Finding:** [one sentence]
+- **Where:** [milestone ID(s) + quoted draft text]
+- **Failure scenario:** [what concretely goes wrong during execution]
+- **Smallest fix:** [minimal change to the draft that removes the failure]
 
-Overall risk-ordered milestone sequence:
-1. [milestone] — [why first: highest ambiguity / integration risk / ...]
-2. [milestone] — [why second]
-...
+If nothing Blocking: list attempted attacks and why each failed.
 ```
 
-#### Reviewer 4: Dependency Analyst
+**Critic failure handling:**
 
-```
-You are a dependency analyst reviewing a problem decomposition.
+1. **Timeout or error:** re-dispatch the failed critic once with the same prompt. If it fails again, proceed without it and log the missing lens in the resolution log.
+2. **Empty or lazy output:** a critic returning no findings AND no attempted-attacks list did not do its job — re-dispatch once.
+3. **Minimum viable panel:** at least 3 critics must succeed per round. Fewer → stop and report to the user.
 
-## Problem Brief
-{PROBLEM_BRIEF}
+### Phase 4: Revision Loop (Critique Until Dry)
 
-## Your Task
+1. **Log every finding verbatim** in the Critique Resolution Log — do not summarize or soften:
 
-Map all dependencies — between milestones, between files, between external
-systems — and verify that the proposed decomposition respects them.
-
-1. **File conflict analysis:** List all files that will be created or
-   modified. Identify files touched by multiple milestones — these create
-   ordering constraints.
-
-2. **Interface dependency graph:** Map which milestones produce interfaces
-   that other milestones consume. Draw the dependency DAG.
-
-3. **External dependency mapping:** List external systems, APIs, libraries,
-   or services each milestone depends on. Flag any that require setup,
-   credentials, or may be unavailable.
-
-4. **Shared state identification:** Identify shared state (databases,
-   config files, global settings) that multiple milestones modify.
-   These require strict ordering.
-
-5. **Parallelization opportunities:** Identify milestones with zero
-   dependencies between them — these can run concurrently.
-
-## Output Format
-
-**Dependency DAG:**
-```
-M1 (no deps) ─┬─→ M3 (depends on M1, M2)
-M2 (no deps) ─┘         │
-                         └─→ M4 (depends on M3)
+```markdown
+| # | Critic | Severity | Finding (verbatim) | Resolution | Rationale / Draft change |
+|---|--------|----------|--------------------|-----------|--------------------------|
+| 1 | Dependency | Blocking | "M3 consumes the API defined in M4..." | Accepted | Reordered: M4 now precedes M3 |
+| 2 | Complexity | Concern | "M2's migration effort is Small but..." | Accepted | M2 split into M2a (spike) + M2b |
+| 3 | Verifiability | Blocking | "M5 criterion 'UX feels responsive'..." | Accepted | Rewritten: "p95 interaction latency < 100ms in the perf test" |
+| 4 | Integration | Nit | "..." | Rejected | Digest shows the interface is already exercised by e2e suite |
 ```
 
-**File conflict matrix:**
-| File | Milestones | Ordering constraint |
-|------|-----------|-------------------|
-| path/to/file | M1, M3 | M1 before M3 |
+2. **Structural findings trigger a redraft, not a revision.** If a Structural finding is accepted, return to Phase 2 and recompose the draft — the finding's shape sketch and the unused skeleton are inputs. Maximum one redraft per planning session; a second accepted Structural finding means the problem framing itself is wrong → escalate to the user and revisit Phase 1.
+3. **Revise the draft** (v2, v3, …) applying every accepted fix.
+4. **Re-dispatch a fresh critic round** against the revised draft if this round produced any Structural or Blocking finding. Fresh instances with no memory of prior rounds — a critic that remembers its old critique anchors on it instead of attacking the new draft.
+5. **Dry condition:** a full round with zero new Structural or Blocking findings locks the draft. Open Concerns must have their mitigation noted in the affected milestone's Notes; Nits are optional.
+6. **Round cap:** maximum 3 rounds (a redraft resets the count once). Blocking findings still disputed after round 3 → present to the user with the critic's finding and the draft's rebuttal, both verbatim.
 
-**Parallelizable groups:**
-- Group A: [M1, M2] — no shared files, no interface deps
-- Group B: [M4, M5] — after Group A completes
+### Phase 4.5: Integration Verification Milestone
 
-**External dependencies:**
-- [dependency]: required by [milestones], setup needed: [yes/no]
-```
-
-#### Reviewer 5: User Value Analyst
-
-```
-You are a user value analyst reviewing a problem decomposition.
-
-## Problem Brief
-{PROBLEM_BRIEF}
-
-## Your Task
-
-Ensure milestone ordering maximizes early value delivery and maintains
-user motivation throughout multi-day execution.
-
-1. **Value ordering:** Which milestones deliver the most visible,
-   user-facing value? These should come early to provide feedback
-   and maintain confidence.
-
-2. **Demo-ability:** After each milestone, can the user see/test
-   something meaningful? Milestones that produce only internal
-   infrastructure with no visible output erode confidence.
-
-3. **Feedback loops:** Which milestones benefit most from early user
-   feedback? These should be prioritized so corrections are cheap.
-
-4. **Minimum viable milestone:** What is the smallest first milestone
-   that proves the approach works? This validates the overall direction
-   before investing in the full plan.
-
-5. **Abort points:** After which milestones could the user reasonably
-   decide to stop and still have something useful? Mark these as
-   natural checkpoints.
-
-## Output Format
-
-**Value-ordered milestone sequence:**
-1. [milestone] — **Value:** [what user sees] — **Demo:** [how to verify]
-2. [milestone] — **Value:** [what user sees] — **Demo:** [how to verify]
-...
-
-**Minimum viable milestone:** [which milestone and why]
-
-**Natural abort points:** [milestones after which stopping is reasonable]
-
-**Low-value milestones:** [milestones that could be cut if time is short]
-```
-
-### Phase 2.5: Reviewer Failure Handling
-
-After dispatching all 5 reviewers, wait for all to complete. If any reviewer fails:
-
-1. **Timeout or error:** Re-dispatch the failed reviewer once with the same prompt. If it fails again, proceed without it.
-2. **Empty or unusable output:** If a reviewer returns fewer than 3 sentences or clearly did not address the Problem Brief, re-dispatch once. If still unusable, proceed without it.
-3. **Proceeding with fewer than 5 reviewers:** Log the missing perspective(s) in the synthesis handoff. The synthesis agent must note the gap in its Conflict Resolution Log: "Missing perspective: [reviewer name] — [reason]. Milestone plan may have blind spot in [area]."
-4. **Minimum viable count:** At least 3 of 5 reviewers must succeed. If fewer than 3 complete successfully, stop and report to user — the problem may be too ambiguous for automated review.
-
-### Phase 3: Synthesis
-
-After all 5 reviewers complete, dispatch a **Synthesis Agent** that receives all 5 reviewer outputs and produces the final milestone plan.
-
-**Verbatim handoff rule (Hard Gate equivalent):** The main agent must copy each reviewer's full output into the designated `{..._OUTPUT}` placeholder without summarizing, filtering, reframing, or adding commentary. This is the same principle as the run-plan validator's fixed template — the main agent has read all 5 outputs and may unconsciously bias the synthesis by selective framing. Verbatim copy eliminates this channel.
-
-**What must NOT happen during handoff:**
-- Summarizing a reviewer's output ("The feasibility analyst mainly said...")
-- Filtering out findings the main agent considers irrelevant
-- Adding framing language ("Pay special attention to the risk analyst's concerns about...")
-- Reordering findings by perceived importance
-
-The synthesis agent prompt:
-
-```
-You are a milestone synthesis agent. You have received analyses from 5
-independent reviewers who each examined the same problem from a different
-angle. Your job is to produce the final milestone decomposition.
-
-## Reviewer Outputs
-
-### Feasibility Analysis
-{FEASIBILITY_OUTPUT}
-
-### Architecture Analysis
-{ARCHITECTURE_OUTPUT}
-
-### Risk Analysis
-{RISK_OUTPUT}
-
-### Dependency Analysis
-{DEPENDENCY_OUTPUT}
-
-### User Value Analysis
-{USER_VALUE_OUTPUT}
-
-## Your Task
-
-1. **Cross-reference findings.** Identify where reviewers agree and
-   where they conflict. Agreements are high-confidence decisions.
-   Conflicts require resolution.
-
-2. **Resolve conflicts explicitly.** For each conflict:
-   - State the conflict
-   - State your resolution
-   - State why (which reviewer's reasoning is stronger in this case)
-
-3. **Produce the milestone DAG.** Each milestone must have:
-   - Name
-   - Goal (1 sentence)
-   - Success criteria (measurable, specific)
-   - Dependencies (which milestones must complete first)
-   - Files affected (from dependency analysis)
-   - Risk level (from risk analysis)
-   - Estimated effort (from feasibility analysis)
-   - User value (from value analysis)
-
-4. **Validate the DAG.** Verify:
-   - No circular dependencies
-   - Valid topological ordering exists
-   - No file conflicts between parallel milestones
-   - Each milestone leaves system in working state
-   - First milestone is the minimum viable milestone
-
-5. **Produce execution order.** List milestones in execution order,
-   marking which can run in parallel.
-
-## Output Format
-
-## Conflict Resolution Log
-
-| Conflict | Resolution | Rationale |
-|----------|-----------|-----------|
-| [description] | [decision] | [why] |
-
-## Milestone DAG
-
-### M1: [Name]
-- **Goal:** [one sentence]
-- **Success Criteria:**
-  - [ ] [specific, measurable criterion]
-  - [ ] [specific, measurable criterion]
-- **Dependencies:** None
-- **Files:** [list]
-- **Risk:** [Low/Medium/High]
-- **Effort:** [Small/Medium/Large]
-- **User Value:** [what user sees after completion]
-- **Abort Point:** [Yes/No]
-
-### M2: [Name]
-...
-
-## Execution Order
-
-```
-Phase 1 (parallel): M1, M2
-Phase 2 (after Phase 1): M3
-Phase 3 (parallel): M4, M5
-```
-
-## Rejected Proposals
-
-| Proposal | Source | Reason for rejection |
-|----------|--------|---------------------|
-| [what was proposed] | [which reviewer] | [why rejected] |
-```
-
-### Phase 3.5: Integration Verification Milestone
-
-After synthesis, the main agent **automatically appends** an Integration Verification Milestone as the final milestone in the DAG. This milestone is not generated by reviewers or synthesis — it is a structural guarantee.
+After the draft is locked, the main agent **automatically appends** an Integration Verification Milestone as the final milestone in the DAG. This milestone is a structural guarantee — critics do not get a vote on its existence.
 
 ```markdown
 ### M_final: Integration Verification
 
 - **Goal:** Validate that all milestones work together as a complete system
 - **Success Criteria:**
-  - [ ] Highest-level project verification passes (e2e, integration, or discovered verification)
-  - [ ] All milestone success criteria remain valid after full integration
-  - [ ] No regressions in pre-existing functionality
+  - [ ] Highest-level project verification passes (command from Verification Strategy)
+  - [ ] All milestone success criteria remain met after full integration
+  - [ ] Full test suite passes — no regressions in pre-existing functionality
   - [ ] Cross-milestone interfaces are exercised end-to-end
 - **Dependencies:** ALL other milestones
 - **Files:** None (read-only verification — no new code)
@@ -457,55 +226,47 @@ After synthesis, the main agent **automatically appends** an Integration Verific
 - **Abort Point:** No (this is the final gate)
 ```
 
-**Verification Discovery:** During Phase 1 (Problem Framing), run the same verification discovery as plan-crafting:
-1. Search for e2e tests → integration tests → verification skills/agents → test suite → build+lint
-2. Record the result in the Problem Brief under a `Verification Strategy` section
-3. The Integration Verification Milestone uses this discovered verification as its primary check
+### Phase 4.6: Independent DAG Validation
 
-**If no verification infrastructure exists:** The Integration Verification Milestone's plan-crafting phase (during long-run execution) will create the necessary verification as Task 0, same as plan-crafting's behavior.
+After appending the Integration Verification Milestone, the **main agent** independently validates the full DAG structure before presenting it to the user. Do not rely on the critics having caught everything.
 
-### Phase 3.6: Independent DAG Validation
+1. **Circular dependency check:** trace each milestone's dependency chain; any milestone that is both ancestor and descendant of another invalidates the DAG. Fix the draft and re-run the Dependency & Ordering critic on the fix.
+2. **File conflict check for parallel milestones:** milestones with no dependency relationship must have disjoint "Files affected" lists. Overlap → add a dependency edge or flag for user decision.
+3. **Orphan check:** every milestone except the first must have at least one dependency OR be explicitly marked independently parallelizable with rationale.
+4. **Criteria check:** every milestone has at least 2 binary-decidable success criteria. A criterion requiring interpretation → rewrite before presenting.
 
-After appending the Integration Verification Milestone, the **main agent** independently validates the full DAG structure (including M_final) before presenting to the user. Do not rely on the synthesis agent's self-reported validation.
+### Phase 5: User Review and Lock
 
-1. **Circular dependency check:** For each milestone, trace its dependency chain. If any milestone appears as both an ancestor and a descendant of another, the DAG is invalid. Reject and re-dispatch synthesis with the specific cycle identified.
-2. **File conflict check for parallel milestones:** For milestones with no dependency relationship, verify their "Files Affected" lists do not overlap. If they overlap, they cannot run in parallel — add a dependency or flag for user decision.
-3. **Orphan check:** Every milestone except the first must have at least one dependency, OR be explicitly marked as independently parallelizable with rationale.
-4. **Success criteria check:** Every milestone must have at least 2 measurable success criteria. "Working correctly" or similar vague criteria trigger re-dispatch.
+This is the **single approval gate** of the entire long-run flow — after the user locks the plan here, `long-run` executes all milestones without further approval pauses.
 
-If validation fails: re-dispatch synthesis with the specific error(s) as additional constraint. Do not present an invalid DAG to the user.
+**Milestone count guard:** The recommended count is 3-7. More than 7 → warn: "This plan has N milestones. Consider whether the problem should be split into separate projects." More than 10 → require explicit user approval to proceed.
 
-### Phase 4: User Review and Lock
-
-**Milestone count guard:** The recommended milestone count is 3-7 for most projects. If the synthesis produces more than 7, present a warning: "This plan has N milestones. Consider whether the problem should be split into separate projects." If more than 10, require explicit user approval to proceed.
-
-1. Present the synthesized milestone plan to the user
-2. Show the conflict resolution log — the user must see where reviewers disagreed
+1. Present the locked milestone plan
+2. Show the Critique Resolution Log — the user must see what the critics attacked and how each finding was resolved
 3. Show the execution order with parallelization
-4. Show the total milestone count with the count guard warning if applicable
-5. Ask the user to approve, modify, or reject the milestone plan
-5. If approved: save the milestone plan to the harness state directory
-6. If modifications requested: apply changes and re-present
-7. If rejected: return to Phase 1 with updated constraints
+4. Show the milestone count with the count guard warning if applicable
+5. Ask the user to approve, modify, or reject
+6. If approved: save all artifacts to the harness state directory
+7. If modifications requested: apply, re-run the affected critics on the change, re-present
+8. If rejected: return to Phase 1 with updated constraints
 
-### Phase 5: Save Milestone Artifacts
-
-Save all artifacts to the harness state directory:
+### Phase 6: Save Milestone Artifacts
 
 ```
 docs/engineering-discipline/harness/<session-slug>/
-├── state.md                  # Master state file
+├── state.md                      # Master state file
 ├── milestones/
-│   ├── M1-<name>.md          # Individual milestone definition
+│   ├── M1-<name>.md              # Individual milestone definition
 │   ├── M2-<name>.md
 │   └── ...
-└── reviews/
-    ├── feasibility.md
-    ├── architecture.md
-    ├── risk.md
-    ├── dependency.md
-    ├── user-value.md
-    └── synthesis.md
+└── planning/
+    ├── problem-brief.md          # includes Exploration Digest
+    ├── draft-v1.md ... draft-vN.md
+    ├── critiques/
+    │   ├── round-1-complexity.md
+    │   ├── round-1-dependency.md
+    │   └── ...
+    └── resolution-log.md         # Critique Resolution Log, all rounds
 ```
 
 **state.md format:**
@@ -557,9 +318,9 @@ Attempts: number of plan-execute-review cycles attempted (incremented at each St
 
 ## Success Criteria
 
-- [ ] [Specific, measurable criterion]
-- [ ] [Specific, measurable criterion]
-- [ ] [Specific, measurable criterion]
+- [ ] [Binary-decidable criterion — answerable met/not-met by command or code inspection]
+- [ ] [Binary-decidable criterion]
+- [ ] [Binary-decidable criterion]
 
 ## Files Affected
 
@@ -576,35 +337,39 @@ Attempts: number of plan-execute-review cycles attempted (incremented at each St
 
 ## Notes
 
-[Any special considerations from reviewer analysis]
+[Mitigations for open Concerns from the critique rounds; special considerations]
 ```
 
 ## Anti-Patterns
 
 | Anti-Pattern | Why It Fails |
 |---|---|
-| Running reviewers sequentially | Wastes time; reviewers are independent |
-| Skipping synthesis and just merging reviewer outputs | Conflicts go unresolved; milestone boundaries are incoherent |
-| Accepting milestones without measurable success criteria | Cannot validate completion; "done" becomes subjective |
+| Critiquing the problem statement instead of a concrete draft | Produces suggestions, not findings; conflicts never surface until execution |
+| Drafting once and only revising | Revision rounds polish the initial skeleton but cannot escape it; two skeletons + the Structural escape hatch exist for exactly this |
+| Drafting without exploration | Milestone boundaries become assumptions; critics can't check claims against evidence |
+| Running critics sequentially | Wastes time; critics are independent by design |
+| Summarizing or softening critiques before resolving them | Filters findings through the drafter's bias; log verbatim |
+| Marking a finding "addressed" without changing the draft or rebutting it | The finding resurfaces during execution, where it costs days instead of minutes |
+| Reusing the same critic instance across rounds | Anchors on its previous critique instead of attacking the revised draft |
+| Accepting criteria that need interpretation | Cannot validate completion; "done" becomes subjective |
 | Creating milestones too large (>12 tasks each) | Exceeds single plan-crafting cycle; risk of context loss |
 | Creating milestones too small (1-2 tasks each) | Overhead of plan-crafting + run-plan + review-work exceeds the work itself |
 | Creating more than 10 milestones without user approval | Compounding risk across milestones; likely needs project split |
-| Ignoring reviewer conflicts | Unresolved conflicts surface during execution when they're expensive to fix |
-| Not saving reviewer outputs | Loses the reasoning behind milestone decisions; cannot audit later |
-| Letting user skip approval | User discovers misalignment mid-execution after days of work |
+| Letting user skip the lock approval | This is the only approval gate — skipping it means days of unattended execution on an unreviewed plan |
 
 ## Minimal Checklist
 
-- [ ] Problem Brief composed with goal, scope, constraints, success criteria
-- [ ] All 5 reviewers dispatched in parallel (single message)
-- [ ] Each reviewer received the full Problem Brief
-- [ ] Synthesis agent received all 5 reviewer outputs
-- [ ] All reviewer conflicts explicitly resolved
-- [ ] Every milestone has measurable success criteria
+- [ ] Parallel exploration agents dispatched before drafting
+- [ ] Problem Brief composed with Exploration Digest and Verification Strategy
+- [ ] Two independent skeletons drafted (interface-first, risk-first); DRAFT v1 composed with rationale logged
+- [ ] Draft DAG cites exploration evidence per milestone
+- [ ] All critics in each round dispatched in parallel (single message)
+- [ ] Every critique logged verbatim and resolved (accepted with draft change, or rejected with reason)
+- [ ] Final round produced zero new Blocking findings (or disputes escalated to user)
+- [ ] Every milestone has binary-decidable success criteria
 - [ ] Milestone DAG has no circular dependencies
-- [ ] First milestone is the minimum viable milestone
 - [ ] Integration Verification Milestone appended as final milestone
-- [ ] User approved the milestone plan
+- [ ] User approved the milestone plan at the lock
 - [ ] All artifacts saved to harness state directory
 
 ## Transition

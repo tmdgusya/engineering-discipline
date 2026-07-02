@@ -1,6 +1,6 @@
 ---
 name: clean-ai-slop
-description: Corrective cleanup of AI-generated code — removes LLM-specific patterns while preserving behavior. Use when the user says "clean up", "deslop", "slop", "clean AI code", or when you spot LLM-generated code smells after any generation session.
+description: Corrective cleanup of AI-generated code — removes LLM-specific patterns while preserving behavior. Use when the user says "deslop", "slop", "clean AI code", "remove AI patterns", or when you spot LLM-generated code smells after any generation session. For general post-change review and fixes ("clean up", "simplify"), use the simplify skill instead.
 ---
 
 # AI Slop Cleaner

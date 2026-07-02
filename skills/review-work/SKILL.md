@@ -16,9 +16,10 @@ The reviewer shares no memory with the executor. The plan's stated goals and the
 1. **Do not receive execution context.** No logs from run-plan, no worker output, no diffs, no task completion summaries, no conversation history. The only input is the plan file path.
 2. **Read the plan document directly.** Read the plan file from disk — not a summary or a passed-along description.
 3. **Run all tests yourself.** Do not trust previous execution results. Run the full test suite and every verification command specified in the plan.
-4. **Verdict is PASS or FAIL.** No conditional passes, no "almost done", no "only minor issues remain". Binary only.
-5. **Save the review document to a file.** Review results must be saved as a structured document. Never end with a verbal report alone.
-6. **Do not modify code.** This skill is read-only. If issues are found, report them — do not fix them.
+4. **Verdict is PASS or FAIL — binary at every level.** Each success criterion and each task's acceptance criteria are judged met/not-met individually; the verdict is the AND of all of them. No conditional passes, no "almost done", no partial credit.
+5. **The verdict judges only the goal contract.** Verdict inputs are: planned files exist, acceptance criteria met, tests pass, no regressions, plan success criteria met. Everything else — placeholder/debug code, commit message mismatches, style — is reported as advisory findings and never flips the verdict. A binary signal is only useful if it is not polluted by cosmetics.
+6. **Save the review document to a file.** Review results must be saved as a structured document. Never end with a verbal report alone.
+7. **Do not modify code.** This skill is read-only. If issues are found, report them — do not fix them.
 
 ## When To Use
 
@@ -61,6 +62,8 @@ The following must never be provided as input:
    - **Commit Structure:** Commit messages and scope specified in the plan
    - **Test Commands:** All test execution commands specified in the plan
 
+If the plan contains a `## Plan Amendment Log` (appended by run-plan when plan defects were found mid-execution), the review judges against the **amended** plan — the log is part of the plan, not execution context. Amendments that weakened a criterion relative to the plan's Goal are themselves a FAIL finding.
+
 Use the extracted results as the foundation for the review document.
 
 ### Phase 2: Codebase Inspection
@@ -69,11 +72,12 @@ Inspect the codebase against the files specified in the plan.
 
 1. **File existence check:** Verify that all files specified in the plan actually exist
 2. **Content alignment check:** Inspect whether each file's content matches the plan's requirements (function signatures, type definitions, logic, etc.)
-3. **Residual artifact check:**
+3. **Residual artifact check (advisory — not a verdict input):**
    - Placeholder code (TODO, FIXME, "implement later", stub functions)
    - Debug code (console.log, print debugging, commented-out code blocks)
    - Unexpected changes outside the plan's scope
-4. **Verify acceptance criteria per task.** Check each criterion stated in the plan one by one and record whether it is met.
+   These are recorded as advisory findings. Exception: if a placeholder sits where an acceptance criterion requires working code, the criterion itself fails — that is what flips the verdict, not the artifact.
+4. **Verify acceptance criteria per task.** Check each criterion stated in the plan one by one and record met/not-met — binary per criterion, no partial credit.
 
 ### Phase 3: Test Execution
 
@@ -82,31 +86,32 @@ Inspect the codebase against the files specified in the plan.
 3. Record each test's result (PASS/FAIL)
 4. If any test fails, record the error message
 
-### Phase 4: Git History Verification
+### Phase 4: Git History Check (Informational)
 
 1. Compare the commit structure specified in the plan against the actual `git log`
-2. Verify that commit messages match the plan
-3. Verify that each commit's change scope is appropriate (no unrelated changes mixed into a single commit)
+2. Note mismatches in commit messages or scope (unrelated changes mixed into a single commit)
+
+Findings here are **informational only** — plans rarely predict commit messages exactly, and workers may have legitimately adapted. Record mismatches in the review document; they never affect the verdict.
 
 ### Phase 5: Verdict and Review Document
 
-Combine results from Phases 2–4 to reach a verdict.
+The verdict is computed from the goal contract only — Phases 2 (criteria) and 3 (tests).
 
-**PASS conditions (all must be met):**
+**PASS conditions (all must be met — verdict is the AND):**
 
 - All files specified in the plan exist
-- Each task's acceptance criteria are met
-- All tests pass
-- No regressions
-- No placeholder or debug code remains
+- Each task's acceptance criteria are met (binary per criterion)
+- All tests specified in the plan pass
+- Full test suite shows no regressions
+- The plan's success criteria are met
 
-**FAIL (if any of the following apply):**
+**FAIL if any single condition above is not met.** No conditional passes.
 
-- A file specified in the plan is missing
-- A test fails
-- A regression is found
-- Placeholder code remains
-- The plan's goal is not achieved
+**Never verdict inputs (advisory findings only):**
+
+- Placeholder or debug code (unless it makes a criterion fail)
+- Commit message or commit structure mismatches
+- Style, naming, or code quality observations
 
 After reaching a verdict, write and save the review document.
 
@@ -145,7 +150,13 @@ docs/engineering-discipline/reviews/YYYY-MM-DD-<feature-name>-review.md
 
 **Full Test Suite:** PASS / FAIL (N passed, M failed)
 
-## 3. Code Quality
+## 3. Acceptance Criteria
+
+| Task | Criterion | Met |
+|---|---|---|
+| Task 1 | [criterion verbatim from plan] | PASS / FAIL |
+
+## 4. Advisory Findings (not verdict inputs)
 
 - [ ] No placeholders
 - [ ] No debug code
@@ -155,7 +166,7 @@ docs/engineering-discipline/reviews/YYYY-MM-DD-<feature-name>-review.md
 **Findings:**
 - (Describe with file path and line number)
 
-## 4. Git History
+**Git history (informational):**
 
 | Planned Commit | Actual Commit | Match |
 |---|---|---|
@@ -189,6 +200,7 @@ Stop immediately and notify the user in the following situations:
 | Trusting previous test results instead of running tests | Environment may have changed after execution. Not independent verification |
 | Finding issues and fixing them directly | Violates separation of reviewer and implementer roles |
 | Giving a "close enough, PASS" verdict | No conditional passes. If criteria are not met, it is FAIL |
+| Failing the verdict over cosmetics (commit messages, TODOs, style) | Pollutes the binary signal; triggers retry loops over trivia. Cosmetics are advisory findings |
 | Delivering review results verbally without saving a document | No verification record remains. Untraceable |
 | Judging by criteria not in the plan | The reviewer judges only by the plan's criteria. Adding arbitrary standards is prohibited |
 | Receiving a plan summary and verifying from that | Information is lost during summarization. The original must be read directly |

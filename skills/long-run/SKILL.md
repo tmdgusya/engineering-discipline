@@ -1,6 +1,6 @@
 ---
 name: long-run
-description: Orchestrates multi-day execution of complex tasks through milestones. Each milestone goes through plan-crafting, run-plan (worker-validator), and review-work phases with checkpoint/recovery. Triggers when the user says "long run", "start long run", "execute milestones", or "run all milestones".
+description: Orchestrates multi-day execution of complex tasks through milestones. Each milestone goes through plan-crafting, run-plan (worker-validator), and review-work phases with checkpoint/recovery. Runs autonomously end-to-end — no per-milestone approval gates; escalates to the user only on failures. Triggers when the user says "long run", "start long run", "execute milestones", or "run all milestones".
 ---
 
 # Long Run Harness
@@ -17,7 +17,7 @@ Long-running execution must be **resumable, auditable, and fail-safe.** Every st
 2. **State file must be updated before and after every milestone.** No in-memory-only state. If it's not on disk, it didn't happen.
 3. **Each milestone must complete the full pipeline.** plan-crafting → run-plan → review-work. No shortcuts. No skipping review-work "because it looked fine."
 4. **Failed milestones block dependents.** If M2 depends on M1 and M1 fails review, M2 does not start. Period.
-5. **User confirmation required at gate points.** Before starting a new milestone phase (planning, execution, review), check if the user wants to continue, pause, or abort.
+5. **Autonomous by default — no approval gates between milestones.** The user approved the milestone plan once, at milestone-planning's lock. From then on, milestones proceed plan → run → review → checkpoint without pausing for confirmation. Stop and ask ONLY when: a milestone exhausts its retry budget (`failed`), Mid-Execution Correction requires a scope decision, integration escalation triggers, or loaded state is inconsistent. Post a brief status report at each phase transition so the user can interrupt anytime — state files make every pause resumable.
 6. **Never modify completed milestones.** Once a milestone passes review-work, its files are locked. If a later milestone needs changes to earlier work, that is a new milestone.
 7. **Checkpoint after every milestone completion.** Write a checkpoint file recording what was done, test results, and review verdict before proceeding.
 
@@ -68,7 +68,7 @@ In progress: M3 (executing)
 Pending: M4, M5
 ```
 
-6. Ask user to confirm: continue, pause, or abort.
+6. If the loaded state is consistent, proceed immediately — the status display is a report, not a gate. Ask the user only if validation in step 3 found inconsistencies or a `failed` milestone blocks the path forward.
 
 ### Phase 2: Milestone Execution Loop
 
@@ -123,7 +123,7 @@ Before starting a milestone:
    - The plan must satisfy all milestone success criteria
    - The plan must not modify files outside the milestone's scope
 3. Update state.md: record plan file path for this milestone
-4. **User gate:** Present the plan and ask for approval before execution
+4. **Report, don't gate:** Post a brief plan summary (goal, task count, files touched) as a progress report and proceed directly to execution. Do not wait for approval.
 
 #### Step 2-3: Run Plan Phase
 
@@ -221,10 +221,8 @@ When multiple milestones have all dependencies satisfied and no file conflicts:
 
 1. Identify parallelizable milestone group
 2. Run plan-crafting for ALL parallel milestones first (sequentially — plans are lightweight)
-3. Present ALL plans together for batch approval: "Milestones M3 and M4 can run in parallel. Here are both plans. Approve each individually."
-4. User approves or rejects each plan independently. Only approved milestones proceed to execution. Rejected milestones return to Step 2-2 while approved ones execute.
-5. If all approved, dispatch each milestone's pipeline concurrently:
-   - Each milestone runs run-plan → review-work (plan already approved in step 3)
+3. Post all plan summaries as a single progress report (no approval wait), then dispatch each milestone's pipeline concurrently:
+   - Each milestone runs run-plan → review-work
    - Each runs in a worktree (`isolation: "worktree"`) to prevent file conflicts
    - After both complete and pass review, merge worktrees back
 4. If either fails: handle independently (the other can continue if no dependency)
@@ -297,7 +295,7 @@ When resuming a paused or interrupted session:
 
 3. For `executing` milestones: check if tasks in the plan have checkboxes marked. Resume from the first unchecked task.
 4. Read the `Attempts` counter from state.md to determine retry budget remaining. Do not reset the counter on resume — it persists across crashes to prevent infinite retry loops.
-5. Present recovery plan to user before proceeding.
+5. Post the recovery plan as a status report and proceed. Ask the user only if a `failed` milestone blocks the path or state is inconsistent.
 
 ## Mid-Execution Correction
 
@@ -350,7 +348,7 @@ Long-running sessions will encounter rate limits. Claude Code has built-in retry
 3. Log the rate limit event in execution log with timestamp.
 4. Report to user: "Rate limit hit. State saved. Resume with `long-run` when ready."
 5. Do NOT add manual retry loops on top of claude-code's built-in retry — this causes retry amplification.
-6. **Background agent bail:** Claude Code's background agents (like reviewer subagents) bail immediately on 529 overload errors instead of retrying. This is why Phase 2.5 reviewer failure handling exists — reviewer failures are often transient rate limits, not permanent errors.
+6. **Background agent bail:** Claude Code's background agents (like critic subagents) bail immediately on 529 overload errors instead of retrying. This is why milestone-planning's critic failure handling (re-dispatch once, minimum viable panel) exists — critic failures are often transient rate limits, not permanent errors.
 
 ## Anti-Patterns
 
@@ -363,7 +361,7 @@ Long-running sessions will encounter rate limits. Claude Code has built-in retry
 | Modifying completed milestone files | Breaks checkpoint invariant; invalidates reviews |
 | Running parallel milestones without worktree isolation | File conflicts corrupt both milestones |
 | Auto-retrying on rate limit | Wastes quota; user may prefer to wait |
-| Skipping user gates between milestones | User loses control of multi-day execution |
+| Pausing for approval between milestones | Defeats autonomous execution — the user opted into a full run at milestone lock. Escalate only on failures and scope changes |
 | Merging worktrees without conflict check | Silent data loss if files overlap |
 | Skipping cross-milestone integration check | Milestones pass independently but break each other at boundaries |
 | Retrying E2E failures indefinitely without user escalation | 2-attempt limit exists to avoid budget waste on misdiagnosed problems |
@@ -373,7 +371,7 @@ Long-running sessions will encounter rate limits. Claude Code has built-in retry
 - [ ] State directory exists with valid state.md and milestone files
 - [ ] Dependency DAG validated (no cycles)
 - [ ] Current position determined (fresh start or resume)
-- [ ] User confirmed continuation at session start
+- [ ] Status report posted at session start and at each phase transition
 - [ ] Each milestone goes through plan-crafting → run-plan → review-work
 - [ ] State.md updated before and after every phase transition
 - [ ] Checkpoint written after every successful milestone
