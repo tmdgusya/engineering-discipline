@@ -40,7 +40,7 @@ grep -q "Playfair+Display" "$CSS" && ok "Playfair Display imported" || bad "Play
 grep -q "Noto+Serif+KR"    "$CSS" && ok "Noto Serif KR imported"    || bad "Noto Serif KR import missing"
 grep -q -- "--font-display: 'Playfair Display'" "$CSS" && ok "--font-display token" || bad "--font-display missing"
 grep -q "'JetBrains Mono'" "$CSS" && ok "JetBrains Mono kept for code" || bad "JetBrains Mono missing"
-DISPLAY_USES=$(grep -c "var(--font-display)" "$CSS" | tr -d ' ')
+DISPLAY_USES=$(grep -c "var(--font-display)" "$CSS" | tr -d ' ' || true)
 if [ "$DISPLAY_USES" -ge 4 ]; then ok "--font-display applied to headings ($DISPLAY_USES uses)"; else bad "--font-display used only $DISPLAY_USES times (<4)"; fi
 
 echo "== 7. prefers-reduced-motion gate present =="
