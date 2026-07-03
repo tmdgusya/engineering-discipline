@@ -1,42 +1,39 @@
-/* css/style.css — Phosphor Green CRT Terminal Theme */
+/* css/style.css — Chalkboard Engineering Blueprint Theme */
 
 /* === Font import (HTML immutable constraint → @import) === */
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Nanum+Gothic+Coding&family=Noto+Sans+KR:wght@400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;800&family=Noto+Serif+KR:wght@600;700&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+KR:wght@400;700;900&display=swap');
 
 /* === Custom Properties === */
 :root {
-  /* CRT backgrounds */
-  --bg: #001100;              /* phosphor-tinted near-black (global page bg) */
-  --crt-bg: #001100;          /* explicit alias */
-  --black: #33FF33;           /* REPURPOSED: "ink" is now phosphor green.
+  /* Chalkboard backgrounds */
+  --bg: #0D3B2F;              /* deep blackboard green (global page bg) */
+  --crt-bg: #0D3B2F;          /* legacy alias — kept so existing references resolve */
+  --black: #F2EBD8;           /* REPURPOSED: "ink" is chalk cream.
                                  Most component rules use var(--black) for borders/text,
-                                 so this single token flips them to phosphor. */
-  /* Phosphor scale (readability-tiered) */
-  --phosphor-bright: #33FF33; /* AAA 14.34:1 — headings, code, terminal UI, landing */
-  --phosphor-body: #66AA66;   /* AA 6.95:1  — long-form skill body text */
-  --phosphor-muted: #88C488;  /* AAA 9.53:1 — captions, secondary text */
-  --phosphor-dim: #33CC33;    /* AAA 9.10:1 — links/emphasis in body */
-  --amber: #FFB000;           /* AAA 10.61:1 — secondary accent (P3 phosphor) */
-  --crt-grid: #003300;        /* faint grid-line green for panels */
-  --crt-panel: #001a00;       /* slightly lighter panel bg */
-  /* Accent (repurposed from blue → amber for CRT secondary accent) */
-  --blue: #FFB000;            /* REPURPOSED: was #0000FF. Now amber so every
-                                 existing var(--blue) reference (links, active
-                                 states, .callout.blue, .btn-blue, .skill-badge.blue)
-                                 becomes amber accent automatically. */
-  /* Borders — neubrutalism used 4px/8px solid. CRT keeps thin phosphor lines. */
+                                 so this single token flips them to cream. */
+  /* Chalk scale (readability-tiered, contrast vs #0D3B2F) */
+  --phosphor-bright: #F2EBD8; /* 10.5:1 — headings, borders, code, emphasis */
+  --phosphor-body: #D8D2BD;   /* 9.0:1  — long-form body text */
+  --phosphor-muted: #ADB8A3;  /* 5.7:1  — captions, secondary text */
+  --phosphor-dim: rgba(242, 235, 216, 0.4); /* hairline borders */
+  --amber: #F2EBD8;           /* REPURPOSED: accent collapsed to cream (monotone) */
+  --crt-grid: #164A3B;        /* hover / raised surface */
+  --crt-panel: #0F4234;       /* panel bg, one step above page bg */
+  --blue: #F2EBD8;            /* legacy alias — monotone cream */
+  /* Borders — thin cream lines, like the reference blueprint poster */
   --border-width: 1px;
   --border-width-thick: 2px;
-  /* Shadows — neubrutalism hard offset shadow becomes phosphor glow.
-     These tokens are still referenced by .card/.callout/.workflow etc. */
+  /* Shadows — glow removed entirely. Tokens kept as `none` so every
+     box-shadow/text-shadow: var(--glow-*) reference resolves cleanly. */
   --shadow-offset: 0;
   --shadow-offset-lg: 0;
-  --glow-bright: 0 0 5px rgba(51,255,51,0.8), 0 0 10px rgba(51,255,51,0.5), 0 0 20px rgba(51,255,51,0.3);
-  --glow-amber: 0 0 5px rgba(255,176,0,0.8), 0 0 10px rgba(255,176,0,0.4);
-  /* Fonts — split stack: mono for Latin/code/UI, Hangul fallback for mixed */
-  --font-ko: 'JetBrains Mono', 'Nanum Gothic Coding', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', monospace;
-  --font-en: 'JetBrains Mono', 'Nanum Gothic Coding', monospace;
-  --mono: 'JetBrains Mono', 'Nanum Gothic Coding', 'Fira Code', 'Consolas', monospace;
+  --glow-bright: none;
+  --glow-amber: none;
+  /* Fonts — serif display for headings, sans for body/UI, mono for code */
+  --font-display: 'Playfair Display', 'Noto Serif KR', Georgia, serif;
+  --font-ko: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  --font-en: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  --mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
   /* Readability body font — proportional Hangul for long-form Korean text */
   --font-body-ko: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
 }
@@ -109,22 +106,19 @@ pre code {
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 0 12px rgba(51,255,51,0.25);
 }
 
 .nav-brand {
   font-size: 1.25rem;
-  font-weight: 800;
-  font-family: var(--font-en);
+  font-weight: 700;
+  font-family: var(--font-display);
   color: var(--phosphor-bright);
   text-decoration: none;
-  letter-spacing: 0;
-  text-shadow: var(--glow-bright);
+  letter-spacing: 0.02em;
 }
 
 .nav-brand:hover {
-  color: var(--amber);
-  text-shadow: var(--glow-amber);
+  color: var(--phosphor-muted);
 }
 
 .nav-links {
@@ -180,43 +174,40 @@ pre code {
 /* === Typography === */
 h1 {
   font-size: 2.5rem;
-  font-weight: 800;
-  font-family: var(--font-en);
-  letter-spacing: -0.01em;
+  font-weight: 700;
+  font-family: var(--font-display);
+  letter-spacing: 0.01em;
   line-height: 1.2;
   margin-bottom: 1.5rem;
   color: var(--phosphor-bright);
-  text-shadow: var(--glow-bright);
 }
 
 h2 {
   font-size: 1.75rem;
-  font-weight: 800;
-  font-family: var(--font-en);
-  letter-spacing: -0.01em;
+  font-weight: 700;
+  font-family: var(--font-display);
+  letter-spacing: 0.01em;
   margin-top: 2rem;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
   border-bottom: var(--border-width) solid var(--phosphor-dim);
   color: var(--phosphor-bright);
-  text-shadow: var(--glow-bright);
 }
 
 h3 {
   font-size: 1.25rem;
   font-weight: 700;
-  font-family: var(--font-en);
+  font-family: var(--font-display);
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
   color: var(--phosphor-bright);
-  text-shadow: var(--glow-bright);
 }
 
-/* Headings inside Korean skill pages keep mono for Latin/numbers but
-   Hangul glyphs fall through to Nanum Gothic Coding in the stack. */
+/* Headings everywhere use the serif display stack; Hangul glyphs
+   fall through to Noto Serif KR. */
 .landing-page h1, .landing-page h2, .landing-page h3,
 .skill-header h1, .skill-header h2 {
-  font-family: var(--font-en);
+  font-family: var(--font-display);
 }
 
 /* === Sections === */
@@ -226,12 +217,13 @@ section {
 
 /* === Links / inline emphasis === */
 a {
-  color: var(--amber);
-  text-decoration: none;
+  color: var(--phosphor-bright);
+  text-decoration: underline;
+  text-decoration-color: rgba(242, 235, 216, 0.45);
+  text-underline-offset: 0.15em;
 }
 a:hover {
-  text-decoration: underline;
-  text-shadow: var(--glow-amber);
+  text-decoration-color: currentColor;
 }
 strong {
   color: var(--phosphor-bright);
@@ -250,7 +242,8 @@ strong {
 
 .card:hover {
   transform: none;
-  box-shadow: 0 0 8px rgba(51,255,51,0.9), 0 0 16px rgba(51,255,51,0.6), 0 0 28px rgba(51,255,51,0.4);
+  box-shadow: none;
+  background: var(--crt-grid);
 }
 
 .card-link {
@@ -260,7 +253,7 @@ strong {
 }
 
 .card-link:hover .card-title {
-  color: var(--amber);
+  text-decoration: underline;
 }
 
 .card-title {
@@ -307,8 +300,8 @@ strong {
 
 .btn:hover {
   transform: none;
-  box-shadow: 0 0 8px rgba(51,255,51,0.9), 0 0 16px rgba(51,255,51,0.6);
-  background: var(--crt-panel);
+  box-shadow: none;
+  background: var(--crt-grid);
 }
 
 .btn:active {
@@ -332,16 +325,14 @@ strong {
 .workflow {
   background: var(--crt-panel);
   border: var(--border-width-thick) solid var(--phosphor-bright);
-  box-shadow: var(--glow-bright);
   padding: 2rem;
   margin: 2rem 0;
-  font-family: var(--font-en);
+  font-family: var(--mono);
   font-size: 0.9rem;
   line-height: 1.6;
   white-space: pre;
   overflow-x: auto;
   color: var(--phosphor-bright);
-  text-shadow: 0 0 3px rgba(51,255,51,0.6);
 }
 
 /* === Lists === */
@@ -436,16 +427,14 @@ th {
   padding: 4rem 1.5rem;
   border-bottom: var(--border-width-thick) solid var(--phosphor-bright);
   background: var(--bg);
-  box-shadow: inset 0 0 40px rgba(51,255,51,0.08);
 }
 
 .skill-header h1 {
   font-size: 3.5rem;
   margin-bottom: 1rem;
   line-height: 1.2;
-  font-family: var(--font-en);
+  font-family: var(--font-display);
   color: var(--phosphor-bright);
-  text-shadow: var(--glow-bright);
 }
 
 .skill-header p {
@@ -735,18 +724,18 @@ th {
 }
 
 /* =========================================================================
-   LANDING PAGE — Full Phosphor CRT (rewritten from neubrutalism)
-   The .landing-page scope overrides the muted skill-body tones with
-   full bright phosphor + scanline vignette for atmosphere.
+   LANDING PAGE — Chalkboard Blueprint
+   The .landing-page scope maps its local tokens onto the cream-on-green
+   chalkboard palette. Monotone: accent == ink.
    ========================================================================= */
 .landing-page {
-  --landing-bg: #001100;
-  --landing-ink: #33FF33;
-  --landing-bright: #33FF33;
-  --landing-amber: #FFB000;
-  --landing-grid: #003300;
-  --landing-panel: #001a00;
-  --landing-muted: #88C488;
+  --landing-bg: #0D3B2F;
+  --landing-ink: #F2EBD8;
+  --landing-bright: #F2EBD8;
+  --landing-amber: #F2EBD8;
+  --landing-grid: #1A4A3C;
+  --landing-panel: #0F4234;
+  --landing-muted: #C9CFBA;
   background: var(--landing-bg);
   color: var(--landing-bright);
   font-family: var(--font-en);
@@ -755,7 +744,6 @@ th {
 .landing-page .nav {
   background: var(--landing-bg);
   border-bottom: 2px solid var(--landing-bright);
-  box-shadow: 0 0 12px rgba(51,255,51,0.3);
   padding: 1rem 1.5rem;
 }
 
@@ -903,7 +891,8 @@ th {
 
 .landing-page .btn:hover {
   transform: none;
-  box-shadow: 0 0 8px rgba(51,255,51,0.9), 0 0 16px rgba(51,255,51,0.6);
+  box-shadow: none;
+  background: var(--crt-grid);
 }
 
 .landing-page .btn-blue {
@@ -989,7 +978,7 @@ th {
   display: grid;
   gap: 0.25rem;
   padding: 0.85rem;
-  background: rgba(51, 255, 51, 0.06);
+  background: rgba(242, 235, 216, 0.06);
   border: 1px solid var(--landing-grid);
 }
 
@@ -1148,7 +1137,8 @@ th {
 
 .skill-tile:hover {
   transform: none;
-  box-shadow: 0 0 8px rgba(51,255,51,0.9), 0 0 16px rgba(51,255,51,0.6), 0 0 28px rgba(51,255,51,0.4);
+  box-shadow: none;
+  background: var(--landing-panel);
 }
 
 .install-grid {
@@ -1238,57 +1228,20 @@ th {
 }
 
 /* =========================================================================
-   CRT SCREEN EFFECTS — scanlines + vignette + flicker
-   Pure CSS pseudo-elements on body. pointer-events:none so they never
-   block clicks. Wrapped in reduced-motion for accessibility.
+   CHALKBOARD SURFACE — faint graph-paper grid on the page background.
+   Declared last so background-image wins over the earlier `background:`
+   shorthand in the body / .landing-page rules (color is preserved).
    ========================================================================= */
-
-/* Scanlines: thin dark horizontal lines every 3px */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0) 0,
-    rgba(0, 0, 0, 0) 2px,
-    rgba(0, 0, 0, 0.18) 3px,
-    rgba(0, 0, 0, 0.18) 4px
-  );
+body,
+.landing-page {
+  background-image:
+    linear-gradient(rgba(242, 235, 216, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(242, 235, 216, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
-/* Vignette: darkened screen edges (curved-tube illusion) */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 9998;
-  pointer-events: none;
-  background: radial-gradient(
-    ellipse at center,
-    transparent 55%,
-    rgba(0, 0, 0, 0.45) 100%
-  );
-}
-
-/* Subtle phosphor flicker on the whole screen — low amplitude */
-@keyframes crt-flicker {
-  0%   { opacity: 1; }
-  50%  { opacity: 0.97; }
-  100% { opacity: 1; }
-}
-
-body::before {
-  animation: crt-flicker 0.15s infinite;
-}
-
-/* === Accessibility: disable all CRT motion/flicker on request === */
+/* === Accessibility: honor reduced motion === */
 @media (prefers-reduced-motion: reduce) {
-  body::before {
-    animation: none;
-  }
   html {
     scroll-behavior: auto;
   }
